@@ -10,7 +10,7 @@ def setup_test_directory(tmp_path):
 def test_一時ファイルが削除されること(tmp_path):
     db_directory = setup_test_directory(tmp_path)
     temp_file = db_directory / "tempfile"
-    temp_file.touch()  # Create a temporary file
+    temp_file.touch()
 
     block_size = 1024
     file_mgr = FileManager(db_directory, block_size)
