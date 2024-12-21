@@ -1,7 +1,7 @@
 import struct
 
-from db.file.page import Page
 from db.file.constants import ByteSize, Format
+from db.file.page import Page
 
 
 def test_整数の読み書きができる():

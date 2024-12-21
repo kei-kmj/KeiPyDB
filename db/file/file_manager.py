@@ -31,7 +31,7 @@ class FileManager:
             data = f.read(self.block_size)
             page.buffer = BytesIO(data)
 
-    def write(self, block: BlockID, page : Page) -> None:
+    def write(self, block: BlockID, page: Page) -> None:
         """ブロックIDに対応するファイルにデータを書き込む"""
         with self._get_file(block.file_name) as f:
             f.seek(block.block_number * self.block_size)

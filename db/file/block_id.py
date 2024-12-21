@@ -8,7 +8,7 @@ class BlockID:
         self.block_number = block_number
 
     # TODO: 後で、仮引数名を見直す
-    def __eq__(self, target_block:object) -> bool:
+    def __eq__(self, target_block: object) -> bool:
         """BlockIDが等しいかどうかを判定
         :param target_block: 比較対象のBlockID
         """
