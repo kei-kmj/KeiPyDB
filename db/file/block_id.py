@@ -19,3 +19,8 @@ class BlockID:
         """BlockIDを文字列に変換
         """
         return f"[{self.file_name}, block {self.block_number}]"
+
+
+    def __hash__(self):
+        """__str__の結果をもとにハッシュ値を生成する"""
+        return hash(str(self))
