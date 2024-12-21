@@ -15,7 +15,7 @@ Currently, `keiPyDB` is under development. Clone this repository to begin:
 
 ```bash
 $ git clone https://github.com/yourusername/keiPyDB.git
-$ cd keiPyDB
+$ cd db
 ```
 
 ### Usage
