@@ -1,7 +1,7 @@
 import struct
 
-from db.file.constants import ByteSize, Format
 from db.file.page import Page
+from db.file.constants import ByteSize, Format
 
 
 def test_整数の読み書きができる():
@@ -30,6 +30,7 @@ def test_文字列の最大長を取得できる():
 
 
 def test_ページの内容を取得できる():
+    """ページの内容を取得すると、バッファの内容がそのまま返される."""
     page = Page(1024)
     page.set_int(0, 12345)
     page.set_string(10, "test")
@@ -37,4 +38,6 @@ def test_ページの内容を取得できる():
     raw_content = page.get_contents()
 
     assert raw_content[:4] == struct.pack(Format.IntBigEndian, 12345)
-    assert raw_content[10:10 + ByteSize.Int + string_length] == struct.pack(Format.IntBigEndian, string_length) + b"test"
+    assert (
+        raw_content[10 : 10 + ByteSize.Int + string_length] == struct.pack(Format.IntBigEndian, string_length) + b"test"
+    )
