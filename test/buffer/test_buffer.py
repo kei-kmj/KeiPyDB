@@ -1,10 +1,10 @@
-import pytest
 from unittest.mock import Mock
+
+from db.buffer.buffer import Buffer
 from db.file.block_id import BlockID
 from db.file.file_manager import FileManager
-from db.file.page import Page
 from db.log.log_manager import LogManager
-from db.buffer.buffer import Buffer
+
 
 def test_ブロックを割り当てられる():
     file_manager = Mock(spec=FileManager)
@@ -20,6 +20,7 @@ def test_ブロックを割り当てられる():
     assert buffer.block == block
     assert buffer.pins == 0
     file_manager.read.assert_called_once_with(block, buffer.contents)
+
 
 def test_バッファをフラッシュできる():
     file_manager = Mock(spec=FileManager)
@@ -38,6 +39,7 @@ def test_バッファをフラッシュできる():
     file_manager.write.assert_called_once_with(block, buffer.contents)
     assert buffer.transaction_number == -1
 
+
 def test_ピンとアンピンが動作する():
     file_manager = Mock(spec=FileManager)
     log_manager = Mock(spec=LogManager)
@@ -51,7 +53,8 @@ def test_ピンとアンピンが動作する():
     buffer.unpin()
     assert buffer.pins == 0
 
-def  test_修正状態を設定できる():
+
+def test_修正状態を設定できる():
     file_manager = Mock(spec=FileManager)
     log_manager = Mock(spec=LogManager)
     file_manager.block_size = 1024
