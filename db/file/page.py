@@ -1,7 +1,7 @@
 import struct
 from io import BytesIO
 
-from db.file.constants import ByteSize, Format
+from db.constants import ByteSize, Format
 
 
 class Page:

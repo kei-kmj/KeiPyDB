@@ -3,8 +3,8 @@ from io import BytesIO
 from pathlib import Path
 from typing import BinaryIO, Dict, cast
 
+from db.constants import FileModes
 from db.file.block_id import BlockID
-from db.file.constants import FileModes
 from db.file.page import Page
 
 

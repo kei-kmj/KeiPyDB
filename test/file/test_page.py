@@ -1,6 +1,6 @@
 import struct
 
-from db.file.constants import ByteSize, Format
+from db.constants import ByteSize, Format
 from db.file.page import Page
 
 

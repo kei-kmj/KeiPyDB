@@ -1,3 +1,4 @@
+from db.constants import ByteSize
 from db.file.block_id import BlockID
 from db.file.file_manager import FileManager
 from db.file.page import Page
@@ -25,7 +26,7 @@ class LogIterator:
             self._move_to_block(self.block)
 
         record = self.page.get_bytes(self.current_position)
-        self.current_position += 4 + len(record)
+        self.current_position += ByteSize.Int + len(record)
 
         return record
 

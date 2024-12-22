@@ -1,7 +1,8 @@
+from db.constants import ByteSize
 from db.file.block_id import BlockID
 from db.file.file_manager import FileManager
 from db.file.page import Page
-from db.log.lig_iterator import LogIterator
+from db.log.log_iterator import LogIterator
 
 
 class LogManager:
@@ -35,9 +36,9 @@ class LogManager:
     def append(self, log_record: bytes) -> int:
         boundary = self.log_page.get_int(0)
         record_size = len(log_record)
-        bytes_needed = record_size + 4
+        bytes_needed = record_size + ByteSize.Int
 
-        if boundary - bytes_needed < 4:
+        if boundary - bytes_needed < ByteSize.Int:
             self._flush()
             self.current_block = self._append_new_block()
             boundary = self.log_page.get_int(0)
