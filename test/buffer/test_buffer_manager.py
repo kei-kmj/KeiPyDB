@@ -1,12 +1,12 @@
-import pytest
 from unittest.mock import Mock
+
+import pytest
+
+from db.buffer.buffer_manager import BufferAbortException, BufferManager
 from db.file.block_id import BlockID
 from db.file.file_manager import FileManager
-from db.file.page import Page
 from db.log.log_manager import LogManager
-from db.buffer.buffer import Buffer
-from db.buffer.buffer_manager import BufferManager, BufferAbortException
-import time
+
 
 def test_利用可能なバッファの数を取得できる():
     file_manager = Mock(spec=FileManager)
@@ -15,6 +15,7 @@ def test_利用可能なバッファの数を取得できる():
     buffer_manager = BufferManager(file_manager, log_manager, num_buffers=3)
 
     assert buffer_manager.available() == 3
+
 
 def test_バッファをフラッシュできる():
     file_manager = Mock(spec=FileManager)
@@ -32,6 +33,7 @@ def test_バッファをフラッシュできる():
     log_manager.flush.assert_called_once_with(100)
     file_manager.write.assert_called_once_with(block, buffer.contents)
 
+
 def test_ブロックをピンできる():
     file_manager = Mock(spec=FileManager)
     file_manager.block_size = 1024
@@ -44,6 +46,7 @@ def test_ブロックをピンできる():
 
     assert buffer.block == block
     assert buffer.pins == 1
+
 
 def test_ブロックをアンピンできる():
     file_manager = Mock(spec=FileManager)
@@ -58,6 +61,7 @@ def test_ブロックをアンピンできる():
 
     assert buffer.pins == 0
     assert buffer_manager.available() == 3
+
 
 def test_タイムアウトで例外が発生する():
     file_manager = Mock(spec=FileManager)
