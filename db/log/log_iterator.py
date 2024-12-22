@@ -37,3 +37,4 @@ class LogIterator:
         self.file_manager.read(block, self.page)
         self.boundary = self.page.get_int(0)
         self.current_position = self.boundary
+        self.block = block
