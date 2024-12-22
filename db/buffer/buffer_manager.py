@@ -1,4 +1,6 @@
-from threading import Lock
+import time
+from threading import Condition
+from typing import Optional
 
 from db.buffer.buffer import Buffer
 from db.file.block_id import BlockID
@@ -6,35 +8,76 @@ from db.file.file_manager import FileManager
 from db.log.log_manager import LogManager
 
 
+class BufferAbortException(Exception):
+    pass
+
+
 class BufferManager:
+    MAX_TIME = 10
+
     def __init__(self, file_manager: FileManager, log_manager: LogManager, num_buffers: int) -> None:
         self.file_manager = file_manager
         self.log_manager = log_manager
         self.buffer_pool = [Buffer(file_manager, log_manager) for _ in range(num_buffers)]
         self.num_available = num_buffers
-        self.lock = Lock()
+        self.condition = Condition()
 
     def available(self) -> int:
-        with self.lock:
+        with self.condition:
             return self.num_available
 
-    def flush_all(self, tx_num) -> None:
-        with self.lock:
+    def flush_all(self, tx_num: int) -> None:
+        with self.condition:
             for buffer in self.buffer_pool:
-                if buffer.modifying_tx == tx_num:
+                if buffer.modifying_tx() == tx_num:
                     buffer.flush()
 
     def unpin(self, buffer: Buffer) -> None:
-        with self.lock:
+        with self.condition:
             buffer.unpin()
             if not buffer.is_pinned():
                 self.num_available += 1
+                self.condition.notify_all()
 
     def pin(self, block: BlockID) -> Buffer:
-        with self.lock:
+        with self.condition:
+            time_stamp = time.time()
             buffer = self._try_to_pin(block)
-            if buffer:
-                return buffer
 
-    def _try_to_pin(self, block: BlockID) -> Buffer:
-        pass
+            while buffer is None and not self._waiting_too_long(time_stamp):
+                self.condition.wait(self.MAX_TIME)
+                buffer = self._try_to_pin(block)
+
+            if buffer is None:
+                raise BufferAbortException()
+
+            return buffer
+
+    def _waiting_too_long(self, time_stamp: float) -> bool:
+        return time.time() - time_stamp >= self.MAX_TIME
+
+    def _try_to_pin(self, block: BlockID) -> Optional[Buffer]:
+        buffer = self._find_existing_buffer(block)
+        if buffer is None:
+            buffer = self._choose_unpinned_buffer()
+            if buffer is None:
+                return None
+            buffer.assign_to_block(block)
+
+        if not buffer.is_pinned():
+            self.num_available -= 1
+
+        buffer.pin()
+        return buffer
+
+    def _find_existing_buffer(self, block: BlockID) -> Optional[Buffer]:
+        for buffer in self.buffer_pool:
+            if buffer.block == block:
+                return buffer
+        return None
+
+    def _choose_unpinned_buffer(self) -> Optional[Buffer]:
+        for buffer in self.buffer_pool:
+            if not buffer.is_pinned():
+                return buffer
+        return None

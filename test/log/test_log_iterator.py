@@ -1,5 +1,7 @@
-import pytest
 from unittest.mock import Mock
+
+import pytest
+
 from db.constants import ByteSize
 from db.file.block_id import BlockID
 from db.file.file_manager import FileManager
@@ -9,7 +11,6 @@ from db.log.log_iterator import LogIterator
 
 def test_初期化時に正しいブロックが読み込まれること():
     mock_file_manager = Mock(spec=FileManager)
-    mock_page = Mock(spec=Page)
     mock_file_manager.block_size = 1024
     mock_block = BlockID("testfile", 2)
 
@@ -73,5 +74,3 @@ def test_次のブロックに移動できること():
     record = next(log_iterator)
     assert record == b"test_record2"
     assert log_iterator.current_position == ByteSize.Int + len(b"test_record") + ByteSize.Int + len(b"test_record2")
-
-
