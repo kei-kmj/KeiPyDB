@@ -74,3 +74,5 @@ def test_次のブロックに移動できること():
     record = next(log_iterator)
     assert record == b"test_record2"
     assert log_iterator.current_position == ByteSize.Int + len(b"test_record") + ByteSize.Int + len(b"test_record2")
+
+
