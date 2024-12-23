@@ -11,3 +11,7 @@ class FileModes:
     Write = "wb"
     ReadWrite = "r+b"
     WriteNew = "w+b"
+
+
+class LogRecordFields:
+    TWO_FIELDS = 2
