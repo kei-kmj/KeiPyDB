@@ -26,5 +26,5 @@ class PlintLogFile:
         for bytes_data in self.log_manager.iterator():
             # TODO: ログレコードの作成
             log_record = ""
-            # log_record = LogRecord.Create_log_record(bytes_data)
+            # log_record = LogRecord.create_log_record(bytes_data)
             print(log_record)
