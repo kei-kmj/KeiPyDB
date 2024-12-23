@@ -1,10 +1,10 @@
-import pytest
 from unittest.mock import Mock
+
 from db.constants import ByteSize, LogRecordFields
 from db.file.page import Page
 from db.log.log_manager import LogManager
-from db.transaction.transaction import Transaction
 from db.transaction.recovery.start_record import StartRecord
+
 
 def test_スタートレコードが正しく初期化されること():
     page = Mock(spec=Page)
