@@ -2,6 +2,7 @@ from abc import abstractmethod, ABC
 from typing import Any
 
 from db.file.page import Page
+from db.transaction.recovery.rollback_record import RollbackRecord
 from db.transaction.recovery.start_record import StartRecord
 from db.transaction.transaction import Transaction
 

@@ -7,19 +7,19 @@ from db.transaction.transaction import Transaction
 class RollbackRecord:
     ROLLBACK = 1
     def __init__(self, page: Page) -> None:
-        self.tx_number = page.get_int(ByteSize.Int)
+        self._tx_number = page.get_int(ByteSize.Int)
 
     def op(self) -> int:
         return self.ROLLBACK
 
     def tx_number(self) -> int:
-        return self.tx_number
+        return self._tx_number
 
     def undo(self, tx: Transaction) -> None:
         pass
 
     def __str__(self) -> str:
-        return f"<ROLLBACK {self.tx_number}>"
+        return f"<ROLLBACK {self._tx_number}>"
 
 
     @staticmethod
