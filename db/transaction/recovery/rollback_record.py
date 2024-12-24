@@ -24,6 +24,7 @@ class RollbackRecord:
 
     @staticmethod
     def write_to_log(log_manager: LogManager, tx_number:int) -> int:
+        """ログにロールバックレコードを書き込む"""
         rec = bytearray(LogRecordFields.TWO_FIELDS * ByteSize.Int)
         page = Page(rec)
         page.set_int(0, RollbackRecord.ROLLBACK)

@@ -1,3 +1,4 @@
+import codecs
 import struct
 from io import BytesIO
 
@@ -47,7 +48,8 @@ class Page:
 
     @staticmethod
     def get_max_length(string_length: int) -> int:
-        return ByteSize.Int + string_length
+        bytes_per_char = len(codecs.lookup(Page.CHARSET).incrementalencoder().encode("a"))
+        return ByteSize.Int + (string_length * bytes_per_char)
 
     def get_contents(self) -> bytes:
         return self.buffer.getvalue()
