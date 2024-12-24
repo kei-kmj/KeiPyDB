@@ -50,4 +50,5 @@ def test_write_to_logが正しいデータをログに書き込むこと():
     assert StartRecord.write_to_log(log_manager, tx_number) == 100
     log_manager.append.assert_called_once_with(rec)
     assert page.get_int(0) == StartRecord.START
+    # TODO:ここがおかしいかも
     assert page.get_int(ByteSize.Int) == 0

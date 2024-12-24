@@ -28,4 +28,5 @@ class RollbackRecord:
         page = Page(rec)
         page.set_int(0, RollbackRecord.ROLLBACK)
         page.set_int(ByteSize.Int, tx_number)
+
         return log_manager.append(rec)
