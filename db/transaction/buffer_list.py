@@ -6,10 +6,10 @@ from db.file.block_id import BlockID
 
 
 class BufferList:
-    def __init__(self, buffer_manager:BufferManager) -> None:
+    def __init__(self, buffer_manager: BufferManager) -> None:
         self.buffer_manager = buffer_manager
         self.buffers: dict[BlockID, Buffer] = {}
-        self.pins:List[BlockID] = []
+        self.pins: List[BlockID] = []
 
     def get_buffer(self, block: BlockID) -> Optional[Buffer]:
         return self.buffers.get(block)
@@ -18,7 +18,6 @@ class BufferList:
         buffer = self.buffer_manager.pin(block)
         self.buffers[block] = buffer
         self.pins.append(block)
-
 
     def unpin(self, block: BlockID) -> None:
         buffer = self.buffers.get(block)
@@ -36,4 +35,3 @@ class BufferList:
                 self.buffer_manager.unpin(buffer)
         self.buffers.clear()
         self.pins.clear()
-

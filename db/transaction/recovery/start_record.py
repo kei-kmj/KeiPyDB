@@ -13,10 +13,8 @@ class StartRecord:
     def op(self) -> int:
         return self.START
 
-
     def tx_number(self) -> int:
         return self._tx_number
-
 
     def undo(self, tx: Transaction) -> None:
         pass
@@ -25,7 +23,7 @@ class StartRecord:
         return f"<START {self._tx_number}>"
 
     @staticmethod
-    def write_to_log(log_manager: LogManager, tx_number:int) -> int:
+    def write_to_log(log_manager: LogManager, tx_number: int) -> int:
         rec = bytearray(LogRecordFields.TWO_FIELDS * ByteSize.Int)
         page = Page(rec)
         page.set_int(0, StartRecord.START)

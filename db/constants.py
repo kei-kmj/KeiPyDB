@@ -14,4 +14,5 @@ class FileModes:
 
 
 class LogRecordFields:
+    ONE_FIELD = 1
     TWO_FIELDS = 2

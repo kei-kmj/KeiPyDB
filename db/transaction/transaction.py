@@ -1,4 +1,2 @@
-
-
 class Transaction:
     pass

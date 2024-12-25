@@ -1,4 +1,4 @@
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from typing import Any
 
 from db.file.page import Page
@@ -47,6 +47,3 @@ class LogRecord(ABC):
             return SetStringRecord(page)
         else:
             raise ValueError(f"不明な操作コード: {op_type}")
-
-
-
