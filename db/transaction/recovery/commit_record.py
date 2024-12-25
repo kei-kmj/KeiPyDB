@@ -25,7 +25,7 @@ class CommitRecord:
 
     @staticmethod
     def write_to_log(log_manager: LogManager, tx_number: int) -> int:
-        rec = bytearray(LogRecordFields.TWO_FIELDS, ByteSize.Int)
+        rec = bytearray(LogRecordFields.TWO_FIELDS * ByteSize.Int)
         page = Page(rec)
         page.set_int(0, CommitRecord.COMMIT)
         page.set_int(ByteSize.Int, tx_number)
