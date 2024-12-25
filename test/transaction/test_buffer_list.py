@@ -17,6 +17,7 @@ def test_指定されたブロックのバッファを取得できる():
     assert buffer_list.get_buffer(block) == buffer
     assert buffer_list.get_buffer(BlockID("testfile", 2)) is None
 
+
 def test_ブロックをピン留めして追跡できる():
     buffer_manager = Mock(spec=BufferManager)
     buffer_list = BufferList(buffer_manager)
@@ -30,6 +31,7 @@ def test_ブロックをピン留めして追跡できる():
     assert buffer_list.buffers[block] == buffer
     assert block in buffer_list.pins
     buffer_manager.pin.assert_called_once_with(block)
+
 
 def test_ブロックをアンピンして追跡から削除できる():
     buffer_manager = Mock(spec=BufferManager)
@@ -45,6 +47,7 @@ def test_ブロックをアンピンして追跡から削除できる():
     assert block not in buffer_list.pins
     assert block not in buffer_list.buffers
     buffer_manager.unpin.assert_called_once_with(buffer)
+
 
 def test_すべてのブロックをアンピンして状態をリセットできる():
     buffer_manager = Mock(spec=BufferManager)

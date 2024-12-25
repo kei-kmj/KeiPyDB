@@ -15,11 +15,13 @@ def test_スタートレコードが正しく初期化されること():
     assert start_record._tx_number == 42
     page.get_int.assert_called_once_with(ByteSize.Int)
 
+
 def test_opメソッドがスタート操作コードを返すこと():
     page = Mock(spec=Page)
     start_record = StartRecord(page)
 
     assert start_record.op() == StartRecord.START
+
 
 def test_tx_numberメソッドがトランザクション番号を返すこと():
     page = Mock(spec=Page)
@@ -37,6 +39,7 @@ def test_スタートレコードの文字列表現が正しいこと():
     start_record = StartRecord(page)
 
     assert str(start_record) == "<START 42>"
+
 
 def test_write_to_logが正しいデータをログに書き込むこと():
     log_manager = Mock(spec=LogManager)
