@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Any
 
 from db.file.page import Page
 from db.transaction.recovery.checkpoint_record import CheckpointRecord
@@ -32,7 +31,9 @@ class LogRecord(ABC):
         pass
 
     @classmethod
-    def create_log_record(cls, bytes_data: bytes) -> StartRecord | CommitRecord | RollbackRecord | SetIntRecord | SetStringRecord | CheckpointRecord:
+    def create_log_record(
+        cls, bytes_data: bytes
+    ) -> StartRecord | CommitRecord | RollbackRecord | SetIntRecord | SetStringRecord | CheckpointRecord:
 
         page = Page(bytes_data)
         op_type = page.get_int(0)
