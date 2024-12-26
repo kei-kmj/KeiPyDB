@@ -32,7 +32,7 @@ class LogRecord(ABC):
         pass
 
     @classmethod
-    def create_log_record(cls, bytes_data: bytes) -> Any:
+    def create_log_record(cls, bytes_data: bytes) -> StartRecord | CommitRecord | RollbackRecord | SetIntRecord | SetStringRecord | CheckpointRecord:
 
         page = Page(bytes_data)
         op_type = page.get_int(0)
