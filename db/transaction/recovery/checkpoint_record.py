@@ -17,6 +17,10 @@ class CheckpointRecord:
     def tx_number() -> int:
         return -1
 
+    @staticmethod
+    def op() -> int:
+        return CheckpointRecord.CHECKPOINT
+
     def undo(self, tx: Transaction) -> None:
         pass
 

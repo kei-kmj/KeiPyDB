@@ -31,8 +31,8 @@ class LogRecord(ABC):
     def undo(self, tx: Transaction) -> None:
         pass
 
-    @abstractmethod
-    def create_log_record(self, bytes_data: bytes) -> Any:
+    @classmethod
+    def create_log_record(cls, bytes_data: bytes) -> Any:
 
         page = Page(bytes_data)
         op_type = page.get_int(0)
