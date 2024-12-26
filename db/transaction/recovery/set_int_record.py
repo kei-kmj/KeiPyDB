@@ -29,7 +29,7 @@ class SetIntRecord:
 
     def undo(self, tx: Transaction) -> None:
         tx.pin(self.block)
-        tx.set_int(self.block, self.offset, self.value, log=False)
+        tx.set_int(self.block, self.offset, self.value, False)
         tx.unpin(self.block)
 
     def __str__(self) -> str:
