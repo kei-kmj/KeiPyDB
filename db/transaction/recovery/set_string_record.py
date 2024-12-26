@@ -13,7 +13,7 @@ class SetStringRecord:
         self._tx_number = page.get_int(tx_pos)
         file_name_pos = tx_pos + ByteSize.Int
         file_name = page.get_string(file_name_pos)
-        block_pos = file_name_pos + Page.get_max_length(len(file_name_pos))
+        block_pos = file_name_pos + Page.get_max_length(len(file_name))
         block_number = page.get_int(block_pos)
         self.block = BlockID(file_name, block_number)
 
@@ -22,7 +22,6 @@ class SetStringRecord:
 
         value_pos = offset_pos + ByteSize.Int
         self.value = page.get_string(value_pos)
-
 
     @staticmethod
     def op() -> int:
@@ -38,7 +37,6 @@ class SetStringRecord:
 
     def __str__(self) -> str:
         return f"<SET_STRING {self._tx_number} {self.block} {self.offset} {self.value}>"
-
 
     @staticmethod
     def write_to_log(log_manager: LogManager, tx_number: int, block: BlockID, offset: int, value: str) -> int:

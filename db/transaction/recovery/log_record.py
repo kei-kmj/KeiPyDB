@@ -6,6 +6,7 @@ from db.transaction.recovery.checkpoint_record import CheckpointRecord
 from db.transaction.recovery.commit_record import CommitRecord
 from db.transaction.recovery.rollback_record import RollbackRecord
 from db.transaction.recovery.set_int_record import SetIntRecord
+from db.transaction.recovery.set_string_record import SetStringRecord
 from db.transaction.recovery.start_record import StartRecord
 from db.transaction.transaction import Transaction
 
