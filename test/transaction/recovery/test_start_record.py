@@ -46,7 +46,7 @@ def test_write_to_logが正しいデータをログに書き込むこと():
     log_manager.append.return_value = 100
 
     tx_number = 42
-    rec = bytearray(LogRecordFields.TWO_FIELDS * ByteSize.Int)
+    rec = bytearray(LogRecordFields.Two_Fields * ByteSize.Int)
     page = Page(rec)
     page.set_int(0, StartRecord.START)
 

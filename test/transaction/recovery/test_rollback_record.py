@@ -1,12 +1,9 @@
 from unittest.mock import Mock
 
-import pytest
-
-from db.constants import ByteSize, LogRecordFields
+from db.constants import ByteSize
 from db.file.page import Page
 from db.log.log_manager import LogManager
 from db.transaction.recovery.rollback_record import RollbackRecord
-from db.transaction.transaction import Transaction
 
 
 def test_ロールバックレコードの初期化を確認する():

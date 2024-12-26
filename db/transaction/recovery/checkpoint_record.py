@@ -25,7 +25,7 @@ class CheckpointRecord:
 
     @staticmethod
     def write_to_log(log_manager: LogManager) -> int:
-        rec = bytearray(LogRecordFields.ONE_FIELD * ByteSize.Int)
+        rec = bytearray(LogRecordFields.One_Field * ByteSize.Int)
         page = Page(rec)
         page.set_int(0, CheckpointRecord.CHECKPOINT)
         return log_manager.append(rec)

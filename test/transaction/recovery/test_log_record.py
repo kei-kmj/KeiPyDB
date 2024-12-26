@@ -5,12 +5,13 @@ from db.transaction.recovery.start_record import StartRecord
 
 
 def test_チェックポイントレコードが作成されることを確認する():
-    page_data = bytearray(4)  # CHECKPOINT has no additional data
+    page_data = bytearray(4)
     page = Page(page_data)
     page.set_int(0, LogRecord.CHECKPOINT)
 
     record = CheckpointRecord()
     assert isinstance(record, CheckpointRecord)
+
 
 def test_スタートレコードが作成されることを確認する():
     page_data = bytearray(8)
@@ -20,6 +21,7 @@ def test_スタートレコードが作成されることを確認する():
 
     record = StartRecord(page)
     assert isinstance(record, StartRecord)
+
 
 def test_コミットレコードが作成されることを確認する():
     page_data = bytearray(8)

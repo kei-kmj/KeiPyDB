@@ -14,5 +14,16 @@ class FileModes:
 
 
 class LogRecordFields:
-    ONE_FIELD = 1
-    TWO_FIELDS = 2
+    One_Field = 1
+    Two_Fields = 2
+
+
+class LockType:
+    Shared = "S"
+    Exclusive = "X"
+
+
+class LockMode:
+    No_Lock = 0
+    Shared_Lock = 1
+    Exclusive_Lock = -1

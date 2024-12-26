@@ -22,4 +22,4 @@ class BlockID:
 
     def __hash__(self) -> int:
         """__str__の結果をもとにハッシュ値を生成する"""
-        return hash(str(self))
+        return hash((self.file_name, self.block_number))

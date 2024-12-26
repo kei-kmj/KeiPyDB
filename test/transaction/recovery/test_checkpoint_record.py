@@ -3,7 +3,6 @@ from unittest.mock import Mock
 from db.file.page import Page
 from db.log.log_manager import LogManager
 from db.transaction.recovery.checkpoint_record import CheckpointRecord
-from db.transaction.transaction import Transaction
 
 
 def test_チェックポイントレコードの初期化を確認する():
