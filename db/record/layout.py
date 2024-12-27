@@ -6,7 +6,9 @@ from db.record.schema import Schema
 
 
 class Layout:
-    def __init__(self, schema: Schema, offsets: Optional[Dict[str, int]] = None, slot_size:  Optional[int] = None) -> None:
+    def __init__(
+        self, schema: Schema, offsets: Optional[Dict[str, int]] = None, slot_size: Optional[int] = None
+    ) -> None:
 
         self.schema = schema
         if offsets is None or slot_size is None:
