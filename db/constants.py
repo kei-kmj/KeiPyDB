@@ -27,3 +27,8 @@ class LockMode:
     No_Lock = 0
     Shared_Lock = 1
     Exclusive_Lock = -1
+
+
+class FieldType:
+    Integer = 1
+    Varchar = 2
