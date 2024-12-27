@@ -6,7 +6,7 @@ from db.transaction.transaction import Transaction
 
 
 def test_トランザクションのコミットが正しく動作することを確認する():
-    # Given
+
     file_manager = Mock()
     log_manager = Mock()
     buffer_manager = Mock()
@@ -18,10 +18,8 @@ def test_トランザクションのコミットが正しく動作すること�
     buffer_list = Mock()
     transaction.buffer_list = buffer_list
 
-    # When
     transaction.commit()
 
-    # Then
     recovery_manager.commit.assert_called_once()
     concurrency_manager.release.assert_called_once()
     buffer_list.unpin_all.assert_called_once()
