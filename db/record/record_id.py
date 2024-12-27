@@ -3,7 +3,7 @@ class RecordID:
         self.block_number = block_number
         self.slot = slot
 
-    def __eq__(self, target_record) -> bool:
+    def __eq__(self, target_record: object) -> bool:
         if not isinstance(target_record, RecordID):
             return False
 

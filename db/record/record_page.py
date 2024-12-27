@@ -31,6 +31,11 @@ class RecordPage:
         field_position = self._offset(slot) + self.layout.get_offset(field_name)
         return self.transaction.get_string(self.block, field_position)
 
+    def set_string(self, slot: int, field_name: str, value: str) -> None:
+        """指定されたスロットの指定されたフィールドに文字列を設定する"""
+        field_position = self._offset(slot) + self.layout.get_offset(field_name)
+        self.transaction.set_string(self.block, field_position, value)
+
     def delete(self, slot: int) -> None:
         """指定されたスロットを削除する"""
         self._set_flag(slot, RecordPage.EMPTY)
