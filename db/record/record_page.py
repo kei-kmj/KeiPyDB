@@ -17,21 +17,26 @@ class RecordPage:
         self.transaction.pin(block)
 
     def get_int(self, slot: int, field_name: str) -> int:
+        """指定されたスロットの指定されたフィールドの整数値を返す"""
         field_position = self._offset(slot) + self.layout.get_offset(field_name)
         return self.transaction.get_int(self.block, field_position)
 
     def set_int(self, slot: int, field_name: str, value: int) -> None:
+        """指定されたスロットの指定されたフィールドに整数値を設定する"""
         field_position = self._offset(slot) + self.layout.get_offset(field_name)
         self.transaction.set_int(self.block, field_position, value)
 
     def get_string(self, slot: int, field_name: str) -> str:
+        """指定されたスロットの指定されたフィールドの文字列を返す"""
         field_position = self._offset(slot) + self.layout.get_offset(field_name)
         return self.transaction.get_string(self.block, field_position)
 
     def delete(self, slot: int) -> None:
+        """指定されたスロットを削除する"""
         self._set_flag(slot, RecordPage.EMPTY)
 
     def format(self) -> None:
+        """このレコードページを初期化する"""
         slot = 0
         while self._is_valid_slot(slot):
             self.transaction.set_int(self.block, self._offset(slot), self.EMPTY, False)
