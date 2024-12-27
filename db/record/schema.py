@@ -1,5 +1,7 @@
 from typing import Dict, List
 
+from db.constants import FieldType
+
 
 class Schema:
     class FieldInfo:
@@ -15,6 +17,14 @@ class Schema:
         """スキーマに名前/型/長さのフィールドを追加"""
         self.fields.append(field_name)
         self.info[field_name] = Schema.FieldInfo(field_type, length)
+
+    def add_int_field(self, field_name: str) -> None:
+        """スキーマに整数フィールドを追加"""
+        self.add_field(field_name, FieldType.Integer, 0)
+
+    def add_string_field(self, field_name: str, length: int) -> None:
+        """スキーマに文字列フィールドを追加"""
+        self.add_field(field_name, FieldType.Varchar, length)
 
     def add(self, field_name: str, schema: "Schema") -> None:
         """別のスキーマに基づいたフィールドをスキーマに追加する"""
