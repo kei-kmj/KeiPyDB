@@ -43,3 +43,20 @@ class IndexManager:
 
         table_scan.close()
         return result
+
+    def get_index_info(self, table_name: str, transaction: Transaction) -> Dict[str, IndexInfo]:
+
+        result: Dict[str, IndexInfo] = {}
+        table_scan = TableScan(transaction, "index_catalog", self.layout)
+
+        while table_scan.next():
+            if table_scan.get_string("table_name") == table_name:
+                index_name = table_scan.get_string("index_name")
+                field_name = table_scan.get_string("field_name")
+                table_layout = self.table_manager.get_layout(table_name, transaction)
+                stat_info = self.stat_manager.get_stat_info(table_name, table_layout, transaction)
+                index_info = IndexInfo(index_name, field_name, table_layout.get_schema(), transaction, stat_info)
+                result[field_name] = index_info
+
+        table_scan.close()
+        return result
