@@ -32,3 +32,5 @@ class LockMode:
 class FieldType:
     Integer = 1
     Varchar = 2
+
+
