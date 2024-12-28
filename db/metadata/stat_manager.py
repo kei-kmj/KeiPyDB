@@ -1,22 +1,11 @@
 from threading import Lock
 from typing import Dict
 
+from db.metadata.stat_info import StatInfo
 from db.metadata.table_manager import TableManager
 from db.record.layout import Layout
 from db.record.table_scan import TableScan
 from db.transaction.transaction import Transaction
-
-
-class StatInfo:
-    def __init__(self, num_blocks: int, num_records: int) -> None:
-        self.num_blocks = num_blocks
-        self.num_records = num_records
-
-    def get_num_blocks(self) -> int:
-        return self.num_blocks
-
-    def get_num_records(self) -> int:
-        return self.num_records
 
 
 class StatManager:
@@ -28,6 +17,7 @@ class StatManager:
         self.refresh_statistics(transaction)
 
     def get_stat_info(self, table_name: str, layout: Layout, transaction: Transaction) -> StatInfo:
+        """指定されたテーブルの統計情報を取得"""
         with self.lock:
             self.num_calls += 1
             if self.num_calls > 100:
@@ -37,6 +27,7 @@ class StatManager:
             return self.table_stats[table_name]
 
     def refresh_statistics(self, transaction: Transaction) -> None:
+        """テーブルの統計情報を更新"""
         with self.lock:
             self.table_stats = {}
             self.num_calls = 0
