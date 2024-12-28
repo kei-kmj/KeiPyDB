@@ -1,7 +1,6 @@
 from unittest.mock import Mock
 
 from db.query.product_scan import ProductScan
-from db.query.scan import Scan
 
 
 def test_直積スキャンが最初のレコードに戻ることを確認する():
