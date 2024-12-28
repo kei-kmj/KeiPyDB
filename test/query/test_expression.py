@@ -4,22 +4,59 @@ from db.query.constant import Constant
 from db.query.expression import Expression
 
 
+def test_定数式の評価ができる():
+    constant = Constant(42)
+    expression = Expression(constant, "field_name")
 
-# def test_定数式の評価ができる():
-#     constant = Constant()
-#
-#     expression = Expression(constant, "")
-#     mock_scan = Mock()
-#     result = expression.evaluate(mock_scan)
-#
-#     assert result == constant
-#
-# def test_フィールド式の評価ができる():
-#     field_name = "field1"
-#     constant = Constant()
-#     mock_scan = Mock()
-#     mock_scan.constant = constant
-#     expression = Expression(constant, field_name)
-#     result = expression.evaluate(mock_scan)
-#
-#     assert result == mock_scan.constant
+    result = expression.evaluate(scan=Mock())
+
+    assert result == constant, "定数式の評価が正しくありません"
+
+
+def test_フィールド式の評価ができる():
+    field_name = "field_name"
+    scan = Mock()
+    scan.get_val.return_value = Constant(42)
+    expression = Expression(None, field_name)
+
+    result = expression.evaluate(scan)
+
+    assert result == Constant(42), "フィールド式の評価が正しくありません"
+
+
+def test_フィールド名判定が正しい():
+    field_name = "field_name"
+    expression = Expression(None, field_name)
+
+    result = expression.is_field_name()
+
+    assert result is True, "フィールド名判定が正しくありません"
+
+
+def test_定数を取得できる():
+    constant = Constant(42)
+    expression = Expression(constant, "field_name")
+
+    result = expression.as_constant()
+
+    assert result == constant, "定数を取得できません"
+
+
+def test_フィールド名を取得できる():
+    field_name = "field_name"
+    expression = Expression(None, field_name)
+
+    result = expression.as_field_name()
+
+    assert result == field_name, "フィールド名を取得できません"
+
+
+def test_スキーマに適用可能かを判定できる():
+    field_name = "field_name"
+    schema = Mock()
+    schema.has_field.return_value = True
+    expression = Expression(None, field_name)
+
+    result = expression.applies_to(schema)
+
+    assert result is True, "スキーマに適用可能かを判定できません"

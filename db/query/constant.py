@@ -1,11 +1,11 @@
 class Constant:
-    def __init__(self, value:int | str) -> None:
+    def __init__(self, value: int | str) -> None:
         """値を指定してConstantを初期化"""
         if not isinstance(value, (int, str)):
             raise ValueError(f"value must be int or str, but got {type(value)}")
         self.value = value
 
-    def __eq__(self, other:object) -> bool:
+    def __eq__(self, other: object) -> bool:
         """定数同士の透過性を比較"""
         if not isinstance(other, Constant):
             return False
