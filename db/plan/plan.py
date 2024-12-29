@@ -1,6 +1,7 @@
 import abc
 from abc import ABC
 
+from db.query.scan import Scan
 from db.record.schema import Schema
 
 
@@ -10,7 +11,7 @@ class Plan(ABC):
         pass
 
     @abc.abstractmethod
-    def open(self) -> None:
+    def open(self) -> Scan:
         """計画の初期化"""
         pass
 
