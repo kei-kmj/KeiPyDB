@@ -1,4 +1,4 @@
-class CreateIndexData:
+class CreateIndex:
     def __init__(self, index_name: str, table_name: str, field_name: str) -> None:
         self.index_name = index_name
         self.table_name = table_name

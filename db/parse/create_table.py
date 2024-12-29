@@ -1,7 +1,7 @@
 from db.record.schema import Schema
 
 
-class CreateTableData:
+class CreateTable:
     def __init__(self, table_name: str, schema: Schema):
         self.table_name = table_name
         self.schema = schema
