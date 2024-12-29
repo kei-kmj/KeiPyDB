@@ -81,9 +81,12 @@ class Lexer:
 
         return self.current_token.isdigit()
 
-    def match_string_constant(self, keyword: str) -> bool:
+    def match_string_constant(self) -> bool:
         """現在のトークンが文字列定数と一致するかどうかを返す"""
-        return self.current_token == keyword
+
+        if self.current_token is None:
+            return False
+        return self.current_token.startswith("'") and self.current_token.endswith("'")
 
     def match_id(self) -> bool:
         """現在のトークンが識別子かどうかを返す"""
@@ -101,17 +104,13 @@ class Lexer:
 
     def eat_int_constant(self) -> str | None:
         """整数定数を消費"""
-        if not self.match_int_constant():
-            raise SyntaxError(f"Expected integer constant, but not found {self.current_token}")
 
         value = self.current_token
         self.next_token()
         return value
 
-    def eat_string_constant(self, keyword: str) -> str | None:
+    def eat_string_constant(self) -> str | None:
         """文字列定数を消費"""
-        if not self.match_string_constant(keyword):
-            raise SyntaxError(f"Expected string constant, but not found {self.current_token}")
 
         value = self.current_token
         self.next_token()

@@ -25,7 +25,7 @@ def test_文字列定数が一致することを確認する():
     lexer = Lexer(sql)
 
     lexer.next_token()
-    assert lexer.match_string_constant("'value'") is True
+    assert lexer.match_string_constant() is True
 
 
 def test_識別子が一致することを確認する():
@@ -50,7 +50,7 @@ def test_文字列定数を消費できることを確認する():
     lexer = Lexer(sql)
 
     lexer.next_token()
-    assert lexer.eat_string_constant("'value'") == "'value'"
+    assert lexer.eat_string_constant() == "'value'"
 
 
 def test_識別子を消費できることを確認する():

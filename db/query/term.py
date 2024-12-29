@@ -1,10 +1,12 @@
-from db.query.constant import Constant
+from db.plan.plan import Plan
+from db.query.expression import Expression
 from db.query.scan import Scan
 from db.record.schema import Schema
 
 
 class Term:
-    def __init__(self, left, right) -> None:
+
+    def __init__(self, left: Expression, right: Expression) -> None:
         self.left = left
         self.right = right
 
@@ -15,7 +17,7 @@ class Term:
 
         return left_value == right_value
 
-    def reduction_factor(self, plan: "Pran") -> int | float:
+    def reduction_factor(self, plan: Plan) -> int:
         """クエリの出力レコード数を削減する程度を計算する"""
 
         if self.left.is_field_name() and self.right.is_field_name():
@@ -32,10 +34,10 @@ class Term:
 
         if self.left.as_constant() == self.right.as_constant():
             return 1
-        else:
-            return float("inf")
 
-    def equates_with_constant(self, field_name: str) -> Constant | None:
+        raise ValueError("Reduction factor cannot be determined due to incomparable constants.")
+
+    def equates_with_constant(self, field_name: str) -> str | None:
         """TermがF1==F2であることを確認し、フィールドF2を返す"""
         if self.left.is_field_name() and self.left.as_field_name() == field_name and self.right.is_field_name():
 

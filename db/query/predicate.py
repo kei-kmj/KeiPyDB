@@ -1,6 +1,6 @@
 from typing import Optional
 
-from db.query.constant import Constant
+from db.plan.plan import Plan
 from db.query.scan import Scan
 from db.query.term import Term
 from db.record.schema import Schema
@@ -22,7 +22,7 @@ class Predicate:
         """指定されたスキャンに述語が適用されるかどうかを返す"""
         return all(term.is_satisfied(scan) for term in self.terms)
 
-    def reduction_factor(self, plan: "Plan") -> int:
+    def reduction_factor(self, plan: Plan) -> int:
         """クエリの出力レコード数を削減する程度を計算する"""
         factor = 1
         for term in self.terms:
@@ -47,7 +47,7 @@ class Predicate:
         ]
         return Predicate(application_terms) if application_terms else None
 
-    def equates_with_constant(self, field_name: str) -> Optional[Constant]:
+    def equates_with_constant(self, field_name: str) -> str | None:
         """指定されたフィールド名が定数と等しい場合、フィールド名を返す"""
         for term in self.terms:
             constant = term.equates_with_constant(field_name)
