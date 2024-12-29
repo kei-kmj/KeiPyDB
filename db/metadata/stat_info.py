@@ -6,14 +6,14 @@ class StatInfo:
         self.num_blocks = num_blocks
         self.num_records = num_records
 
-    def estimate_blocks_quantity(self) -> int:
-        """テーブル内の推定ブロック数"""
+    def blocks_accessed(self) -> int:
+        """ブロックアクセス数を返す"""
         return self.num_blocks
 
-    def estimate_records_quantity(self) -> int:
-        """テーブル内の推定レコード数"""
+    def records_output(self) -> int:
+        """出力レコード数を返す"""
         return self.num_records
 
-    def estimate_unique_values(self) -> int:
-        """指定した列のユニークな値の数の推定値を返す"""
-        return 1 + self.num_records // self.ESTIMATED_VALUE
+    def distinct_values(self) -> int:
+        """フィールドの値の種類数を返す"""
+        return 1 + (self.num_records // StatInfo.ESTIMATED_VALUE)

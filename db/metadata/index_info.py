@@ -21,13 +21,14 @@ class IndexInfo:
     #     """インデックスを開く"""
     #     return HashIndex(self.transaction, self.index_name, self.index_layout)
 
-    def estimate_blocks_accessed(self) -> int:
-        """インデックスを使用してアクセスするブロック数を見積もる"""
-        return self.stat_info.estimate_blocks_quantity() // self.stat_info.estimate_unique_values()
+    def block_accessed(self) -> int:
+        """アクセスしたブロック数を返す"""
+        return self.stat_info.records_output() // self.stat_info.distinct_values()
 
-    def estimate_records_accessed(self) -> int:
-        """インデックスを使用してアクセスするレコード数を見積もる"""
-        return self.stat_info.estimate_records_quantity() // self.stat_info.estimate_unique_values()
+    # TODO:distinct_values()の引数確認
+    def record_output(self) -> int:
+        """出力されたレコード数を返す"""
+        return self.stat_info.records_output() // self.stat_info.distinct_values()
 
     def _create_index_layout(self) -> Layout:
         """インデックスのレイアウトを作成"""
