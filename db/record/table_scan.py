@@ -1,14 +1,17 @@
+from abc import ABC
+
 from typing_extensions import Optional
 
 from db.constants import FieldType
 from db.file.block_id import BlockID
+from db.query.scan import Scan
 from db.record.layout import Layout
 from db.record.record_id import RecordID
 from db.record.record_page import RecordPage
 from db.transaction.transaction import Transaction
 
 
-class TableScan:
+class TableScan(Scan, ABC):
     def __init__(self, transaction: Transaction, table_name: str, layout: Layout) -> None:
         self.transaction = transaction
         self.layout = layout
@@ -25,7 +28,7 @@ class TableScan:
         except FileNotFoundError:
             raise FileNotFoundError(f"Table {table_name} does not exist")
 
-    def buffer_first(self) -> None:
+    def before_first(self) -> None:
         """最初のブロックをバッファに読み込む"""
         self._move_to_block(0)
 

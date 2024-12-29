@@ -1,8 +1,10 @@
+from abc import ABC
+
 from db.query.constant import Constant
 from db.query.scan import Scan
 
 
-class ProjectScan:
+class ProjectScan(Scan, ABC):
     def __init__(self, scan: Scan, field_list: list[str]):
         self.scan = scan
         self.field_list = field_list
