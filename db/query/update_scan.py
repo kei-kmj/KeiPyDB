@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 from db.query.constant import Constant
 from db.query.scan import Scan
+from db.record.record_id import RecordID
 
 
 class UpdateScan(Scan, ABC):
@@ -27,9 +28,9 @@ class UpdateScan(Scan, ABC):
         pass
 
     @abstractmethod
-    def get_rid(self) -> int:
+    def get_rid(self) -> RecordID:
         pass
 
     @abstractmethod
-    def move_to_rid(self, rid: int) -> None:
+    def move_to_rid(self, rid: RecordID) -> None:
         pass

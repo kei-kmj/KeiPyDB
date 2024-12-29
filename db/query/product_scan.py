@@ -1,8 +1,10 @@
+from abc import ABC
+
 from db.query.constant import Constant
 from db.query.scan import Scan
 
 
-class ProductScan:
+class ProductScan(Scan, ABC):
     def __init__(self, scan_left: Scan, scan_right: Scan) -> None:
         """２つのscanの直積を行うスキャンを作成"""
         self.scan_left = scan_left

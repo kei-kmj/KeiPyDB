@@ -4,6 +4,7 @@ from db.query.constant import Constant
 from db.query.predicate import Predicate
 from db.query.scan import Scan
 from db.query.update_scan import UpdateScan
+from db.record.record_id import RecordID
 
 
 class SelectScan(UpdateScan, ABC):
@@ -62,14 +63,14 @@ class SelectScan(UpdateScan, ABC):
         if isinstance(self.scan, UpdateScan):
             self.scan.insert()
 
-    def get_rid(self) -> int:
+    def get_rid(self) -> RecordID:
         """RIDを取得"""
         if isinstance(self.scan, UpdateScan):
             return self.scan.get_rid()
 
         raise TypeError("Underlying scan is not an UpdateScan")
 
-    def move_to_rid(self, record_id: int) -> None:
+    def move_to_rid(self, record_id: RecordID) -> None:
         """特定のRIDに移動"""
         if isinstance(self.scan, UpdateScan):
             self.scan.move_to_rid(record_id)

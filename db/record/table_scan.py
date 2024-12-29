@@ -4,14 +4,15 @@ from typing_extensions import Optional
 
 from db.constants import FieldType
 from db.file.block_id import BlockID
-from db.query.scan import Scan
+from db.query.constant import Constant
+from db.query.update_scan import UpdateScan
 from db.record.layout import Layout
 from db.record.record_id import RecordID
 from db.record.record_page import RecordPage
 from db.transaction.transaction import Transaction
 
 
-class TableScan(Scan, ABC):
+class TableScan(UpdateScan, ABC):
     def __init__(self, transaction: Transaction, table_name: str, layout: Layout) -> None:
         self.transaction = transaction
         self.layout = layout
@@ -95,12 +96,12 @@ class TableScan(Scan, ABC):
 
         self.record_page.set_string(self.current_slot, field_name, value)
 
-    def set_val(self, field_name: str, value: int | str) -> None:
+    def set_val(self, field_name: str, value: Constant) -> None:
         """現在のスロットの指定されたフィールドに値を設定"""
         if self.layout.get_schema().get_type(field_name) == FieldType.Integer:
-            self.set_int(field_name, int(value))
+            self.set_int(field_name, value.as_int())
         else:
-            self.set_string(field_name, str(value))
+            self.set_string(field_name, value.as_string())
 
     def insert(self) -> None:
         """新しいスロットを挿入する"""
