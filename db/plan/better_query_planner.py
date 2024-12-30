@@ -13,7 +13,7 @@ from db.plan.table_plan import TablePlan
 from db.transaction.transaction import Transaction
 
 
-class BasicQueryPlanner(QueryPlanner, ABC):
+class BetterQueryPlanner(QueryPlanner, ABC):
 
     def __init__(self, metadata_manager: MetadataManager):
         self.metadata_manager = metadata_manager
@@ -36,10 +36,15 @@ class BasicQueryPlanner(QueryPlanner, ABC):
         plan = plan_list.pop(0)
 
         for next_plan in plan_list:
-            plan = ProductPlan(plan, next_plan)
+            choice_first = ProductPlan(next_plan, plan)
+            choice_second = ProductPlan(plan, next_plan)
 
-        # step 3: Add a selection plan for the predicate.
+            if choice_first.block_accessed() < choice_second.block_accessed():
+                plan = choice_first
+            else:
+                plan = choice_second
 
+        # Step 3: Add a selection plan for the predicate.
         plan = SelectPlan(plan, query_data.get_predicate())
 
         # Step 4: Project on the field names.
