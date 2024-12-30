@@ -64,7 +64,7 @@ class BasicUpdatePlanner(QueryPlanner, ABC):
         scan: Scan = plan.open()
 
         if not isinstance(scan, UpdateScan):
-            raise TypeError("Expected UpdateScan, but got {type(scan)}")
+            raise TypeError(f"Expected UpdateScan, but got {type(scan)}")
 
         scan.insert()
 
