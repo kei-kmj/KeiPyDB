@@ -42,7 +42,7 @@ def test_整数定数を消費できることを確認する():
     lexer = Lexer(sql)
 
     lexer.next_token()
-    assert lexer.eat_int_constant() == "123"
+    assert lexer.eat_int_constant() == 123
 
 
 def test_文字列定数を消費できることを確認する():
