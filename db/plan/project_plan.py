@@ -12,12 +12,13 @@ class ProjectPlan(Plan, ABC):
     def __init__(self, plan: Plan, field_list: List[str]) -> None:
         super().__init__()
         self.plan = plan
+        self._schema = Schema()
         for field_name in field_list:
-            self.schema().add(field_name, self.plan.schema())
+            self._schema.add(field_name, self.plan.schema())
 
     def open(self) -> Scan:
         scan = self.plan.open()
-        field_names = self.schema().get_fields()
+        field_names = self._schema.get_fields()
         return ProjectScan(scan, field_names)
 
     def block_accessed(self) -> int:
@@ -30,4 +31,4 @@ class ProjectPlan(Plan, ABC):
         return self.plan.distinct_values(field_name)
 
     def schema(self) -> Schema:
-        return self.schema()
+        return self._schema

@@ -5,7 +5,6 @@ from db.parse.delete_data import DeleteData
 from db.parse.insert_data import InsertData
 from db.parse.modify_data import ModifyData
 from db.parse.parser import Parser
-from db.parse.query_data import QueryData
 from db.plan.plan import Plan
 from db.plan.query_planner import QueryPlanner
 from db.plan.update_planner import UpdatePlanner
@@ -19,7 +18,7 @@ class Planner:
         self.update_planner = update_planner
 
     def create_query_plan(self, query: str, transaction: Transaction) -> Plan:
-
+        """クエリを実行するための計画を作成する"""
         parser = Parser(query)
         data = parser.query()
 
@@ -28,7 +27,7 @@ class Planner:
         return self.query_planner.create_plan(data, transaction)
 
     def execute_update(self, command: str, transaction: Transaction) -> int:
-
+        """更新コマンドを実行する"""
         parser = Parser(command)
         data = parser.update_command()
         self.verify_update()
