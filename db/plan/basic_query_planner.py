@@ -1,6 +1,7 @@
 from abc import ABC
 from typing import List
 
+from db.metadata.metadata_manager import MetadataManager
 from db.parse.parser import Parser
 from db.parse.query_data import QueryData
 from db.plan.plan import Plan
@@ -11,10 +12,10 @@ from db.transaction.transaction import Transaction
 
 class BasicQueryPlanner(QueryPlanner, ABC):
 
-    def __init__(self, metadata_manager):
+    def __init__(self, metadata_manager: MetadataManager):
         self.metadata_manager = metadata_manager
 
-    def create_plan(self, query_data: QueryData, transaction:Transaction) -> Plan:
+    def create_plan(self, query_data: QueryData, transaction: Transaction) -> Plan:
 
         plans: List[Plan] = []
         for table_name in query_data.tables:
@@ -26,4 +27,5 @@ class BasicQueryPlanner(QueryPlanner, ABC):
             else:
                 plans.append(TablePlan(transaction, table_name, self.metadata_manager))
 
-
+        # TODO: Implement the rest of the method
+        return Plan()

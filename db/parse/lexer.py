@@ -109,8 +109,10 @@ class Lexer:
 
     def eat_int_constant(self) -> int | None:
         """整数定数を消費"""
+        if not self.current_token:
+            raise SyntaxError(f"Expected integer constant, but not found {self.current_token}")
 
-        value = self.current_token
+        value = int(self.current_token)
         self.next_token()
         return value
 
@@ -128,9 +130,9 @@ class Lexer:
 
         self.next_token()
 
-    def eat_id(self) -> str | None:
+    def eat_id(self) -> str:
         """識別子を消費"""
-        if not self.match_id():
+        if not self.current_token:
             raise SyntaxError(f"Expected identifier, but not found {self.current_token}")
 
         value = self.current_token
