@@ -1,10 +1,12 @@
-import pytest
 from unittest.mock import Mock
-from db.plan.product_plan import ProductPlan
+
+import pytest
+
 from db.plan.plan import Plan
+from db.plan.product_plan import ProductPlan
 from db.query.product_scan import ProductScan
-from db.record.schema import Schema
 from db.query.scan import Scan
+from db.record.schema import Schema
 
 
 @pytest.fixture

@@ -1,5 +1,7 @@
-import pytest
 from unittest.mock import Mock
+
+import pytest
+
 from db.plan.optimized_product_plan import OptimizedProductPlan
 from db.plan.plan import Plan
 from db.query.product_scan import ProductScan
@@ -43,7 +45,6 @@ def test_openメソッドが最適なプランを開くこと(mock_plan_first, m
     assert isinstance(scan, ProductScan)
 
 
-
 def test_block_accessedメソッドが最適な値を返すこと(mock_plan_first, mock_plan_second, optimized_product_plan):
     expected_value = mock_plan_first.block_accessed() + (
         mock_plan_second.record_output() * mock_plan_first.block_accessed()
@@ -59,6 +60,7 @@ def test_distinct_valuesメソッドが正しい値を返すこと(mock_plan_fir
     mock_plan_first.schema.return_value.has_field.return_value = True
     assert optimized_product_plan.distinct_values("field1") == 10
     mock_plan_first.distinct_values.assert_called_once_with("field1")
+
 
 def test_schemaメソッドが正しいスキーマを返すこと(mock_plan_first, mock_plan_second, optimized_product_plan):
     schema = optimized_product_plan.schema()

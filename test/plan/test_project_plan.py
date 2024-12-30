@@ -1,7 +1,9 @@
-import pytest
 from unittest.mock import Mock
-from db.plan.project_plan import ProjectPlan
+
+import pytest
+
 from db.plan.plan import Plan
+from db.plan.project_plan import ProjectPlan
 from db.query.project_scan import ProjectScan
 from db.record.schema import Schema
 

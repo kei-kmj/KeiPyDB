@@ -1,7 +1,9 @@
-import pytest
 from unittest.mock import Mock
-from db.plan.select_plan import SelectPlan
+
+import pytest
+
 from db.plan.plan import Plan
+from db.plan.select_plan import SelectPlan
 from db.query.predicate import Predicate
 from db.query.select_scan import SelectScan
 from db.record.schema import Schema

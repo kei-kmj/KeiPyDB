@@ -1,12 +1,11 @@
+from unittest.mock import Mock
+
 import pytest
-from unittest.mock import Mock, MagicMock
-from db.plan.basic_query_planner import BasicQueryPlanner
-from db.plan.table_plan import TablePlan
-from db.plan.select_plan import SelectPlan
-from db.plan.product_plan import ProductPlan
-from db.plan.project_plan import ProjectPlan
-from db.parse.query_data import QueryData
+
 from db.metadata.metadata_manager import MetadataManager
+from db.parse.query_data import QueryData
+from db.plan.basic_query_planner import BasicQueryPlanner
+from db.plan.project_plan import ProjectPlan
 from db.transaction.transaction import Transaction
 
 
@@ -35,7 +34,7 @@ def basic_query_planner(mock_metadata_manager):
 
 
 def test_create_planでベーシックプランを作成できること(
-        basic_query_planner, mock_query_data, mock_transaction, mock_metadata_manager
+    basic_query_planner, mock_query_data, mock_transaction, mock_metadata_manager
 ):
     mock_metadata_manager.get_view_definition.return_value = None
 
