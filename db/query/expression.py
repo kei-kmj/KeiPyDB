@@ -1,16 +1,31 @@
+from typing import Union, Optional
+
 from db.query.constant import Constant
 from db.query.scan import Scan
 from db.record.schema import Schema
 
 
 class Expression:
-    def __init__(self, value: Constant, field_name: str) -> None:
-        self.value = value
-        self.field_name = field_name
+    def __init__(self, literal_or_field: Union[Constant, str]) -> None:
 
-    def evaluate(self, scan: Scan) -> int | str | Constant:
+        if isinstance(literal_or_field, Constant):
+            self.constant: Optional[Constant] = literal_or_field
+            self.field_name: Optional[str] = None
+
+        elif isinstance(literal_or_field, str):
+            self.constant = None
+            self.field_name = literal_or_field
+        else:
+            raise ValueError("Invalid argument: must be a Constant or a string")
+
+    def evaluate(self, scan: Scan) -> Constant:
         """現在のスキャンに基づいて式を評価する"""
-        return self.value if self.value is not None else scan.get_val(self.field_name)
+        if self.constant is not None:
+            return self.constant
+        elif self.field_name is not None:
+            return scan.get_val(self.field_name)
+        else:
+            raise ValueError("Expression is neither a constant nor a valid field name.")
 
     def is_field_name(self) -> bool:
         """式がフィールド名かどうかを返す"""
@@ -18,7 +33,7 @@ class Expression:
 
     def as_constant(self) -> Constant:
         """式を定数として返す"""
-        return self.value
+        return self.constant
 
     def as_field_name(self) -> str:
         """式をフィールド名として返す"""
@@ -26,8 +41,14 @@ class Expression:
 
     def applies_to(self, schema: Schema) -> bool:
         """式がスキーマに適用可能かどうかを返す"""
-        return True if self.value is not None else schema.has_field(self.field_name)
+        if self.field_name is not None:
+            return schema.has_field(self.field_name)
+        return True
 
     def __str__(self) -> str:
         """式を文字列で返す"""
-        return str(self.value) if self.value is not None else self.field_name
+        if self.field_name is not None:
+            return self.field_name
+        elif self.constant is not None:
+            return str(self.constant)
+        return "<invalid expression>"

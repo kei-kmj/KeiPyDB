@@ -88,6 +88,11 @@ class Lexer:
             return False
         return self.current_token.startswith("'") and self.current_token.endswith("'")
 
+    # TODO: match_keywordメソッドの実装
+    def match_keyword(self, keyword: str) -> bool:
+        """指定されたキーワードと現在のトークンが一致するかどうかを返す"""
+        return self.current_token == keyword.lower()
+
     def match_id(self) -> bool:
         """現在のトークンが識別子かどうかを返す"""
         if self.current_token is None:
@@ -102,7 +107,7 @@ class Lexer:
 
         self.next_token()
 
-    def eat_int_constant(self) -> str | None:
+    def eat_int_constant(self) -> int | None:
         """整数定数を消費"""
 
         value = self.current_token

@@ -22,3 +22,19 @@ class ProductPlan(Plan, ABC):
         scan_right = self.plan_right.open()
 
         return ProductScan(scan_left, scan_right)
+
+    def block_accessed(self) -> int:
+        return self.plan_left.block_accessed() + (self.plan_right.record_output() * self.plan_left.block_accessed())
+
+    def record_output(self) -> int:
+
+        return self.plan_left.record_output() * self.plan_right.record_output()
+
+    def distinct_values(self, field_name: str) -> int:
+        if self.schema_obj.has_field(field_name):
+            return self.plan_left.distinct_values(field_name)
+        else:
+            return self.plan_right.distinct_values(field_name)
+
+    def schema(self) -> Schema:
+        return self.schema_obj

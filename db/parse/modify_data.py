@@ -1,9 +1,10 @@
 from db.query.expression import Expression
+from db.query.predicate import Predicate
 
 
 class ModifyData:
 
-    def __init__(self, table_name: str, field_name: str, new_value: Expression, predicate: Expression) -> None:
+    def __init__(self, table_name: str, field_name: str, new_value: Expression, predicate: Predicate) -> None:
         self.table_name = table_name
         self.field_name = field_name
         self.new_value = new_value
@@ -18,5 +19,5 @@ class ModifyData:
     def get_new_value(self) -> Expression:
         return self.new_value
 
-    def get_predicate(self) -> Expression:
+    def get_predicate(self) -> Predicate:
         return self.predicate
