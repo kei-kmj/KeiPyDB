@@ -1,5 +1,4 @@
-import abc
-from abc import ABC
+from abc import ABC, abstractmethod
 
 from db.query.scan import Scan
 from db.record.schema import Schema
@@ -10,25 +9,25 @@ class Plan(ABC):
     def __init__(self) -> None:
         pass
 
-    @abc.abstractmethod
+    @abstractmethod
     def open(self) -> Scan:
         """計画の初期化"""
         pass
 
-    @abc.abstractmethod
+    @abstractmethod
     def block_accessed(self) -> int:
         pass
 
-    @abc.abstractmethod
+    @abstractmethod
     def record_output(self) -> int:
         pass
 
-    @abc.abstractmethod
+    @abstractmethod
     def distinct_values(self, field_name: str) -> int:
         """フィールドの値の種類数を返す"""
         pass
 
-    @abc.abstractmethod
+    @abstractmethod
     def schema(self) -> Schema:
         """計画のスキーマを返す"""
         pass

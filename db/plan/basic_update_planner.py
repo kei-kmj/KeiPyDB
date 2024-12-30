@@ -9,15 +9,15 @@ from db.parse.delete_data import DeleteData
 from db.parse.insert_data import InsertData
 from db.parse.modify_data import ModifyData
 from db.plan.plan import Plan
-from db.plan.query_planner import QueryPlanner
 from db.plan.select_plan import SelectPlan
 from db.plan.table_plan import TablePlan
+from db.plan.update_planner import UpdatePlanner
 from db.query.scan import Scan
 from db.query.update_scan import UpdateScan
 from db.transaction.transaction import Transaction
 
 
-class BasicUpdatePlanner(QueryPlanner, ABC):
+class BasicUpdatePlanner(UpdatePlanner, ABC):
 
     def __init__(self, metadata_manager: MetadataManager):
         self.metadata_manager = metadata_manager
@@ -60,6 +60,7 @@ class BasicUpdatePlanner(QueryPlanner, ABC):
         return count
 
     def execute_insert(self, data: InsertData, transaction: Transaction) -> int:
+        """データを挿入する"""
         plan = TablePlan(transaction, data.table_name, self.metadata_manager)
         scan: Scan = plan.open()
 
@@ -79,13 +80,16 @@ class BasicUpdatePlanner(QueryPlanner, ABC):
         return 1
 
     def execute_create_table(self, data: CreateTable, transaction: Transaction) -> int:
+        """テーブルを作成する"""
         self.metadata_manager.create_table(data.table_name, data.get_schema(), transaction)
         return 0
 
     def execute_create_view(self, data: CreateView, transaction: Transaction) -> int:
+        """ビューを作成する"""
         self.metadata_manager.create_view(data.view_name, data.get_query(), transaction)
         return 0
 
     def execute_create_index(self, data: CreateIndex, transaction: Transaction) -> int:
+        """インデックスを作成する"""
         self.metadata_manager.create_index(data.index_name, data.table_name, data.field_name, transaction)
         return 0
