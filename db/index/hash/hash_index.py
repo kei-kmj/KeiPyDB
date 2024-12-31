@@ -22,7 +22,7 @@ class HashIndex(Index, ABC):
     def before_first(self, search_key: Constant) -> None:
         self.close()
 
-        if not self.transaction or not self.layout or not self.search_key:
+        if not self.transaction or not self.layout:
             raise RuntimeError("Hash index is not initialized")
 
         self.search_key = search_key
@@ -37,7 +37,9 @@ class HashIndex(Index, ABC):
             raise RuntimeError("Table scan is not initialized")
 
         while self.table_scan.next():
-            if self.search_key == self.table_scan.get_value("data_value"):
+
+            if self.search_key == self.table_scan.get_val("data_value"):
+
                 return True
         return False
 
@@ -65,6 +67,7 @@ class HashIndex(Index, ABC):
             raise RuntimeError("Table scan is not initialized")
 
         self.before_first(data_value)
+        print("data_record_id★", self.table_scan.next())
         while self.table_scan.next():
             if data_record_id == self.get_data_record_id():
                 self.table_scan.delete()
