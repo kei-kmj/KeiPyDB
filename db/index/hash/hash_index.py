@@ -1,4 +1,5 @@
 from abc import ABC
+from typing import Optional
 
 from db.index.index import Index
 from db.query.constant import Constant
@@ -16,8 +17,8 @@ class HashIndex(Index, ABC):
         self.transaction = transaction
         self.index_name = index_name
         self.layout = layout
-        self.search_key = None
-        self.table_scan = None
+        self.search_key: Optional[Constant] = None
+        self.table_scan: Optional[TableScan] = None
 
     def before_first(self, search_key: Constant) -> None:
         self.close()

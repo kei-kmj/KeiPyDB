@@ -1,11 +1,13 @@
-import pytest
 from unittest.mock import Mock
+
+import pytest
+
 from db.index.hash.hash_index import HashIndex
 from db.query.constant import Constant
 from db.record.layout import Layout
 from db.record.record_id import RecordID
-from db.transaction.transaction import Transaction
 from db.record.table_scan import TableScan
+from db.transaction.transaction import Transaction
 
 
 @pytest.fixture
@@ -48,9 +50,9 @@ def test_next(hash_index, mock_transaction, mock_layout):
     table_scan_mock.next.side_effect = [True, True, False]
     table_scan_mock.get_val.return_value = Constant("test_key")
 
-    assert hash_index.next() == True
-    assert hash_index.next() == True
-    assert hash_index.next() == False
+    assert hash_index.next() is True
+    assert hash_index.next() is True
+    assert hash_index.next() is False
 
 
 def test_get_data_record_id(hash_index):
@@ -110,4 +112,3 @@ def test_delete(hash_index):
 
     with pytest.raises(ValueError, match="Record not found"):
         hash_index.delete(data_value, record_id)
-
