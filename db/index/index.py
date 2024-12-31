@@ -18,7 +18,6 @@ class Index(ABC):
     def get_data_record_id(self) -> RecordID:
         pass
 
-
     @abstractmethod
     def insert(self, data_value: Constant, data_record_id: RecordID) -> None:
         pass
@@ -26,7 +25,6 @@ class Index(ABC):
     @abstractmethod
     def delete(self, data_value: Constant, data_record_id: RecordID) -> None:
         pass
-
 
     @abstractmethod
     def close(self) -> None:
