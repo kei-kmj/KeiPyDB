@@ -32,3 +32,7 @@ class LockMode:
 class FieldType:
     Integer = 1
     Varchar = 2
+
+
+class SchemaType:
+    Int = "int"
