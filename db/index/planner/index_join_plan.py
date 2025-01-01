@@ -15,9 +15,9 @@ class IndexJoinPlan(Plan, ABC):
         self.right_plan = right_plan
         self.index_info = index_info
         self.join_filed = join_filed
-        self.schema = Schema()
-        self.schema.add_all(left_plan.schema())
-        self.schema.add_all(right_plan.schema())
+        self._schema = Schema()
+        self._schema.add_all(left_plan.schema())
+        self._schema.add_all(right_plan.schema())
 
     def open(self) -> Scan:
         left_scan = self.left_plan.open()
@@ -28,11 +28,14 @@ class IndexJoinPlan(Plan, ABC):
         return IndexJoinScan(left_scan, index, self.join_filed, table_scan)
 
     def blocks_accessed(self) -> int:
-        return self.left_plan.blocks_accessed() + (self.left_plan.records_output() * self.index_info.blocks_accessed()) + self.records_output()
+        return (
+            self.left_plan.blocks_accessed()
+            + (self.left_plan.records_output() * self.index_info.blocks_accessed())
+            + self.records_output()
+        )
 
     def records_output(self) -> int:
         return self.left_plan.records_output() * self.index_info.records_output()
-
 
     def distinct_values(self, field: str) -> int:
         if self.left_plan.schema().has_field(field):
@@ -40,6 +43,5 @@ class IndexJoinPlan(Plan, ABC):
         else:
             return self.right_plan.distinct_values(field)
 
-
     def schema(self) -> Schema:
-        return self.schema()
+        return self._schema

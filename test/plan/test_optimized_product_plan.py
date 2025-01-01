@@ -53,7 +53,9 @@ def test_block_accessedメソッドが最適な値を返すこと(mock_plan_firs
 
 
 def test_record_outputメソッドが最適な値を返すこと(mock_plan_first, mock_plan_second, optimized_product_plan):
-    assert optimized_product_plan.records_output() == mock_plan_first.records_output() * mock_plan_second.records_output()
+    assert (
+        optimized_product_plan.records_output() == mock_plan_first.records_output() * mock_plan_second.records_output()
+    )
 
 
 def test_distinct_valuesメソッドが正しい値を返すこと(mock_plan_first, mock_plan_second, optimized_product_plan):
