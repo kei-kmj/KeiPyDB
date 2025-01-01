@@ -29,7 +29,7 @@ class SelectScan(UpdateScan, ABC):
     def get_string(self, field_name: str) -> str:
         return self.scan.get_string(field_name)
 
-    def get_val(self, field_name: str) -> int | str | Constant:
+    def get_val(self, field_name: str) -> Constant:
         return self.scan.get_val(field_name)
 
     def has_field(self, field_name: str) -> bool:

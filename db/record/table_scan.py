@@ -63,13 +63,13 @@ class TableScan(UpdateScan, ABC):
 
         return self.record_page.get_string(self.current_slot, field_name)
 
-    def get_val(self, field_name: str) -> int | str:
+    def get_val(self, field_name: str) -> Constant:
         """現在のスロットの指定されたフィールドの値を返す"""
         field_type = self.layout.get_schema().get_type(field_name)
         if field_type == FieldType.Integer:
-            return self.get_int(field_name)
+            return Constant(self.get_int(field_name))
         elif field_type == FieldType.Varchar:
-            return self.get_string(field_name)
+            return Constant(self.get_string(field_name))
         else:
             raise ValueError(f"Unknown field type {field_type}")
 

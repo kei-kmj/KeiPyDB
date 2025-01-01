@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Union
 
 from db.query.constant import Constant
 
@@ -23,7 +22,7 @@ class Scan(ABC):
         pass
 
     @abstractmethod
-    def get_val(self, field_name: str) -> Union[int, str, Constant]:
+    def get_val(self, field_name: str) -> Constant:
         pass
 
     @abstractmethod

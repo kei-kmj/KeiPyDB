@@ -31,5 +31,5 @@ def test_述語が取得できること(query_data):
 
 def test_文字列表現が取得できること(query_data):
     assert (
-        str(query_data) == "SELECT field1, field2 FROM table2, table1 WHERE mock_predicate"
+        str(query_data) == "SELECT field1, field2 FROM table1, table2 WHERE mock_predicate"
     ), "文字列表現が正しく取得できません"

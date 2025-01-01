@@ -39,7 +39,7 @@ class ProductScan(Scan, ABC):
         else:
             return self.scan_right.get_string(field_name)
 
-    def get_val(self, field_name: str) -> int | str | Constant:
+    def get_val(self, field_name: str) -> Constant:
         """値を取得"""
         if self.has_field(field_name):
             return self.scan_left.get_val(field_name)
