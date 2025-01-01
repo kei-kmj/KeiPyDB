@@ -10,6 +10,7 @@ from db.record.schema import Schema
 class IndexJoinPlan(Plan, ABC):
 
     def __init__(self, left_plan: Plan, right_plan: Plan, index_info: IndexInfo, join_filed: str) -> None:
+        """インデックス結合計画を作成"""
         super().__init__()
         self.left_plan = left_plan
         self.right_plan = right_plan

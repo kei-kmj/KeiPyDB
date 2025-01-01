@@ -32,6 +32,9 @@ class IndexInfo:
         """出力されたレコード数を返す"""
         return self.stat_info.records_output() // self.stat_info.distinct_values()
 
+    def distinct_values(self, field_name: str) -> int:
+        return 1 if field_name == self.field_name else self.stat_info.distinct_values()
+
     def _create_index_layout(self) -> Layout:
         """インデックスのレイアウトを作成"""
         schema = Schema()
