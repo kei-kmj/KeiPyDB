@@ -17,11 +17,11 @@ class SelectPlan(Plan, ABC):
         scan = self.plan.open()
         return SelectScan(scan, self.predicate)
 
-    def block_accessed(self) -> int:
-        return self.plan.block_accessed()
+    def blocks_accessed(self) -> int:
+        return self.plan.blocks_accessed()
 
-    def record_output(self) -> int:
-        return self.plan.record_output()
+    def records_output(self) -> int:
+        return self.plan.records_output()
 
     def distinct_values(self, field_name: str) -> int:
 

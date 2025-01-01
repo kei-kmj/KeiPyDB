@@ -12,8 +12,8 @@ from db.record.schema import Schema
 def mock_plan():
     plan = Mock(spec=Plan)
     plan.schema.return_value = Mock(spec=Schema)
-    plan.block_accessed.return_value = 50
-    plan.record_output.return_value = 100
+    plan.blocks_accessed.return_value = 50
+    plan.records_output.return_value = 100
     plan.distinct_values.return_value = 10
     return plan
 
@@ -37,13 +37,13 @@ def test_openメソッドが正しいスキャンを返すこと(mock_plan, proj
 
 
 def test_block_accessedメソッドが正しい値を返すこと(mock_plan, project_plan):
-    assert project_plan.block_accessed() == 50
-    mock_plan.block_accessed.assert_called_once()
+    assert project_plan.blocks_accessed() == 50
+    mock_plan.blocks_accessed.assert_called_once()
 
 
 def test_record_outputメソッドが正しい値を返すこと(mock_plan, project_plan):
-    assert project_plan.record_output() == 100
-    mock_plan.record_output.assert_called_once()
+    assert project_plan.records_output() == 100
+    mock_plan.records_output.assert_called_once()
 
 
 def test_distinct_valuesメソッドが正しい値を返すこと(mock_plan, project_plan):

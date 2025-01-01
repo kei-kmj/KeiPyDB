@@ -15,11 +15,11 @@ class Plan(ABC):
         pass
 
     @abstractmethod
-    def block_accessed(self) -> int:
+    def blocks_accessed(self) -> int:
         pass
 
     @abstractmethod
-    def record_output(self) -> int:
+    def records_output(self) -> int:
         pass
 
     @abstractmethod

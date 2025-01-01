@@ -39,7 +39,7 @@ class BetterQueryPlanner(QueryPlanner, ABC):
             choice_first = ProductPlan(next_plan, plan)
             choice_second = ProductPlan(plan, next_plan)
 
-            if choice_first.block_accessed() < choice_second.block_accessed():
+            if choice_first.blocks_accessed() < choice_second.blocks_accessed():
                 plan = choice_first
             else:
                 plan = choice_second

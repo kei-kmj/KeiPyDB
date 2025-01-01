@@ -12,8 +12,8 @@ from db.record.schema import Schema
 @pytest.fixture
 def mock_plan():
     plan = Mock(spec=Plan)
-    plan.block_accessed.return_value = 42
-    plan.record_output.return_value = 100
+    plan.blocks_accessed.return_value = 42
+    plan.records_output.return_value = 100
     plan.distinct_values.return_value = 10
     plan.schema.return_value = Mock(spec=Schema)
     return plan
@@ -42,14 +42,14 @@ def test_openメソッドが正しいスキャンを返すこと(mock_plan, mock
 
 def test_block_accessedメソッドが正しい値を返すこと(mock_plan, select_plan):
 
-    assert select_plan.block_accessed() == 42
-    mock_plan.block_accessed.assert_called_once()
+    assert select_plan.blocks_accessed() == 42
+    mock_plan.blocks_accessed.assert_called_once()
 
 
 def test_record_outputメソッドが正しい値を返すこと(mock_plan, select_plan):
 
-    assert select_plan.record_output() == 100
-    mock_plan.record_output.assert_called_once()
+    assert select_plan.records_output() == 100
+    mock_plan.records_output.assert_called_once()
 
 
 def test_distinct_valuesメソッドで条件に一致する場合(mock_plan, mock_predicate, select_plan):

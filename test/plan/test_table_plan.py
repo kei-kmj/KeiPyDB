@@ -40,14 +40,14 @@ def test_block_accessedメソッドが正しい値を返すこと(mock_transacti
     stat_info = mock_metadata_manager.get_stat_info.return_value
     stat_info.blocks_accessed.return_value = 100
 
-    assert table_plan.block_accessed() == 100
+    assert table_plan.blocks_accessed() == 100
 
 
 def test_record_outputメソッドが正しい値を返すこと(mock_transaction, mock_metadata_manager, table_plan):
     stat_info = mock_metadata_manager.get_stat_info.return_value
     stat_info.records_output.return_value = 200
 
-    assert table_plan.record_output() == 200
+    assert table_plan.records_output() == 200
 
 
 def test_distinct_valuesメソッドが正しい値を返すこと(mock_transaction, mock_metadata_manager, table_plan):

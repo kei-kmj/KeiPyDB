@@ -1,4 +1,6 @@
 from db.constants import FieldType
+from db.index.hash.hash_index import HashIndex
+from db.index.index import Index
 from db.metadata.stat_info import StatInfo
 from db.record.layout import Layout
 from db.record.schema import Schema
@@ -17,16 +19,16 @@ class IndexInfo:
         self.stat_info = stat_info
 
     # TODO:HshIndexクラスを実装
-    # def open(self) -> HashIndex:
-    #     """インデックスを開く"""
-    #     return HashIndex(self.transaction, self.index_name, self.index_layout)
+    def open(self) -> Index:
+        """インデックスを開く"""
+        return HashIndex(self.transaction, self.index_name, self.index_layout)
 
-    def block_accessed(self) -> int:
+    def blocks_accessed(self) -> int:
         """アクセスしたブロック数を返す"""
         return self.stat_info.records_output() // self.stat_info.distinct_values()
 
     # TODO:distinct_values()の引数確認
-    def record_output(self) -> int:
+    def records_output(self) -> int:
         """出力されたレコード数を返す"""
         return self.stat_info.records_output() // self.stat_info.distinct_values()
 

@@ -20,10 +20,10 @@ class TablePlan(Plan, ABC):
     def open(self) -> Scan:
         return TableScan(self.transaction, self.table_name, self.layout)
 
-    def block_accessed(self) -> int:
+    def blocks_accessed(self) -> int:
         return self.stat_info.blocks_accessed()
 
-    def record_output(self) -> int:
+    def records_output(self) -> int:
         return self.stat_info.records_output()
 
     def distinct_values(self, file_name: str) -> int:

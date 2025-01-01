@@ -15,8 +15,8 @@ def mock_left_plan():
     schema_mock = Mock(spec=Schema)
     schema_mock.get_fields.return_value = ["field1", "field2"]
     left_plan.schema.return_value = schema_mock
-    left_plan.block_accessed.return_value = 100
-    left_plan.record_output.return_value = 200
+    left_plan.blocks_accessed.return_value = 100
+    left_plan.records_output.return_value = 200
     left_plan.distinct_values.return_value = 10
     left_plan.open.return_value = Mock(spec=Scan)
     return left_plan
@@ -28,8 +28,8 @@ def mock_right_plan():
     schema_mock = Mock(spec=Schema)
     schema_mock.get_fields.return_value = ["field3", "field4"]
     right_plan.schema.return_value = schema_mock
-    right_plan.block_accessed.return_value = 50
-    right_plan.record_output.return_value = 300
+    right_plan.blocks_accessed.return_value = 50
+    right_plan.records_output.return_value = 300
     right_plan.distinct_values.return_value = 20
     right_plan.open.return_value = Mock(spec=Scan)
     return right_plan
@@ -46,14 +46,14 @@ def test_openメソッドが正しいスキャンを返すこと(mock_left_plan,
 
 
 def test_block_accessedメソッドが正しい値を返すこと(mock_left_plan, mock_right_plan, product_plan):
-    expected_value = mock_left_plan.block_accessed() + (
-        mock_right_plan.record_output() * mock_left_plan.block_accessed()
+    expected_value = mock_left_plan.blocks_accessed() + (
+        mock_right_plan.records_output() * mock_left_plan.blocks_accessed()
     )
-    assert product_plan.block_accessed() == expected_value
+    assert product_plan.blocks_accessed() == expected_value
 
 
 def test_record_outputメソッドが正しい値を返すこと(mock_left_plan, mock_right_plan, product_plan):
-    assert product_plan.record_output() == mock_left_plan.record_output() * mock_right_plan.record_output()
+    assert product_plan.records_output() == mock_left_plan.records_output() * mock_right_plan.records_output()
 
 
 def test_distinct_valuesメソッドが左プランのフィールドで正しい値を返すこと(
