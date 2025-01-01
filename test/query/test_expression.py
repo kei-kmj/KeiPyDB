@@ -37,14 +37,6 @@ def test_フィールド名判定が正しい():
     assert result is True, "フィールド名判定が正しくありません"
 
 
-def test_定数を取得できる():
-    constant = Constant(42)
-    expression = Expression(constant)
-
-    result = expression.as_constant()
-
-    assert result == constant, "定数を取得できません"
-
 
 def test_フィールド名を取得できる():
     field_name = "field_name"

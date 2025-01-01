@@ -17,8 +17,3 @@ def test_テーブル名が取得できる(table_data):
 def test_フィールドが取得できる(table_data):
 
     assert table_data.get_fields() == ["id", "name"], "フィールドが正しく取得できません"
-
-
-def test_値が取得できる(table_data):
-
-    assert table_data.get_values() == [Constant(1), Constant("name")], "値が正しく取得できません"

@@ -7,10 +7,8 @@ class Constant:
 
         if isinstance(value, int):
             self.int_value = value
-            self.str_value = None
 
         elif isinstance(value, str):
-            self.int_value = 0
             self.str_value = value
 
         else:
