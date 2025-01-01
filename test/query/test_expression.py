@@ -37,7 +37,6 @@ def test_フィールド名判定が正しい():
     assert result is True, "フィールド名判定が正しくありません"
 
 
-
 def test_フィールド名を取得できる():
     field_name = "field_name"
     expression = Expression(field_name)
