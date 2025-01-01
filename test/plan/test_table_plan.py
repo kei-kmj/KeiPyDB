@@ -60,6 +60,6 @@ def test_distinct_valuesメソッドが正しい値を返すこと(mock_transact
 def test_schemaメソッドが正しい値を返すこと(mock_transaction, mock_metadata_manager, table_plan):
     layout = mock_metadata_manager.get_layout.return_value
     schema = Mock(spec=Schema)
-    layout._schema = schema
+    layout.schema = schema
 
     assert table_plan.schema() == schema

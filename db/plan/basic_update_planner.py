@@ -86,7 +86,7 @@ class BasicUpdatePlanner(UpdatePlanner, ABC):
 
     def execute_create_view(self, data: CreateView, transaction: Transaction) -> int:
         """ビューを作成する"""
-        self.metadata_manager.create_view(data.view_name, data.get_query(), transaction)
+        self.metadata_manager.create_view(data.view_name, data.view_definition(), transaction)
         return 0
 
     def execute_create_index(self, data: CreateIndex, transaction: Transaction) -> int:

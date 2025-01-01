@@ -9,5 +9,5 @@ class CreateView:
     def get_view_name(self) -> str:
         return self.view_name
 
-    def get_query(self) -> str:
+    def view_definition(self) -> str:
         return self.query.__str__()
