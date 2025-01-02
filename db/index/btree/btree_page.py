@@ -148,7 +148,6 @@ class BtreePage:
             else:
                 self.transaction.set_string(block, position + offset, "", False)
 
-
     def get_child_number(self, slot: int) -> int:
         return self.get_int(slot, "block")
 

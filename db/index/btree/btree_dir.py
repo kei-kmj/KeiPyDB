@@ -19,7 +19,6 @@ class BtreeDir:
         self.contents = BtreePage(transaction, block, layout)
         self.file_name = block.file_name
 
-
     def close(self) -> None:
         self.contents.close()
 
@@ -43,7 +42,6 @@ class BtreeDir:
 
         return BlockID(self.file_name, block_number)
 
-
     def make_new_root(self, dir_entry: DirectoryEntry) -> None:
         first_value = self.contents.get_data_value(self.FIRST_SLOT)
         level = self.contents.get_flag()
@@ -52,7 +50,6 @@ class BtreeDir:
         self.insert_entry(old_root)
         self.insert_entry(dir_entry)
         self.contents.set_flag(level + self.NEXT_LEVEL)
-
 
     def insert(self, dir_entry: DirectoryEntry) -> DirectoryEntry | None:
         if self.contents.get_flag() == self.LEAF_NODE:
@@ -64,7 +61,6 @@ class BtreeDir:
         child_dir.close()
 
         return self.insert_entry(my_entry) if my_entry else None
-
 
     def insert_entry(self, dir_entry: DirectoryEntry) -> DirectoryEntry | None:
         new_slot = self.INSERT_OFFSET + self.contents.find_slot_before(dir_entry.data_value)
@@ -78,4 +74,3 @@ class BtreeDir:
         split_value = self.contents.get_data_value(split_position)
         new_block = self.contents.split(split_position, level)
         return DirectoryEntry(split_value, new_block.number())
-
