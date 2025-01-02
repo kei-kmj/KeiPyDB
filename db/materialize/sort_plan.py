@@ -1,5 +1,6 @@
 from abc import ABC
 
+from db.materialize.record_comparator import RecordComparator
 from db.materialize.temp_table import TempTable
 from db.plan.plan import Plan
 from db.query.scan import Scan
