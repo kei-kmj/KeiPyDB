@@ -36,3 +36,12 @@ class FieldType:
 
 class SchemaType:
     Int = "int"
+
+class Slot:
+    First = 0
+
+NODE_DIVISOR = 2
+
+class Node:
+    OVERFLOW = -1
+    VALID = 0

@@ -2,6 +2,7 @@ from db.constants import ByteSize, FieldType
 from db.file.block_id import BlockID
 from db.query.constant import Constant
 from db.record.layout import Layout
+from db.record.record_id import RecordID
 from db.transaction.transaction import Transaction
 
 
@@ -101,6 +102,12 @@ class BtreePage:
 
         self.set_num_records(self.get_num_records() + 1)
 
+    def insert_leaf(self, slot: int, value: Constant, record_id: RecordID) -> None:
+        self.insert(slot)
+        self.set_value(slot, "data_value", value)
+        self.set_int(slot, "block", record_id.get_block_number())
+        self.set_int(slot, "id", record_id.get_slot())
+
     def set_value(self, slot: int, field_name: str, value: Constant) -> None:
         field_type = self.layout.schema.get_type(field_name)
 
@@ -155,3 +162,9 @@ class BtreePage:
         self.insert(slot)
         self.set_value(slot, "data_value", value)
         self.set_int(slot, "block", block_number)
+
+    def get_data_record_id(self, slot: int) -> RecordID:
+        block_number = self.get_int(slot, "block")
+        slot_number = self.get_int(slot, "id")
+        return RecordID(block_number, slot_number)
+

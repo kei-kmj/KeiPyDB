@@ -1,3 +1,4 @@
+from db.constants import Slot, NODE_DIVISOR
 from db.file.block_id import BlockID
 from db.index.btree.btree_page import BtreePage
 from db.index.btree.dir_entry import DirectoryEntry
@@ -7,11 +8,9 @@ from db.transaction.transaction import Transaction
 
 
 class BtreeDir:
-    FIRST_SLOT = 0
     NEXT_LEVEL = 1
     LEAF_NODE = 0
     INSERT_OFFSET = 1
-    NODE_DIVISOR = 2
 
     def __init__(self, transaction: Transaction, block: BlockID, layout: Layout) -> None:
         self.transaction = transaction
@@ -43,9 +42,9 @@ class BtreeDir:
         return BlockID(self.file_name, block_number)
 
     def make_new_root(self, dir_entry: DirectoryEntry) -> None:
-        first_value = self.contents.get_data_value(self.FIRST_SLOT)
+        first_value = self.contents.get_data_value(Slot.First)
         level = self.contents.get_flag()
-        new_block = self.contents.split(self.FIRST_SLOT, level)
+        new_block = self.contents.split(Slot.First, level)
         old_root = DirectoryEntry(first_value, new_block.number())
         self.insert_entry(old_root)
         self.insert_entry(dir_entry)
@@ -70,7 +69,7 @@ class BtreeDir:
             return None
 
         level = self.contents.get_flag()
-        split_position = self.contents.get_num_records() // self.NODE_DIVISOR
+        split_position = self.contents.get_num_records() // NODE_DIVISOR
         split_value = self.contents.get_data_value(split_position)
         new_block = self.contents.split(split_position, level)
         return DirectoryEntry(split_value, new_block.number())
