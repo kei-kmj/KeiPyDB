@@ -67,6 +67,9 @@ class BtreePage:
         position = self.get_field_position(slot, field_name)
         self.transaction.set_string(self.current_block, position, value, True)
 
+    def get_flag(self) -> int:
+        return self.transaction.get_int(self.current_block, 0)
+
     def set_flag(self, value: int) -> None:
         self.transaction.set_int(self.current_block, 0, value, True)
 
@@ -144,3 +147,12 @@ class BtreePage:
                 self.transaction.set_int(block, position + offset, 0, False)
             else:
                 self.transaction.set_string(block, position + offset, "", False)
+
+
+    def get_child_number(self, slot: int) -> int:
+        return self.get_int(slot, "block")
+
+    def insert_directory(self, slot: int, value: Constant, block_number: int) -> None:
+        self.insert(slot)
+        self.set_value(slot, "data_value", value)
+        self.set_int(slot, "block", block_number)
