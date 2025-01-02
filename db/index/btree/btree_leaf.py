@@ -44,13 +44,13 @@ class BtreeLeaf:
 
     def insert(self, record_id: RecordID) -> DirectoryEntry | None:
         if (
-            self.contents.get_flag() >= Node.VALID
+            self.contents.get_flag() >= Node.Valid
             and self.contents.get_data_value(Slot.First).__lt__(self.search_key) > 0
         ):
             first_value = self.contents.get_data_value(Slot.First)
             new_block = self.contents.split(Slot.First, self.contents.get_flag())
             self.current_slot = Slot.First
-            self.contents.set_flag(Node.OVERFLOW)
+            self.contents.set_flag(Node.Overflow)
             self.contents.insert_leaf(self.current_slot, self.search_key, record_id)
             return DirectoryEntry(first_value, new_block.number())
 
@@ -85,14 +85,14 @@ class BtreeLeaf:
                 while self.contents.get_data_value(split_position) == split_key:
                     split_position -= 1
 
-            new_block = self.contents.split(split_position, Node.OVERFLOW)
+            new_block = self.contents.split(split_position, Node.Overflow)
             return DirectoryEntry(split_key, new_block.number())
 
     def try_over_flow(self) -> bool:
         first_key = self.contents.get_data_value(Slot.First)
         flag = self.contents.get_flag()
 
-        if first_key != self.search_key or flag <= Node.OVERFLOW:
+        if first_key != self.search_key or flag <= Node.Overflow:
             return False
 
         self.contents.close()

@@ -36,6 +36,7 @@ class FieldType:
 
 class SchemaType:
     Int = "int"
+    Float = "float"
 
 
 class Slot:
@@ -46,5 +47,5 @@ NODE_DIVISOR = 2
 
 
 class Node:
-    OVERFLOW = -1
-    VALID = 0
+    Overflow = -1
+    Valid = 0
