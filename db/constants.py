@@ -44,8 +44,12 @@ class Slot:
 
 
 NODE_DIVISOR = 2
+MAX_RUNS_FOR_MERGE = 2
 
 
 class Node:
     Overflow = -1
     Valid = 0
+
+class ListIndex:
+    First = 0

@@ -16,3 +16,5 @@ class RecordComparator:
             result = val_first.__lt__(val_second)
 
             return result
+
+        return 0
