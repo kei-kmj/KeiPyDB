@@ -167,4 +167,3 @@ class BtreePage:
         block_number = self.get_int(slot, "block")
         slot_number = self.get_int(slot, "id")
         return RecordID(block_number, slot_number)
-

@@ -27,4 +27,3 @@ class BlockID:
     def number(self) -> int:
         """ブロック番号を返す"""
         return self.block_number
-

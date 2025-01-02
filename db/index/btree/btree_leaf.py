@@ -1,4 +1,4 @@
-from db.constants import Slot, NODE_DIVISOR, Node
+from db.constants import NODE_DIVISOR, Node, Slot
 from db.file.block_id import BlockID
 from db.index.btree.btree_page import BtreePage
 from db.index.btree.dir_entry import DirectoryEntry
@@ -19,10 +19,8 @@ class BtreeLeaf:
         self.current_slot = self.contents.find_slot_before(search_key)
         self.file_name = block.file_name
 
-
     def close(self) -> None:
         self.contents.close()
-
 
     def next(self) -> bool:
         self.current_slot += 1
@@ -35,10 +33,8 @@ class BtreeLeaf:
         else:
             return self.try_over_flow()
 
-
     def get_data_record_id(self) -> RecordID:
         return self.contents.get_data_record_id(self.current_slot)
-
 
     def delete(self, record_id: RecordID) -> None:
         while self.next():
@@ -47,7 +43,10 @@ class BtreeLeaf:
                 return
 
     def insert(self, record_id: RecordID) -> DirectoryEntry | None:
-        if self.contents.get_flag() >= Node.VALID and self.contents.get_data_value(Slot.First).__lt__(self.search_key) > 0:
+        if (
+            self.contents.get_flag() >= Node.VALID
+            and self.contents.get_data_value(Slot.First).__lt__(self.search_key) > 0
+        ):
             first_value = self.contents.get_data_value(Slot.First)
             new_block = self.contents.split(Slot.First, self.contents.get_flag())
             self.current_slot = Slot.First
@@ -89,14 +88,11 @@ class BtreeLeaf:
             new_block = self.contents.split(split_position, Node.OVERFLOW)
             return DirectoryEntry(split_key, new_block.number())
 
-
-
-
     def try_over_flow(self) -> bool:
         first_key = self.contents.get_data_value(Slot.First)
         flag = self.contents.get_flag()
 
-        if first_key != self.search_key or flag <= Node.OVERFLOW :
+        if first_key != self.search_key or flag <= Node.OVERFLOW:
             return False
 
         self.contents.close()

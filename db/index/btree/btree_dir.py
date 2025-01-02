@@ -1,4 +1,4 @@
-from db.constants import Slot, NODE_DIVISOR
+from db.constants import NODE_DIVISOR, Slot
 from db.file.block_id import BlockID
 from db.index.btree.btree_page import BtreePage
 from db.index.btree.dir_entry import DirectoryEntry
