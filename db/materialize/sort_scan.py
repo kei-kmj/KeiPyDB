@@ -111,5 +111,5 @@ class SortScan(Scan, ABC):
         if first_position is not None:
             self.scan_first.move_to_rid(first_position)
 
-        if self.scan_second and second_position:
+        if self.scan_second and first_position and second_position:
             self.scan_second.move_to_rid(first_position)
