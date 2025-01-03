@@ -49,7 +49,7 @@ def test_next(hash_index, mock_transaction, mock_layout):
     hash_index.search_key = search_key
 
     table_scan_mock.next.side_effect = [True, True, False]
-    table_scan_mock.get_val.return_value = Constant("test_key")
+    table_scan_mock.get_value.return_value = Constant("test_key")
 
     assert hash_index.next() is True
     assert hash_index.next() is True

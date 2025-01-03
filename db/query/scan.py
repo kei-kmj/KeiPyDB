@@ -22,7 +22,7 @@ class Scan(ABC):
         pass
 
     @abstractmethod
-    def get_val(self, field_name: str) -> Constant:
+    def get_value(self, field_name: str) -> Constant:
         pass
 
     @abstractmethod

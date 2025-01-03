@@ -1,4 +1,5 @@
 from abc import ABC
+from typing import Optional
 
 from db.materialize.aggregation_function import AggregationFunction
 from db.materialize.group_value import GroupValue
@@ -12,7 +13,7 @@ class GroupByScan(Scan, ABC):
         self.scan = scan
         self.group_fields = group_fields
         self.agg_fns = agg_fns
-        self.group_value = None
+        self.group_value: Optional[GroupValue] = None
         self.more_groups = False
         self.before_first()
 
@@ -21,8 +22,6 @@ class GroupByScan(Scan, ABC):
         self.more_groups = self.scan.next()
 
     def next(self) -> bool:
-        if not self.more_groups:
-            return False
 
         for agg_fn in self.agg_fns:
             agg_fn.process_first(self.scan)
@@ -47,12 +46,16 @@ class GroupByScan(Scan, ABC):
         self.scan.close()
 
     def get_value(self, field_name: str) -> Constant:
+
+        if not self.group_value:
+            raise RuntimeError("No group value set yet")
+
         if field_name in self.group_fields:
             return self.group_value.get_value(field_name)
 
         for agg_fn in self.agg_fns:
             if field_name == agg_fn.field_name():
-                return Constant(agg_fn.value())
+                return Constant(agg_fn.get_value())
 
         raise RuntimeError(f"Field {field_name} not found")
 
@@ -71,9 +74,3 @@ class GroupByScan(Scan, ABC):
                 return True
 
         return False
-
-
-    def sample(self):
-        while chunk := self.scan.next():
-            yield chunk
-

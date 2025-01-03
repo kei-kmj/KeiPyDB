@@ -63,7 +63,7 @@ class TableScan(UpdateScan, ABC):
 
         return self.record_page.get_string(self.current_slot, field_name)
 
-    def get_val(self, field_name: str) -> Constant:
+    def get_value(self, field_name: str) -> Constant:
         """現在のスロットの指定されたフィールドの値を返す"""
         field_type = self.layout.get_schema().get_type(field_name)
         if field_type == FieldType.Integer:

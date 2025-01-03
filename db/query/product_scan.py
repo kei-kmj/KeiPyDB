@@ -39,12 +39,12 @@ class ProductScan(Scan, ABC):
         else:
             return self.scan_right.get_string(field_name)
 
-    def get_val(self, field_name: str) -> Constant:
+    def get_value(self, field_name: str) -> Constant:
         """値を取得"""
         if self.has_field(field_name):
-            return self.scan_left.get_val(field_name)
+            return self.scan_left.get_value(field_name)
         else:
-            return self.scan_right.get_val(field_name)
+            return self.scan_right.get_value(field_name)
 
     def has_field(self, field_name: str) -> bool:
         """フィールドが存在するかどうか"""

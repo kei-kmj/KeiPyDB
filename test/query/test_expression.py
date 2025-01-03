@@ -20,7 +20,7 @@ def test_定数式の評価ができる():
 def test_フィールド式の評価ができる():
     field_name = "field_name"
     scan = Mock()
-    scan.get_val.return_value = Constant(42)
+    scan.get_value.return_value = Constant(42)
     expression = Expression(field_name)
 
     result = expression.evaluate(scan)

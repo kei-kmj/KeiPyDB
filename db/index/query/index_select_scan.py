@@ -30,8 +30,8 @@ class IndexSelectScan(Scan, ABC):
     def get_string(self, field_name: str) -> str:
         return self.table_scan.get_string(field_name)
 
-    def get_val(self, field_name: str) -> Constant:
-        return self.table_scan.get_val(field_name)
+    def get_value(self, field_name: str) -> Constant:
+        return self.table_scan.get_value(field_name)
 
     def has_field(self, field_name: str) -> bool:
         return self.table_scan.has_field(field_name)

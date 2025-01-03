@@ -26,7 +26,7 @@ class Expression:
         if self.constant is not None:
             return self.constant
         elif self.field_name is not None:
-            return scan.get_val(self.field_name)
+            return scan.get_value(self.field_name)
 
     def is_field_name(self) -> bool:
         """式がフィールド名かどうかを返す"""

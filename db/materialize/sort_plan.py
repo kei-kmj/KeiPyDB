@@ -1,12 +1,14 @@
 from abc import ABC
 from typing import List
 
+from db.materialize.materialize_plan import MaterializePlan
 from db.materialize.record_comparator import RecordComparator
 from db.materialize.sort_scan import SortScan
 from db.materialize.temp_table import TempTable
 from db.plan.plan import Plan
 from db.query.scan import Scan
 from db.query.update_scan import UpdateScan
+from db.record.schema import Schema
 from db.transaction.transaction import Transaction
 
 
@@ -96,5 +98,19 @@ class SortPlan(Plan, ABC):
     def _copy(self, source: Scan, dest_scan: UpdateScan) -> bool:
         dest_scan.insert()
         for field_name in self._schema.get_fields():
-            dest_scan.set_val(field_name, source.get_val(field_name))
+            dest_scan.set_val(field_name, source.get_value(field_name))
         return source.next()
+
+    def schema(self) -> Schema:
+        return self.plan.schema()
+
+    def distinct_values(self, field_name: str) -> int:
+        return self.plan.distinct_values(field_name)
+
+    def records_output(self) -> int:
+        return self.plan.records_output()
+
+    def blocks_accessed(self) -> int:
+
+        materialized_plan = MaterializePlan(self.transaction, self.plan)
+        return materialized_plan.blocks_accessed()

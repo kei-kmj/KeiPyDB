@@ -27,9 +27,9 @@ class ProjectScan(Scan, ABC):
         else:
             raise RuntimeError(f"field '{field_name}' not in field_list")
 
-    def get_val(self, field_name: str) -> Constant:
+    def get_value(self, field_name: str) -> Constant:
         if self.has_field(field_name):
-            return self.scan.get_val(field_name)
+            return self.scan.get_value(field_name)
         else:
             raise RuntimeError(f"field '{field_name}' not in field_list")
 

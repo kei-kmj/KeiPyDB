@@ -9,11 +9,14 @@ class GroupValue:
         self.values: Dict[str, Constant] = {}
 
         for field_name in group_fields:
-            self.values[field_name] = scan.get_val(field_name)
-
+            self.values[field_name] = scan.get_value(field_name)
 
     def get_value(self, field_name: str) -> Constant:
-        return self.values.get(field_name)
+
+        if field_name not in self.values:
+            raise KeyError(f"Field {field_name} not found in group values")
+
+        return self.values[field_name]
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, GroupValue):

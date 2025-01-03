@@ -66,10 +66,10 @@ class SortScan(Scan, ABC):
         if self.scan_second:
             self.scan_second.close()
 
-    def get_val(self, field: str) -> Constant:
+    def get_value(self, field: str) -> Constant:
 
         if self.current_scan:
-            return self.current_scan.get_val(field)
+            return self.current_scan.get_value(field)
 
         raise RuntimeError("No current scan is selected")
 

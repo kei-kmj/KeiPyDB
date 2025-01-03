@@ -25,7 +25,7 @@ class MaterializePlan(Plan, ABC):
         while source_scan.next():
             destination_scan.insert()
             for field_name in schema.get_fields():
-                destination_scan.set_val(field_name, source_scan.get_val(field_name))
+                destination_scan.set_val(field_name, source_scan.get_value(field_name))
 
         source_scan.close()
         destination_scan.before_first()

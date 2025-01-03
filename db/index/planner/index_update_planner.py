@@ -55,7 +55,7 @@ class IndexUpdatePlanner(UpdatePlanner, ABC):
         while update_scan.get_rid():
             record_id = update_scan.get_rid()
             for filed_name, index_info in indexes.items():
-                value = update_scan.get_val(filed_name)
+                value = update_scan.get_value(filed_name)
                 index = index_info.open()
                 index.delete(value, record_id)
                 index.close()
@@ -80,7 +80,7 @@ class IndexUpdatePlanner(UpdatePlanner, ABC):
         count = 0
         while update_scan.next():
             new_value = data.new_value.evaluate(update_scan)
-            old_value = update_scan.get_val(target_field)
+            old_value = update_scan.get_value(target_field)
 
             update_scan.set_val(target_field, new_value)
 

@@ -37,11 +37,11 @@ class IndexJoinScan(Scan, ABC):
         else:
             return self.left_scan.get_int(field_name)
 
-    def get_val(self, field_name: str) -> Constant:
+    def get_value(self, field_name: str) -> Constant:
         if self.right_scan.has_field(field_name):
-            return self.right_scan.get_val(field_name)
+            return self.right_scan.get_value(field_name)
         else:
-            return self.left_scan.get_val(field_name)
+            return self.left_scan.get_value(field_name)
 
     def get_string(self, field_name: str) -> str:
         if self.right_scan.has_field(field_name):
@@ -58,5 +58,5 @@ class IndexJoinScan(Scan, ABC):
         self.index.close()
 
     def reset_index(self) -> None:
-        search_key = self.left_scan.get_val(self.join_field)
+        search_key = self.left_scan.get_value(self.join_field)
         self.index.before_first(search_key)

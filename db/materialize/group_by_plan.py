@@ -11,7 +11,9 @@ from db.transaction.transaction import Transaction
 
 class GroupByPlan(Plan, ABC):
 
-    def __init__(self, transaction: Transaction, plan: Plan, group_fields: list[str], agg_fns: list[AggregationFunction]) -> None:
+    def __init__(
+        self, transaction: Transaction, plan: Plan, group_fields: list[str], agg_fns: list[AggregationFunction]
+    ) -> None:
         super().__init__()
         self.transaction = transaction
         self.plan = SortPlan(transaction, plan, group_fields)
@@ -25,12 +27,10 @@ class GroupByPlan(Plan, ABC):
         for agg_fn in agg_fns:
             self._schema.add_int_field(agg_fn.field_name())
 
-
     def open(self) -> Scan:
 
         sorted_scan = self.plan.open()
         return GroupByScan(sorted_scan, self.group_fields, self.agg_fns)
-
 
     def blocks_accessed(self) -> int:
         return self.plan.blocks_accessed()

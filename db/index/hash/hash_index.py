@@ -39,7 +39,7 @@ class HashIndex(Index, ABC):
 
         while self.table_scan.next():
 
-            if self.search_key is self.table_scan.get_val("data_value"):
+            if self.search_key is self.table_scan.get_value("data_value"):
 
                 return True
         return False

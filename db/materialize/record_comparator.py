@@ -10,8 +10,8 @@ class RecordComparator:
     def compare(self, scan_first: Scan, scan_second: Scan) -> int:
 
         for field_name in self.sort_fields:
-            val_first = scan_first.get_val(field_name)
-            val_second = scan_second.get_val(field_name)
+            val_first = scan_first.get_value(field_name)
+            val_second = scan_second.get_value(field_name)
 
             result = val_first.__lt__(val_second)
 
