@@ -55,7 +55,7 @@ class GroupByScan(Scan, ABC):
 
         for agg_fn in self.agg_fns:
             if field_name == agg_fn.field_name():
-                return Constant(agg_fn.get_value())
+                return agg_fn.get_value()
 
         raise RuntimeError(f"Field {field_name} not found")
 

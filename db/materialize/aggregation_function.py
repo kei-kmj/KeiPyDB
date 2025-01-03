@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from db.query.constant import Constant
 from db.query.scan import Scan
 
 
@@ -18,5 +19,5 @@ class AggregationFunction(ABC):
         pass
 
     @abstractmethod
-    def get_value(self) -> int:
+    def get_value(self) -> Constant:
         pass
