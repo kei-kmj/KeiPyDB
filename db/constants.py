@@ -54,3 +54,8 @@ class Node:
 
 class ListIndex:
     First = 0
+
+
+class Buffers:
+    Reserved = 2
+    Minimum = 1
