@@ -1,6 +1,7 @@
 from typing import Optional
 
 from db.plan.plan import Plan
+from db.query.constant import Constant
 from db.query.scan import Scan
 from db.query.term import Term
 from db.record.schema import Schema
@@ -47,12 +48,19 @@ class Predicate:
         ]
         return Predicate(application_terms) if application_terms else None
 
-    def equates_with_constant(self, field_name: str) -> str | None:
+    def equates_with_constant(self, field_name: str) -> Optional[Constant]:
         """指定されたフィールド名が定数と等しい場合、フィールド名を返す"""
         for term in self.terms:
             constant = term.equates_with_constant(field_name)
             if constant is not None:
                 return constant
+        return None
+
+    def equates_with_field(self, field_name: str) -> Optional[str]:
+        for term in self.terms:
+            result = term.equates_with_field(field_name)
+            if result is not None:
+                return result
         return None
 
     def __str__(self) -> str:

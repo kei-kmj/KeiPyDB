@@ -53,7 +53,7 @@ class BasicUpdatePlanner(UpdatePlanner, ABC):
 
         while scan.next():
             value = data.new_value.evaluate(scan)
-            scan.set_val(data.get_field_name(), value)
+            scan.set_value(data.get_field_name(), value)
             count += 1
 
         scan.close()
@@ -74,7 +74,7 @@ class BasicUpdatePlanner(UpdatePlanner, ABC):
 
         for field_name in fields:
             value = next(values)
-            scan.set_val(field_name, value)
+            scan.set_value(field_name, value)
 
         scan.close()
         return 1

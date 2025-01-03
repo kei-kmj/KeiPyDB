@@ -1,4 +1,7 @@
+from typing import Optional
+
 from db.plan.plan import Plan
+from db.query.constant import Constant
 from db.query.expression import Expression
 from db.query.scan import Scan
 from db.record.schema import Schema
@@ -37,16 +40,23 @@ class Term:
 
         raise ValueError("Reduction factor cannot be determined due to incomparable constants.")
 
-    def equates_with_constant(self, field_name: str) -> str | None:
+    def equates_with_constant(self, field_name: str) -> Optional[Constant]:
         """TermがF1==F2であることを確認し、フィールドF2を返す"""
         if self.left.is_field_name() and self.left.as_field_name() == field_name and self.right.is_field_name():
 
-            return self.right.as_field_name()
+            return Constant(self.right.as_field_name())
 
         elif self.right.is_field_name() and self.right.as_field_name() == field_name and self.left.is_field_name():
 
-            return self.left.as_field_name()
+            return Constant(self.left.as_field_name())
 
+        return None
+
+    def equates_with_field(self, field_name: str) -> Optional[str]:
+        if self.left.is_field_name() and self.left.as_field_name() == field_name and self.right.is_field_name():
+            return self.right.as_field_name()
+        elif self.right.is_field_name() and self.right.as_field_name() == field_name and self.left.is_field_name():
+            return self.left.as_field_name()
         return None
 
     def applies_to(self, schema: Schema) -> bool:

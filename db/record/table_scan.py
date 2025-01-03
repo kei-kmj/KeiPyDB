@@ -96,7 +96,7 @@ class TableScan(UpdateScan, ABC):
 
         self.record_page.set_string(self.current_slot, field_name, value)
 
-    def set_val(self, field_name: str, value: Constant) -> None:
+    def set_value(self, field_name: str, value: Constant) -> None:
         """現在のスロットの指定されたフィールドに値を設定"""
         if self.layout.get_schema().get_type(field_name) == FieldType.Integer:
             self.set_int(field_name, value.as_int())

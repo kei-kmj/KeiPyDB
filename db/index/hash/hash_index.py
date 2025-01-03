@@ -61,7 +61,7 @@ class HashIndex(Index, ABC):
         self.table_scan.insert()
         self.table_scan.set_int("block", data_record_id.block_number)
         self.table_scan.set_int("id", data_record_id.slot)
-        self.table_scan.set_val("data_value", data_value)
+        self.table_scan.set_value("data_value", data_value)
 
     def delete(self, data_value: Constant, data_record_id: RecordID) -> None:
         if not self.table_scan:

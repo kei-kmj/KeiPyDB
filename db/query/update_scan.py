@@ -8,7 +8,7 @@ from db.record.record_id import RecordID
 class UpdateScan(Scan, ABC):
 
     @abstractmethod
-    def set_val(self, field_name: str, val: Constant) -> None:
+    def set_value(self, field_name: str, val: Constant) -> None:
         pass
 
     @abstractmethod

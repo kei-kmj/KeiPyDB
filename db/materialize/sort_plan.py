@@ -98,7 +98,7 @@ class SortPlan(Plan, ABC):
     def _copy(self, source: Scan, dest_scan: UpdateScan) -> bool:
         dest_scan.insert()
         for field_name in self._schema.get_fields():
-            dest_scan.set_val(field_name, source.get_value(field_name))
+            dest_scan.set_value(field_name, source.get_value(field_name))
         return source.next()
 
     def schema(self) -> Schema:

@@ -91,7 +91,7 @@ def test_insert(hash_index):
     table_scan_mock.insert.assert_called_once()
     table_scan_mock.set_int.assert_any_call("block", 42)
     table_scan_mock.set_int.assert_any_call("id", 84)
-    table_scan_mock.set_val.assert_any_call("data_value", data_value)
+    table_scan_mock.set_value.assert_any_call("data_value", data_value)
 
 
 def test_delete(hash_index):

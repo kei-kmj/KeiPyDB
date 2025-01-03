@@ -33,7 +33,7 @@ class IndexUpdatePlanner(UpdatePlanner, ABC):
         val_iterator = iter(data.values)
         for field_name in data.fields:
             val = next(val_iterator)
-            update_scan.set_val(field_name, val)
+            update_scan.set_value(field_name, val)
 
             if field_name in indexes:
                 index = indexes[field_name].open()
@@ -82,7 +82,7 @@ class IndexUpdatePlanner(UpdatePlanner, ABC):
             new_value = data.new_value.evaluate(update_scan)
             old_value = update_scan.get_value(target_field)
 
-            update_scan.set_val(target_field, new_value)
+            update_scan.set_value(target_field, new_value)
 
             if index:
                 record_id = update_scan.get_rid()

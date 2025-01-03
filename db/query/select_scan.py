@@ -48,10 +48,10 @@ class SelectScan(UpdateScan, ABC):
         if isinstance(self.scan, UpdateScan):
             self.scan.set_string(field_name, value)
 
-    def set_val(self, field_name: str, value: Constant) -> None:
+    def set_value(self, field_name: str, value: Constant) -> None:
         """値を設定"""
         if isinstance(self.scan, UpdateScan):
-            self.scan.set_val(field_name, value)
+            self.scan.set_value(field_name, value)
 
     def delete(self) -> None:
         """削除"""
