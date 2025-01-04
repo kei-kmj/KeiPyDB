@@ -15,6 +15,7 @@ class LogManager:
         self.last_saved_lsn = 0
 
         log_size = self.file_manager.length(log_file)
+
         if log_size == 0:
             self.current_block = self.file_manager.append(log_file)
         else:

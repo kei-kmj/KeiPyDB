@@ -11,7 +11,7 @@ class LockAbortException(Exception):
 
 
 class LockTable:
-    MAX_TIME = 1
+    MAX_TIME = 10
 
     def __init__(self) -> None:
         self.locks: Dict[BlockID, int] = {}

@@ -1,16 +1,20 @@
-from typing import Optional
+from typing_extensions import Optional
 
 from db.buffer.buffer_manager import BufferManager
 from db.file.file_manager import FileManager
+from db.file.page import Page
 from db.log.log_manager import LogManager
 from db.metadata.metadata_manager import MetadataManager
+from db.plan.basic_query_planner import BasicQueryPlanner
+from db.plan.basic_update_planner import BasicUpdatePlanner
+from db.plan.planner import Planner
 from db.transaction.transaction import Transaction
 
 
 class KeiPyDB:
     BLOCK_SIZE = 400
     BUFFER_SIZE = 8
-    LOG_FILE = "simpledb.log"
+    LOG_FILE = "keipydb.log"
 
     def __init__(self, dir_name: str, block_size: int = BLOCK_SIZE, buffer_size: int = BUFFER_SIZE) -> None:
 
@@ -18,7 +22,7 @@ class KeiPyDB:
         self.log_manager = LogManager(self.file_manager, KeiPyDB.LOG_FILE)
         self.buffer_manager = BufferManager(self.file_manager, self.log_manager, buffer_size)
 
-        is_new = self.file_manager.is_new
+        is_new = not self.file_manager.is_new
         self.metadata_manager = None
         self.planner = None
 
@@ -33,12 +37,11 @@ class KeiPyDB:
 
         self.metadata_manager = MetadataManager(is_new, transaction)
 
-        # TODO: QueryPlannerクラスを実装
-        # query_planner = None
-        # update_planner = None
-        #
-        # self.planner = Planner(query_planner, update_planner)
-        #
+        self.query_planner = BasicQueryPlanner(self.metadata_manager)
+        self.update_planner = BasicUpdatePlanner(self.metadata_manager)
+
+        self.planner = Planner(self.query_planner, self.update_planner)
+
         transaction.commit()
 
     def new_transaction(self) -> Transaction:
@@ -47,9 +50,8 @@ class KeiPyDB:
     def get_metadata_manager(self) -> Optional[MetadataManager]:
         return self.metadata_manager
 
-    # TODO: Plannerクラスを実装
-    # def get_planner(self) -> Planner:
-    #     return self.planner
+    def get_planner(self) -> Optional[Planner]:
+        return self.planner
 
     def get_file_manager(self) -> FileManager:
         return self.file_manager

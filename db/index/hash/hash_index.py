@@ -68,7 +68,6 @@ class HashIndex(Index, ABC):
             raise RuntimeError("Table scan is not initialized")
 
         self.before_first(data_value)
-        print("data_record_id★", self.table_scan.next())
         while self.table_scan.next():
             if data_record_id == self.get_data_record_id():
                 self.table_scan.delete()

@@ -33,7 +33,6 @@ def test_識別子が一致することを確認する():
     lexer = Lexer(sql)
 
     lexer.next_token()
-    print("lexer★", vars(lexer))
     assert lexer.match_id() is True
 
 

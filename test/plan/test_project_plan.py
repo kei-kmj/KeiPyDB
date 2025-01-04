@@ -31,7 +31,6 @@ def project_plan(mock_plan, field_list):
 def test_openメソッドが正しいスキャンを返すこと(mock_plan, project_plan):
     scan = Mock()
     mock_plan.open.return_value = scan
-    print("project_plan.open()★:", project_plan.open())
 
     assert isinstance(project_plan.open(), ProjectScan)
 

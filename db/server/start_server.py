@@ -1,19 +1,35 @@
-from typing import Any, Dict
+import msvcrt
+import signal
+import sys
+import threading
+import time
+
+from db.server.keipy_db import KeiPyDB
 
 
 class StartServer:
-    """データベースを初期化するクラス"""
+    stop_event = threading.Event()
 
-    def __init__(self, db_name: str) -> None:
-        """データベースを初期化
-        :param db_name: データベース名(Noneの場合はメモリ上に作成)
-        """
-        if db_name is None or db_name == ":memory:":
-            self.db_name = ":memory:"
-            self.storage: Dict[str, Any] = {}
-            print("Using in-memory database")
-        else:
-            self.db_name = db_name
-            # TODO: 後で適切なデータベースを選択する
-            self.storage = {}
-            print(f"Using database {db_name}")
+    @staticmethod
+    def main() -> None:
+        """データベースを初期化する"""
+        dir_name = sys.argv[1] if len(sys.argv) > 1 else "."
+        db = KeiPyDB(dir_name)
+
+        print("Database server ready")
+        # シグナルハンドラの登録
+
+        try:
+            planner = db.get_planner()
+
+            create_table_sql = "CREATE TABLE test (id INT, name VARCHAR(50)"
+            print(f"Executing: {create_table_sql}")
+            planner.execute_update(create_table_sql, db.new_transaction())
+
+
+        except KeyboardInterrupt:
+            print("Server stopped")
+            sys.exit(0)
+
+if __name__=="__main__":
+    StartServer.main()
