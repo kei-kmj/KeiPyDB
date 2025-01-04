@@ -2,7 +2,6 @@ from typing_extensions import Optional
 
 from db.buffer.buffer_manager import BufferManager
 from db.file.file_manager import FileManager
-from db.file.page import Page
 from db.log.log_manager import LogManager
 from db.metadata.metadata_manager import MetadataManager
 from db.plan.basic_query_planner import BasicQueryPlanner

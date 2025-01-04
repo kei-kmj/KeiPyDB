@@ -35,7 +35,7 @@ class Page:
 
     def set_bytes(self, offset: int, byte_data: bytes) -> None:
         self.buffer.seek(offset)
-        self.buffer.write(struct.pack('>i', len(byte_data)))
+        self.buffer.write(struct.pack(">i", len(byte_data)))
         self.buffer.write(byte_data)
 
     def get_string(self, offset: int) -> str:

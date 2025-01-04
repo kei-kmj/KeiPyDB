@@ -1,8 +1,5 @@
-import msvcrt
-import signal
 import sys
 import threading
-import time
 
 from db.server.keipy_db import KeiPyDB
 
@@ -26,10 +23,10 @@ class StartServer:
             print(f"Executing: {create_table_sql}")
             planner.execute_update(create_table_sql, db.new_transaction())
 
-
         except KeyboardInterrupt:
             print("Server stopped")
             sys.exit(0)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     StartServer.main()
