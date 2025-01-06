@@ -33,14 +33,14 @@ class LockTable:
     def lock_exclusive(self, block: BlockID) -> None:
         with self.condition:
             start_time = time.time()
+            print(f"Attempting exclusive lock on block: {block}")
             print("block★", block)
-            print("self._has_other_shared_locks(block)★", self._has_other_shared_locks(block))
-            while self._has_other_shared_locks(block) and not self._waiting_too_long(start_time):
-                self.condition.wait(self.MAX_TIME)
+            print("self._has_other_shared_locks(block)??ここ？", self._has_other_shared_locks(block))
+            while self._has_other_shared_locks(block):
+                if self._waiting_too_long(start_time):
+                    raise LockAbortException("Unable to acquire exclusive lock within the maximum wait time")
 
-            if self._has_other_shared_locks(block):
-                print("self._has_other_shared_locks(block)★", self._has_other_shared_locks(block))
-                raise LockAbortException("Unable to acquire exclusive lock within the maximum wait time")
+                self.condition.wait(self.MAX_TIME)
 
             self.locks[block] = LockMode.Exclusive_Lock
 
@@ -58,10 +58,10 @@ class LockTable:
                 self.condition.notify_all()
 
     def _has_exclusive_lock(self, block: BlockID) -> bool:
-        return self._get_lock_value(block) == LockMode.Exclusive_Lock
+        return self._get_lock_value(block) < LockMode.No_Lock
 
     def _has_other_shared_locks(self, block: BlockID) -> bool:
-        return self._get_lock_value(block) == LockMode.Shared_Lock
+        return self._get_lock_value(block) > LockMode.Shared_Lock
 
     def _waiting_too_long(self, start_time: float) -> bool:
         return time.time() - start_time > self.MAX_TIME
