@@ -19,7 +19,7 @@ class Page:
 
     def get_int(self, offset: int) -> int:
         self.buffer.seek(offset)
-        data = self.buffer.read(4)
+        data = self.buffer.read(ByteSize.Int)
 
         return 0 if not data else struct.unpack(Format.IntBigEndian, data)[0]
 
@@ -30,12 +30,12 @@ class Page:
     def get_bytes(self, offset: int) -> bytes:
 
         self.buffer.seek(offset)
-        length = struct.unpack(Format.IntBigEndian, self.buffer.read(4))[0]
+        length = struct.unpack(Format.IntBigEndian, self.buffer.read(ByteSize.Int))[0]
         return self.buffer.read(length)
 
     def set_bytes(self, offset: int, byte_data: bytes) -> None:
         self.buffer.seek(offset)
-        self.buffer.write(struct.pack(">i", len(byte_data)))
+        self.buffer.write(struct.pack(Format.IntBigEndian, len(byte_data)))
         self.buffer.write(byte_data)
 
     def get_string(self, offset: int) -> str:
