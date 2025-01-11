@@ -52,8 +52,11 @@ class LogManager:
 
     def _append_new_block(self) -> BlockID:
         block = self.file_manager.append(self.log_file)
+        print(f"Appended block💛: {block.file_name}, {block.block_number}")
         self.log_page.set_int(0, self.file_manager.block_size)
+        print(f"Set block size {self.file_manager.block_size} at position 0 in log page.")
         self.file_manager.write(block, self.log_page)
+        print(f"Written log page to block: {block.file_name}, {block.block_number}")
         return block
 
     def _flush(self) -> None:

@@ -21,7 +21,7 @@ class KeiPyDB:
         self.log_manager = LogManager(self.file_manager, KeiPyDB.LOG_FILE)
         self.buffer_manager = BufferManager(self.file_manager, self.log_manager, buffer_size)
 
-        is_new = not self.file_manager.is_new
+        is_new = self.file_manager.is_new
         self.metadata_manager = None
         self.planner = None
 

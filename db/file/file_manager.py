@@ -34,7 +34,6 @@ class FileManager:
     def write(self, block: BlockID, page: Page) -> None:
         """ブロックIDに対応するファイルにデータを書き込む"""
         f = self._get_file(block.file_name)
-        print(f"writing to {block.file_name} block {block.block_number}")
         f.seek(block.block_number * self.block_size)
         f.write(page.get_contents().getbuffer())
 
@@ -56,7 +55,10 @@ class FileManager:
             self._get_file(file_name)
 
         f = self.open_files[file_name]
-        return f.seek(0, os.SEEK_END)
+        f.seek(0, os.SEEK_END)
+        file_size = f.tell()
+
+        return file_size // self.block_size
 
     def _get_file(self, file_name: str) -> BinaryIO:
         """ファイルを取得する"""

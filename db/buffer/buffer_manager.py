@@ -13,7 +13,7 @@ class BufferAbortException(Exception):
 
 
 class BufferManager:
-    MAX_TIME = 10
+    MAX_TIME = 100
 
     def __init__(self, file_manager: FileManager, log_manager: LogManager, num_buffers: int) -> None:
         self.file_manager = file_manager

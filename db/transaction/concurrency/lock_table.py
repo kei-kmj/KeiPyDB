@@ -33,9 +33,6 @@ class LockTable:
     def lock_exclusive(self, block: BlockID) -> None:
         with self.condition:
             start_time = time.time()
-            print(f"Attempting exclusive lock on block: {block}")
-            print("block★", block)
-            print("self._has_other_shared_locks(block)??ここ？", self._has_other_shared_locks(block))
             while self._has_other_shared_locks(block):
                 if self._waiting_too_long(start_time):
                     raise LockAbortException("Unable to acquire exclusive lock within the maximum wait time")

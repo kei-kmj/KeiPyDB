@@ -10,7 +10,7 @@ class StartServer:
     @staticmethod
     def main() -> None:
         """データベースを初期化する"""
-        dir_name = sys.argv[1] if len(sys.argv) > 1 else "."
+        dir_name = sys.argv[1] if len(sys.argv) > 1 else "data"
         db = KeiPyDB(dir_name)
 
         print("Database server ready")

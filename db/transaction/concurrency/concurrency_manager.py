@@ -17,7 +17,6 @@ class ConcurrencyManager:
             self.locks[block] = LockType.Shared
 
     def lock_exclusive(self, block: BlockID) -> None:
-        print("self.has_exclusive_lock(block)💛", self.has_exclusive_lock(block))
         if not self.has_exclusive_lock(block):
             self.lock_table.lock_exclusive(block)
             self.locks[block] = LockType.Exclusive
@@ -28,6 +27,4 @@ class ConcurrencyManager:
         self.locks.clear()
 
     def has_exclusive_lock(self, block: BlockID) -> bool:
-        print("self.locks.get(block)💛", self.locks.get(block))
-        print("has_exclusive_lock??", self.locks.get(block) == LockType.Exclusive)
         return self.locks.get(block) == LockType.Exclusive
