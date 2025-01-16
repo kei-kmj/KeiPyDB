@@ -43,6 +43,7 @@ class RecoveryManager:
         return SetIntRecord.write_to_log(self.log_manager, self.tx_number, block, offset, old_value)
 
     def set_string(self, buffer: Buffer, offset: int) -> int:
+        print("offset??", offset)
         old_value = buffer.contents.get_string(offset)
         block = buffer.block
         return SetStringRecord.write_to_log(self.log_manager, self.tx_number, block, offset, old_value)
