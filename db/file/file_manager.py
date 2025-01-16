@@ -36,6 +36,7 @@ class FileManager:
         f = self._get_file(block.file_name)
         f.seek(block.block_number * self.block_size)
         f.write(page.get_contents().getbuffer())
+        f.flush()
 
     def append(self, file_name: str) -> BlockID:
         """ファイルに新しいブロックを追加して、そのブロックIDを返す"""
