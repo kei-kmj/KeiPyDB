@@ -1,15 +1,23 @@
 from db.file.block_id import BlockID
 
 
-def test_ブロックIDの等価性を検証():
-    block = BlockID("testfile.txt", 5)
-    other_block = BlockID("testfile.txt", 5)
-    third_block = BlockID("otherfile.txt", 10)
+def test_new_block_id():
+    file_name = "test"
+    block_num = 1
+    bid = BlockID(file_name, block_num)
+    assert bid.file_name == file_name
+    assert bid.number() == block_num
 
-    assert block == other_block
-    assert block != third_block
+def test_block_id_equals():
+    block_id = BlockID("test", 1)
+    another_block_id = BlockID("test", 1)
+    assert block_id == another_block_id
 
+def test_block_id_not_equals():
+    block_id = BlockID("test", 1)
+    another_block_id = BlockID("test", 2)
+    assert block_id != another_block_id
 
-def test_文字列表現の検証():
-    block = BlockID("testfile.txt", 5)
-    assert str(block) == "[testfile.txt, block 5]"
+def test_block_id_string():
+    block_id = BlockID("test", 1)
+    assert str(block_id) == "[file test, block 1]"
