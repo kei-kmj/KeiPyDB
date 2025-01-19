@@ -78,11 +78,6 @@ class Transaction:
             raise ValueError(f"Block {block} not pinned")
         lsn = -1
         if ok_to_log:
-            print("----transaction.py----")
-            print("block", block)
-            print("value", value)
-            print("buffer", buffer)
-            print("offset", offset)
             lsn = self.recovery_manager.set_string(buffer, offset)
         buffer.contents.set_string(offset, value)
         buffer.set_modified(self.tx_number, lsn)

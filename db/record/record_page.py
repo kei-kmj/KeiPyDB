@@ -33,7 +33,9 @@ class RecordPage:
 
     def set_string(self, slot: int, field_name: str, value: str) -> None:
         """指定されたスロットの指定されたフィールドに文字列を設定する"""
+
         field_position = self._offset(slot) + self.layout.get_offset(field_name)
+
         self.transaction.set_string(self.block, field_position, value)
 
     def delete(self, slot: int) -> None:
@@ -77,11 +79,11 @@ class RecordPage:
     def _search_after(self, slot: int, flag: int) -> int:
         """指定されたスロットの次に指定されたフラグを持つスロットを返す"""
         slot += 1
-
         while self._is_valid_slot(slot):
             if self.transaction.get_int(self.block, self._offset(slot)) == flag:
                 return slot
             slot += 1
+
         return -1
 
     def _is_valid_slot(self, slot: int) -> bool:
@@ -90,4 +92,6 @@ class RecordPage:
 
     def _offset(self, slot: int) -> int:
         """指定されたスロットのオフセットを返す"""
-        return slot * self.layout.get_slot_size()
+        slot_size = self.layout.get_slot_size()
+        offset = slot * slot_size
+        return offset
