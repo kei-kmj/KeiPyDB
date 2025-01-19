@@ -31,7 +31,7 @@ class Page:
     def get_bytes(self, offset: int) -> bytes:
         """指定されたオフセットからバイト列を取得"""
         length = self.get_int(offset)
-        start = offset + 4
+        start = offset + ByteSize.Int
         end = start + length
         return bytes(self.buffer[start:end])
 
