@@ -7,14 +7,9 @@ class BlockID:
         self.file_name = file_name
         self.block_number = block_number
 
-    def file_name(self) -> str:
-        """ファイル名を返す"""
-        return self.file_name
-
     def number(self) -> int:
         """ブロック番号を返す"""
         return self.block_number
-
 
     # TODO: 後で、仮引数名を見直す
     def __eq__(self, other: object) -> bool:
@@ -32,5 +27,3 @@ class BlockID:
     def __hash__(self) -> int:
         """__str__の結果をもとにハッシュ値を生成する"""
         return hash(str(self))
-
-

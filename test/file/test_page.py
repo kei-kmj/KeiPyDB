@@ -4,40 +4,47 @@ from db.constants import ByteSize, Format
 from db.file.page import Page
 
 
-def test_整数の読み書きができる():
-    page = Page(1024)
-    page.set_int(0, 100)
-    assert page.get_int(0) == 100
+def test_new_page():
+    block_size = 4096
+    page = Page(block_size)
+
+    assert page is not None
+    assert page.buffer == bytearray(block_size)
+    assert len(page.get_contents()) == block_size
+    assert page.CHARSET == "ascii"
 
 
-def test_バイト列の読み書きができる():
-    page = Page(1024)
-    data = b"Hello, world!"
-    page.set_bytes(0, data)
-    assert page.get_bytes(0) == data
+def test_new_page_from_bytes():
+    block_size = 4096
+    data = bytearray(block_size)
+    page = Page(data)
+
+    assert page is not None
+    assert len(page.get_contents()) == block_size
+    assert page.CHARSET == "ascii"
+
+def test_page_int():
+    page = Page(4096)
+    offset = 0
+    value = 42
+    page.set_int(offset, value)
+    assert page.get_int(offset) == value
+
+def test_page_bytes():
+    page = Page(4096)
+    offset = 0
+    value = b"hello"
+    page.set_bytes(offset, value)
+    assert page.get_bytes(offset) == value
+
+def test_page_string():
+    page = Page(4096)
+    offset = 0
+    value = "hello"
+    page.set_string(offset, value)
+    assert page.get_string(offset) == value
 
 
-def test_文字列の読み書きができる():
-    page = Page(1024)
-    data = "Hello, world!"
-    page.set_string(0, data)
-    assert page.get_string(0) == data
-
-
-def test_文字列の最大長を取得できる():
-    string_length = 10
-    assert Page.get_max_length(string_length) == ByteSize.Int + string_length
-
-
-def test_ページの内容を取得できる():
-    """ページの内容を取得すると、バッファの内容がそのまま返される."""
-    page = Page(1024)
-    page.set_int(0, 12345)
-    page.set_string(10, "test")
-    string_length = len("test")
-    raw_content = page.get_contents()
-
-    assert raw_content[:4] == struct.pack(Format.IntBigEndian, 12345)
-    assert (
-        raw_content[10 : 10 + ByteSize.Int + string_length] == struct.pack(Format.IntBigEndian, string_length) + b"test"
-    )
+def test_page_max_length():
+    string_length = 1024
+    assert Page.get_max_length(string_length) == 4 + (string_length * 1)

@@ -1,9 +1,8 @@
 import os
-from io import BytesIO
 from pathlib import Path
 from typing import BinaryIO, Dict, cast
 
-from db.constants import FileModes
+from db.constants import FileMode
 from db.file.block_id import BlockID
 from db.file.page import Page
 
@@ -26,54 +25,63 @@ class FileManager:
 
     def read(self, block_id: BlockID, page: Page) -> None:
         """ブロックIDに対応するファイルからデータを読み込む"""
-        f = self._get_file(block_id.file_name)
-        f.seek(block_id.block_number * self.block_size)
-        data = f.read(self.block_size)
-        page.buffer = BytesIO(data)
+        try:
+            f = self._get_file(block_id.file_name)
+            f.seek(block_id.number() * self.block_size)
+            page.set_bytes(0, f.read(self.block_size))
+
+        except Exception as e:
+            raise RuntimeError(f"Cannot read block {block_id} from file: {e}")
 
     def write(self, block: BlockID, page: Page) -> None:
         """ブロックIDに対応するファイルにデータを書き込む"""
-        f = self._get_file(block.file_name)
-        f.seek(block.block_number * self.block_size)
-        f.write(page.get_contents().getbuffer())
-        f.flush()
+        try:
+            f = self._get_file(block.file_name)
+            f.seek(block.block_number * self.block_size)
+            f.write(page.get_contents())
+            f.flush()
+
+        except Exception as e:
+            raise RuntimeError(f"Cannot write block {block} to file: {e}")
 
     def append(self, file_name: str) -> BlockID:
         """ファイルに新しいブロックを追加して、そのブロックIDを返す"""
-        new_block_number = self.length(file_name)
-        block_id = BlockID(file_name, new_block_number)
-        empty_data = b"\x00" * self.block_size
+        try:
+            new_block_number = self.length(file_name)
+            block = BlockID(file_name, new_block_number)
 
-        f = self._get_file(file_name)
-        f.seek(new_block_number * self.block_size)
-        f.write(empty_data)
+            f = self._get_file(file_name)
+            f.seek(block.block_number * self.block_size)
 
-        return block_id
+            empty_data = b"\x00" * self.block_size
+            f.write(empty_data)
+            f.flush()
+            return block
+
+        except Exception as e:
+            raise RuntimeError(f"Cannot append block to file {file_name}: {e}")
 
     def length(self, file_name: str) -> int:
         """ファイルのブロック数を返す"""
-        if file_name not in self.open_files:
-            self._get_file(file_name)
-
-        f = self.open_files[file_name]
-        f.seek(0, os.SEEK_END)
-        file_size = f.tell()
-
-        return file_size // self.block_size
+        try:
+            f = self._get_file(file_name)
+            f.seek(0, os.SEEK_END)
+            file_size = f.tell()
+            return file_size // self.block_size
+        except Exception as e:
+            raise RuntimeError(f"Cannot get length of file {file_name}: {e}")
 
     def _get_file(self, file_name: str) -> BinaryIO:
         """ファイルを取得する"""
 
+        if file_name in self.open_files:
+            return self.open_files[file_name]
+
         file_path = self.db_directory / file_name
 
         if file_name not in self.open_files:
-            mode = FileModes.ReadWrite if file_path.exists() else FileModes.WriteNew
+            mode = FileMode.ReadWrite if file_path.exists() else FileMode.WriteNew
+
             self.open_files[file_name] = cast(BinaryIO, open(file_path, mode))
 
         return self.open_files[file_name]
-
-    def close(self) -> None:
-        """ファイルを閉じる"""
-        for file in self.open_files.values():
-            file.close()
-        self.open_files.clear()
