@@ -38,7 +38,7 @@ class Page:
     def set_bytes(self, offset: int, byte_data: bytes) -> None:
         """指定されたオフセットにバイト列を書き込む"""
         self.set_int(offset, len(byte_data))
-        start = offset + 4
+        start = offset + ByteSize.Int
         self.buffer[start : start + len(byte_data)] = byte_data
 
     def get_string(self, offset: int) -> str:

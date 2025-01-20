@@ -25,10 +25,14 @@ class FileManager:
 
     def read(self, block_id: BlockID, page: Page) -> None:
         """ブロックIDに対応するファイルからデータを読み込む"""
+        if block_id.number() < 0:
+            raise ValueError(f"Invalid block number: {block_id.number()}")
+
         try:
             f = self._get_file(block_id.file_name)
             f.seek(block_id.number() * self.block_size)
             page.set_bytes(0, f.read(self.block_size))
+            print("f.seek(block_id.number():", f.seek(block_id.number()))
 
         except Exception as e:
             raise RuntimeError(f"Cannot read block {block_id} from file: {e}")

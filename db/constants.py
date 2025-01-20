@@ -4,9 +4,10 @@ class Format:
 
 class ByteSize:
     Int = 4
+    ASCII = 1
 
 
-class FileModes:
+class FileMode:
     Read = "rb"
     Write = "wb"
     ReadWrite = "r+b"
