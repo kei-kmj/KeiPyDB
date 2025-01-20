@@ -1,76 +1,56 @@
-from unittest.mock import Mock
+from importlib.metadata import files
+from math import log10
 
 import pytest
 
-from db.constants import ByteSize
 from db.file.block_id import BlockID
 from db.file.file_manager import FileManager
 from db.file.page import Page
 from db.log.log_iterator import LogIterator
 
 
-def test_初期化時に正しいブロックが読み込まれること():
-    mock_file_manager = Mock(spec=FileManager)
-    mock_file_manager.block_size = 1024
-    mock_block = BlockID("testfile", 2)
-
-    log_iterator = LogIterator(mock_file_manager, mock_block)
-
-    mock_file_manager.read.assert_called_once_with(mock_block, log_iterator.page)
-
-
-def test_次のレコードを正しく取得できること():
-    mock_file_manager = Mock(spec=FileManager)
-    mock_page = Mock(spec=Page)
-    mock_file_manager.block_size = 1024
-    mock_block = BlockID("testfile", 2)
-
-    mock_page.get_bytes.return_value = b"test_record"
-    mock_page.get_int.return_value = 0
-
-    log_iterator = LogIterator(mock_file_manager, mock_block)
-    log_iterator.page = mock_page
-
-    record = next(log_iterator)
-
-    assert record == b"test_record"
-    assert log_iterator.current_position == ByteSize.Int + len(record)
+@pytest.fixture
+def setup_file_manager(tmp_path):
+    """一時ディレクトリとFileManagerをセットアップ"""
+    def _setup(block_size):
+        db_directory = tmp_path / "test_log_iterator"
+        db_directory.mkdir()
+        return FileManager(db_directory, block_size)
+    return _setup
 
 
-def test_レコードが存在しない場合StopIterationが発生すること():
-    mock_file_manager = Mock(spec=FileManager)
-    mock_page = Mock(spec=Page)
-    mock_file_manager.block_size = 1024
-    mock_block = BlockID("testfile", 2)
+@pytest.mark.parametrize(
+    "block_number, offset, expected",
+    [
+        (0, 15, True),   # オフセットがブロックサイズ未満
+        (0, 16, False),  # オフセットがブロックサイズと同じ
+        (1, 0, True),      # ブロック番号が0より大きい場合
+    ],
+)
+def test_log_iterator_has_next(block_number, offset, expected, setup_file_manager):
+    block_size = 16
+    file_manager = setup_file_manager(block_size)
 
-    mock_page.get_bytes.side_effect = StopIteration
-    mock_page.get_int.return_value = 1024  # Boundary outside the range
+    log_iterator = LogIterator(file_manager, BlockID("file", block_number))
+    log_iterator.current_offset = offset
 
-    log_iterator = LogIterator(mock_file_manager, mock_block)
-    log_iterator.page = mock_page
-
-    with pytest.raises(StopIteration):
-        next(log_iterator)
+    assert log_iterator.has_next() == expected
 
 
-def test_次のブロックに移動できること():
-    mock_file_manager = Mock(spec=FileManager)
-    mock_page = Mock(spec=Page)
-    mock_file_manager.block_size = 1024
-    mock_block = BlockID("testfile", 2)
+def test_log_iterator_next_not_finished(setup_file_manager):
+    block_size = 14
+    file_manager = setup_file_manager(block_size)
 
-    mock_page.get_bytes.return_value = b"test_record"
-    mock_page.get_int.return_value = 0
+    file_name = "log_file"
+    record = b"record"
+    page = Page(block_size)
 
-    log_iterator = LogIterator(mock_file_manager, mock_block)
-    log_iterator.page = mock_page
+    page.set_int(0, 4)
+    page.set_bytes(4, record)
+    file_manager.write(BlockID(file_name, 3), page)
 
-    record = next(log_iterator)
-    assert record == b"test_record"
+    log_iterator = LogIterator(file_manager, BlockID(file_name, 3))
 
-    mock_page.get_bytes.return_value = b"test_record2"
-    mock_page.get_int.return_value = 0
+    result = log_iterator.__next__()
 
-    record = next(log_iterator)
-    assert record == b"test_record2"
-    assert log_iterator.current_position == ByteSize.Int + len(b"test_record") + ByteSize.Int + len(b"test_record2")
+    assert result == record

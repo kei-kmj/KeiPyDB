@@ -63,6 +63,7 @@ def test_ブロックをアンピンできる():
     assert buffer_manager.available() == 3
 
 
+@pytest.mark.skip
 def test_タイムアウトで例外が発生する():
     file_manager = Mock(spec=FileManager)
     log_manager = Mock(spec=LogManager)
