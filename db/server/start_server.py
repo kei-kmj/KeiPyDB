@@ -19,8 +19,11 @@ class StartServer:
         try:
             planner = db.get_planner()
 
-            create_table_sql = "CREATE TABLE test (id INT, name VARCHAR(50)"
+            create_table_sql = "CREATE TABLE test (id INT)"
             print(f"Executing: {create_table_sql}")
+
+            insert_sql = "INSERT INTO test (id) VALUES (1)"
+            print(f"Executing: {insert_sql}")
             planner.execute_update(create_table_sql, db.new_transaction())
 
         except KeyboardInterrupt:

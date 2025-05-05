@@ -26,7 +26,7 @@ class Page:
 
     def set_int(self, offset: int, value: int) -> None:
         """指定されたオフセットに4バイトの整数を書き込む"""
-        struct.pack_into(">I", self.buffer, offset, value)
+        struct.pack_into(Format.IntBigEndian, self.buffer, offset, value)
 
     def get_bytes(self, offset: int) -> bytes:
         """指定されたオフセットからバイト列を取得"""

@@ -24,8 +24,8 @@ class TableManager:
         self.field_catalog_layout = Layout(field_catalog_schema)
 
         if is_new:
-            self.create_table("table_name", table_catalog_schema, transaction)
-            self.create_table("field_name", field_catalog_schema, transaction)
+            self.create_table("table_catalog", table_catalog_schema, transaction)
+            self.create_table("field_catalog", field_catalog_schema, transaction)
 
     def create_table(self, table_name: str, schema: Schema, transaction: Transaction) -> None:
         """新しいテーブルを作成"""

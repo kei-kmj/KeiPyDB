@@ -32,7 +32,6 @@ class FileManager:
             f = self._get_file(block_id.file_name)
             f.seek(block_id.number() * self.block_size)
             page.set_bytes(0, f.read(self.block_size))
-            print("f.seek(block_id.number():", f.seek(block_id.number()))
 
         except Exception as e:
             raise RuntimeError(f"Cannot read block {block_id} from file: {e}")
