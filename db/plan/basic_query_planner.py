@@ -23,13 +23,16 @@ class BasicQueryPlanner(QueryPlanner, ABC):
         # Step 1: Create a plan for each mentioned table or view.
         plan_list: List[Plan] = []
         for table_name in query_data.tables:
+
             view_def = self.metadata_manager.get_view_definition(table_name, transaction)
             if view_def is not None:
+
                 parser = Parser(view_def)
 
                 view_query = parser.query()
                 plan_list.append(self.create_plan(view_query, transaction))
             else:
+
                 plan_list.append(TablePlan(transaction, table_name, self.metadata_manager))
 
         # Step 2: Create the product of all table plans.
@@ -37,13 +40,20 @@ class BasicQueryPlanner(QueryPlanner, ABC):
 
         for next_plan in plan_list:
             plan = ProductPlan(plan, next_plan)
+            print(f"[BasicQueryPlanner.create_plan] Product plan created: {plan}")
 
         # step 3: Add a selection plan for the predicate.
 
         plan = SelectPlan(plan, query_data.get_predicate())
+        print(f"[BasicQueryPlanner.create_plan] Select plan created: {plan}")
 
         # Step 4: Project on the field names.
+        fields = query_data.get_fields() # フィールドリストを取得
+        print(f"[BasicQueryPlanner.create_plan] Projecting onto fields: {fields}") # 追加: フィールドリストを確認
 
-        plan = ProjectPlan(plan, query_data.get_fields())
+        plan = ProjectPlan(plan, fields) # ProjectPlan を作成
+
+
+        print("[BasicQueryPlanner.create_plan] Plan creation finished.")
 
         return plan

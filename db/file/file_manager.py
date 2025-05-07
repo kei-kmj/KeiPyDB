@@ -12,7 +12,7 @@ class FileManager:
         """ファイルを管理するクラス"""
         self.db_directory: Path = Path(db_directory)
         self.block_size: int = block_size
-        self.is_new: bool = not self.db_directory.exists()
+        self.is_new: bool = not self.db_directory.exists() or not any(self.db_directory.iterdir())
         self.open_files: Dict[str, BinaryIO] = {}
 
         if self.is_new:

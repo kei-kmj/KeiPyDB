@@ -1,5 +1,6 @@
 import codecs
 import struct
+from typing import Optional
 
 from db.constants import ByteSize, Format
 
@@ -46,9 +47,15 @@ class Page:
         byte_string = self.get_bytes(offset)
         return byte_string.decode(self.CHARSET)
 
-    def set_string(self, offset: int, value: str) -> None:
+    def set_string(self, offset: int, value: str, max_length: Optional[int] = None) -> None:
         """指定されたオフセットに文字列を書き込む"""
         byte_string = value.encode(self.CHARSET)
+
+        if max_length is not None and len(byte_string) > max_length:
+            raise ValueError(
+                f"String too long to store: actual={len(byte_string)} > max={max_length}"
+            )
+
         self.set_bytes(offset, byte_string)
 
     @staticmethod

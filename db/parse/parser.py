@@ -1,6 +1,9 @@
 from collections.abc import Collection
 from typing import List
 
+import typing_extensions
+
+from db.constants import FieldType
 from db.parse.create_index import CreateIndex
 from db.parse.create_table import CreateTable
 from db.parse.create_view import CreateView
@@ -23,6 +26,7 @@ class Parser:
 
     def filed(self) -> str:
         field_name = self.lexer.eat_id()
+        # return field_name
 
         if field_name is None:
             raise SyntaxError(f"Expected field_name, but not found {self.lexer.current_token}")
@@ -30,18 +34,17 @@ class Parser:
 
     def constant(self) -> Constant:
         if self.lexer.match_int_constant():
-            str_value = self.lexer.eat_string_constant()
-
-            if not str_value:
-                raise SyntaxError(f"Expected value, but not found {self.lexer.current_token}")
-            return Constant(str_value)
-        elif self.lexer.match_string_constant():
-
             int_value = self.lexer.eat_int_constant()
-
-            if not int_value:
-                raise SyntaxError(f"Expected value, but not found {self.lexer.current_token}")
+            if int_value is None:
+                raise SyntaxError(f"Expected int, but not found {self.lexer.current_token}")
             return Constant(int_value)
+
+        elif self.lexer.match_string_constant():
+            str_value = self.lexer.eat_string_constant()
+            if str_value is None:
+                raise SyntaxError(f"Expected string, but not found {self.lexer.current_token}")
+            return Constant(str_value)
+
         else:
             raise SyntaxError(f"Expected constant, but not found {self.lexer.current_token}")
 
@@ -82,16 +85,20 @@ class Parser:
         field_list = [self.filed()]
         while self.lexer.match_delimiter(","):
             self.lexer.eat_delimiter(",")
-            field_list.extend(self.select_list())
+            field_list.append(self.filed())
         return field_list
 
     def table_list(self) -> Collection[str]:
-        tables: List[str] = [self.lexer.eat_id()]
-        if tables is None:
+        table_name = self.lexer.eat_id()
+        if table_name is None:
             raise SyntaxError("Expected table name but got None.")
-        if self.lexer.match_delimiter(","):
+        tables: List[str] = [table_name]
+        while self.lexer.match_delimiter(","):
             self.lexer.eat_delimiter(",")
-            tables.extend(self.table_list())
+            table_name = self.lexer.eat_id()
+            if table_name is None:
+                raise SyntaxError("Expected table name but got None.")
+            tables.append(table_name)
         return tables
 
     def update_command(self) -> InsertData | DeleteData | ModifyData | object:
@@ -133,23 +140,27 @@ class Parser:
         self.lexer.eat_keyword("insert")
         self.lexer.eat_keyword("into")
         table_name = self.lexer.eat_id()
+
         self.lexer.eat_delimiter("(")
-        # TODO: filed_listの実装確認
         field_list = [self.filed()]
+        while self.lexer.match_delimiter(","):
+            self.lexer.eat_delimiter(",")
+            field_list.append(self.filed())
+        self.lexer.eat_delimiter(")")
+
+        self.lexer.eat_keyword("values")
+        self.lexer.eat_delimiter("(")
         values = [self.constant()]
         while self.lexer.match_delimiter(","):
             self.lexer.eat_delimiter(",")
             values.append(self.constant())
         self.lexer.eat_delimiter(")")
 
-        if not table_name or not field_list or not values:
-            raise SyntaxError(f"Expected table_name, field_list and values, but not found {self.lexer.current_token}")
-
         return InsertData(table_name, field_list, values)
 
     def const_list(self) -> list[Constant]:
         values = [self.constant()]
-        if self.lexer.match_delimiter(","):
+        while self.lexer.match_delimiter(","):
             self.lexer.eat_delimiter(",")
             values.append(self.constant())
         return values
@@ -181,27 +192,37 @@ class Parser:
         if not table_name or not schema:
             raise SyntaxError(f"Expected table_name and schema, but not found {self.lexer.current_token}")
 
+
         return CreateTable(table_name, schema)
 
     def field_defs(self) -> Schema:
-        field_name = self.filed()
+        schema = self.field_def()
 
+        while self.lexer.match_delimiter(","):
+            self.lexer.eat_delimiter(",")
+            next_field = self.field_def()
+
+            schema.add_all(next_field)
+
+        return schema
+
+    def field_def(self) -> Schema:
+        field_name = self.filed()
         return self.field_type(field_name)
 
     def field_type(self, field_name: str) -> Schema:
         schema = Schema()
         if self.lexer.match_keyword("int"):
-            self.lexer.eat_delimiter("int")
+            self.lexer.eat_keyword("int")
             schema.add_int_field(field_name)
-        else:
+        elif self.lexer.match_keyword("varchar"):
             self.lexer.eat_keyword("varchar")
             self.lexer.eat_delimiter("(")
             string_length = self.lexer.eat_int_constant()
             self.lexer.eat_delimiter(")")
-
-            if not string_length:
-                raise SyntaxError(f"Expected string_length, but not found {self.lexer.current_token}")
             schema.add_string_field(field_name, string_length)
+        else:
+            raise SyntaxError(f"Expected string_length, but not found {self.lexer.current_token}")
 
         return schema
 

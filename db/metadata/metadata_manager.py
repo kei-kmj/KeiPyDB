@@ -36,7 +36,6 @@ class MetadataManager:
     def get_index_info(self, table_name: str, transaction: Transaction) -> Dict[str, IndexInfo]:
         return self.index_manager.get_index_info(table_name, transaction)
 
-    def get_stat_info(self, table_name: str, transaction: Transaction) -> StatInfo:
-        return self.stat_manager.get_stat_info(
-            table_name, self.table_manager.get_layout(table_name, transaction), transaction
-        )
+    def get_stat_info(self, table_name: str, layout: Layout, transaction: Transaction) -> StatInfo:
+
+        return self.stat_manager.get_stat_info(table_name, layout, transaction)

@@ -96,12 +96,20 @@ class TableScan(UpdateScan, ABC):
 
         self.record_page.set_string(self.current_slot, field_name, value)
 
+
     def set_value(self, field_name: str, value: Constant) -> None:
         """現在のスロットの指定されたフィールドに値を設定"""
-        if self.layout.get_schema().get_type(field_name) == FieldType.Integer:
-            self.set_int(field_name, value.as_int())
-        else:
-            self.set_string(field_name, value.as_string())
+        try:
+            if self.layout.get_schema().get_type(field_name) == FieldType.Integer:
+                self.set_int(field_name, value.as_int())
+            else:
+                self.set_string(field_name, value.as_string())
+        except KeyError:
+            # Field not found in schema, try to infer type from value
+            if value.is_int():
+                self.set_int(field_name, value.as_int())
+            else:
+                self.set_string(field_name, value.as_string())
 
     def insert(self) -> None:
         """新しいスロットを挿入する"""

@@ -34,6 +34,4 @@ class ViewManager:
                 result = table_scan.get_string("view_def")
                 break
         table_scan.close()
-        if result is None:
-            raise ValueError(f"View {view_name} not found")
         return result

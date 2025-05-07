@@ -18,13 +18,29 @@ class StartServer:
 
         try:
             planner = db.get_planner()
+            tx = db.new_transaction()
 
             create_table_sql = "CREATE TABLE test (id INT)"
             print(f"Executing: {create_table_sql}")
+            planner.execute_update(create_table_sql, tx)
+            tx.commit()
 
+            tx = db.new_transaction()
             insert_sql = "INSERT INTO test (id) VALUES (1)"
             print(f"Executing: {insert_sql}")
-            planner.execute_update(create_table_sql, db.new_transaction())
+            planner.execute_update(insert_sql, tx)
+            tx.commit()
+
+            select_sql = "SELECT id FROM test"
+            print(f"Executing: {select_sql}")
+            plan = planner.create_query_plan(select_sql, tx)
+            scan = plan.open()
+
+            while scan.next():
+                print(f"id = {scan.get_int('id')}")
+
+            scan.close()
+            tx.commit()
 
         except KeyboardInterrupt:
             print("Server stopped")

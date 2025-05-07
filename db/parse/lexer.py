@@ -88,10 +88,9 @@ class Lexer:
             return False
         return self.current_token.startswith("'") and self.current_token.endswith("'")
 
-    # TODO: match_keywordメソッドの実装
     def match_keyword(self, keyword: str) -> bool:
         """指定されたキーワードと現在のトークンが一致するかどうかを返す"""
-        return self.current_token == keyword.lower()
+        return self.current_token.lower() == keyword.lower()
 
     def match_id(self) -> bool:
         """現在のトークンが識別子かどうかを返す"""
@@ -125,7 +124,7 @@ class Lexer:
 
     def eat_keyword(self, keyword: str) -> None:
         """指定されたキーワードを消費"""
-        if self.current_token != keyword.lower():
+        if self.current_token.lower() != keyword.lower():
             raise SyntaxError(f"Expected {keyword}, but not found {self.current_token}")
 
         self.next_token()

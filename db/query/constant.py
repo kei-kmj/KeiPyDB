@@ -4,6 +4,8 @@ from typing import Union
 class Constant:
 
     def __init__(self, value: Union[int, str]) -> None:
+        self.int_value = None
+        self.str_value = None
 
         if isinstance(value, int):
             self.int_value = value
@@ -21,6 +23,9 @@ class Constant:
         if self.int_value is not None:
             return str(self.int_value)
         return self.str_value
+
+    def is_int(self) -> bool:
+        return self.int_value is not None
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Constant):

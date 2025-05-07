@@ -27,6 +27,8 @@ class TableManager:
             self.create_table("table_catalog", table_catalog_schema, transaction)
             self.create_table("field_catalog", field_catalog_schema, transaction)
 
+            transaction.commit()
+
     def create_table(self, table_name: str, schema: Schema, transaction: Transaction) -> None:
         """新しいテーブルを作成"""
         layout = Layout(schema)
@@ -44,6 +46,7 @@ class TableManager:
             field_catalog.set_int("type", schema.get_type(field_name))
             field_catalog.set_int("length", schema.get_length(field_name))
             field_catalog.set_int("offset", layout.get_offset(field_name))
+
         field_catalog.close()
 
     def get_layout(self, table_name: str, transaction: Transaction) -> Layout:
@@ -63,8 +66,11 @@ class TableManager:
         offsets: Dict[str, int] = {}
         field_catalog = TableScan(transaction, "field_catalog", self.field_catalog_layout)
         while field_catalog.next():
-            if field_catalog.get_string("table_name") == table_name:
+            name = field_catalog.get_string("table_name")
+
+            if name == table_name:
                 field_name = field_catalog.get_string("field_name")
+
                 field_type = field_catalog.get_int("type")
                 length = field_catalog.get_int("length")
                 offset = field_catalog.get_int("offset")

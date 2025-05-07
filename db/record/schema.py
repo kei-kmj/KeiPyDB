@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from db.constants import FieldType
+from db.constants import FieldType, ByteSize
 
 
 class Schema:
@@ -20,7 +20,7 @@ class Schema:
 
     def add_int_field(self, field_name: str) -> None:
         """スキーマに整数フィールドを追加"""
-        self.add_field(field_name, FieldType.Integer, 0)
+        self.add_field(field_name, FieldType.Integer, ByteSize.Int)
 
     def add_string_field(self, field_name: str, length: int) -> None:
         """スキーマに文字列フィールドを追加"""

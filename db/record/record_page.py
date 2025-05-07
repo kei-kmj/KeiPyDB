@@ -35,6 +35,8 @@ class RecordPage:
         """指定されたスロットの指定されたフィールドに文字列を設定する"""
 
         field_position = self._offset(slot) + self.layout.get_offset(field_name)
+        schema = self.layout.get_schema()
+        max_length = schema.get_length(field_name)
 
         self.transaction.set_string(self.block, field_position, value)
 
