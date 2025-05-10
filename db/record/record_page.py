@@ -36,7 +36,6 @@ class RecordPage:
 
         field_position = self._offset(slot) + self.layout.get_offset(field_name)
         schema = self.layout.get_schema()
-        max_length = schema.get_length(field_name)
 
         self.transaction.set_string(self.block, field_position, value)
 

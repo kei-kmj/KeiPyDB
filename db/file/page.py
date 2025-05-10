@@ -52,9 +52,7 @@ class Page:
         byte_string = value.encode(self.CHARSET)
 
         if max_length is not None and len(byte_string) > max_length:
-            raise ValueError(
-                f"String too long to store: actual={len(byte_string)} > max={max_length}"
-            )
+            raise ValueError(f"String too long to store: actual={len(byte_string)} > max={max_length}")
 
         self.set_bytes(offset, byte_string)
 

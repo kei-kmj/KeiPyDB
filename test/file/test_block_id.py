@@ -8,15 +8,18 @@ def test_new_block_id():
     assert bid.file_name == file_name
     assert bid.number() == block_num
 
+
 def test_block_id_equals():
     block_id = BlockID("test", 1)
     another_block_id = BlockID("test", 1)
     assert block_id == another_block_id
 
+
 def test_block_id_not_equals():
     block_id = BlockID("test", 1)
     another_block_id = BlockID("test", 2)
     assert block_id != another_block_id
+
 
 def test_block_id_string():
     block_id = BlockID("test", 1)

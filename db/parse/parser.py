@@ -192,7 +192,6 @@ class Parser:
         if not table_name or not schema:
             raise SyntaxError(f"Expected table_name and schema, but not found {self.lexer.current_token}")
 
-
         return CreateTable(table_name, schema)
 
     def field_defs(self) -> Schema:

@@ -1,6 +1,7 @@
+import shutil
 import struct
 from pathlib import Path
-import shutil
+
 import pytest
 
 from db.constants import ByteSize
@@ -18,17 +19,18 @@ def setup_dir(tmp_path):
     shutil.rmtree(test_dir, ignore_errors=True)
 
 
-
 @pytest.fixture
 def setup_file(setup_dir):
     """指定されたファイルを作成"""
     """指定されたファイルを作成"""
+
     def _setup_file(file_name):
         file_path = Path(setup_dir) / file_name
         file_path.parent.mkdir(parents=True, exist_ok=True)
-        with file_path.open("wb") as f:
+        with file_path.open("wb"):
             pass  # 空のファイルを作成
         return file_path
+
     return _setup_file
 
 
@@ -86,9 +88,9 @@ def test_file_manager_write(setup_file, setup_dir):
         file_content = f.read()
 
     string_length = len(test_data)
-    expected_data = b'\x00\x00\x00\t' + test_data.encode("ascii")
-    assert file_content[:ByteSize.Int] == struct.pack(">I", string_length)
-    assert file_content[:len(expected_data)] == expected_data
+    expected_data = b"\x00\x00\x00\t" + test_data.encode("ascii")
+    assert file_content[: ByteSize.Int] == struct.pack(">I", string_length)
+    assert file_content[: len(expected_data)] == expected_data
 
 
 def test_file_manager_read(setup_file, setup_dir):
@@ -131,6 +133,3 @@ def test_file_manager_read_empty_data(setup_file, setup_dir):
     manager.read(block_id, read_page)
 
     assert read_page.get_string(ByteSize.Int) == ""
-
-
-

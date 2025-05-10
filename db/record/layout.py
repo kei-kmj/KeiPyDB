@@ -24,8 +24,6 @@ class Layout:
             self.offsets = offsets
             self.slot_size = slot_size
 
-        # for k, v in self.offsets.items():
-        #     print(f"         {k}: offset={v}, length={schema.get_length(k)}")
 
     def get_schema(self) -> Schema:
         """テーブルのスキーマを返す"""

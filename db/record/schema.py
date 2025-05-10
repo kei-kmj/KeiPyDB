@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from db.constants import FieldType, ByteSize
+from db.constants import ByteSize, FieldType
 
 
 class Schema:

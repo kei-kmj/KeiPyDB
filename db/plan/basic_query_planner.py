@@ -48,11 +48,10 @@ class BasicQueryPlanner(QueryPlanner, ABC):
         print(f"[BasicQueryPlanner.create_plan] Select plan created: {plan}")
 
         # Step 4: Project on the field names.
-        fields = query_data.get_fields() # フィールドリストを取得
-        print(f"[BasicQueryPlanner.create_plan] Projecting onto fields: {fields}") # 追加: フィールドリストを確認
+        fields = query_data.get_fields()  # フィールドリストを取得
+        print(f"[BasicQueryPlanner.create_plan] Projecting onto fields: {fields}")  # 追加: フィールドリストを確認
 
-        plan = ProjectPlan(plan, fields) # ProjectPlan を作成
-
+        plan = ProjectPlan(plan, fields)  # ProjectPlan を作成
 
         print("[BasicQueryPlanner.create_plan] Plan creation finished.")
 

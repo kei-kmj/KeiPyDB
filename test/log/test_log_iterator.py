@@ -1,6 +1,3 @@
-from importlib.metadata import files
-from math import log10
-
 import pytest
 
 from db.file.block_id import BlockID
@@ -12,19 +9,21 @@ from db.log.log_iterator import LogIterator
 @pytest.fixture
 def setup_file_manager(tmp_path):
     """一時ディレクトリとFileManagerをセットアップ"""
+
     def _setup(block_size):
         db_directory = tmp_path / "test_log_iterator"
         db_directory.mkdir()
         return FileManager(db_directory, block_size)
+
     return _setup
 
 
 @pytest.mark.parametrize(
     "block_number, offset, expected",
     [
-        (0, 15, True),   # オフセットがブロックサイズ未満
+        (0, 15, True),  # オフセットがブロックサイズ未満
         (0, 16, False),  # オフセットがブロックサイズと同じ
-        (1, 0, True),      # ブロック番号が0より大きい場合
+        (1, 0, True),  # ブロック番号が0より大きい場合
     ],
 )
 def test_log_iterator_has_next(block_number, offset, expected, setup_file_manager):

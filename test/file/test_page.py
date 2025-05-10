@@ -1,6 +1,3 @@
-import struct
-
-from db.constants import ByteSize, Format
 from db.file.page import Page
 
 
@@ -23,6 +20,7 @@ def test_new_page_from_bytes():
     assert len(page.get_contents()) == block_size
     assert page.CHARSET == "ascii"
 
+
 def test_page_int():
     page = Page(4096)
     offset = 0
@@ -30,12 +28,14 @@ def test_page_int():
     page.set_int(offset, value)
     assert page.get_int(offset) == value
 
+
 def test_page_bytes():
     page = Page(4096)
     offset = 0
     value = b"hello"
     page.set_bytes(offset, value)
     assert page.get_bytes(offset) == value
+
 
 def test_page_string():
     page = Page(4096)

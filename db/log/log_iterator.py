@@ -14,13 +14,12 @@ class LogIterator(Iterator[bytes]):
         self.current_offset = 0
         self.move_to_block(block)
 
-
     def __iter__(self) -> "LogIterator":
         return self
 
     def __next__(self) -> bytes:
 
-        if self.current_offset  == self.file_manager.block_size:
+        if self.current_offset == self.file_manager.block_size:
             next_block = BlockID(self.block.file_name, self.block.block_number - 1)
             self.move_to_block(next_block)
 
