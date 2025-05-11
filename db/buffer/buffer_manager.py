@@ -77,7 +77,6 @@ class BufferManager:
         for buffer in self.buffer_pool:
             if buffer.block == block:
                 return buffer
-        print(f"[DEBUG] no matching buffer found for {block}")
         return None
 
     def _choose_unpinned_buffer(self) -> Optional[Buffer]:

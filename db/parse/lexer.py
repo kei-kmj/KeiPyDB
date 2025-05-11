@@ -90,6 +90,8 @@ class Lexer:
 
     def match_keyword(self, keyword: str) -> bool:
         """指定されたキーワードと現在のトークンが一致するかどうかを返す"""
+        if self.current_token is None:
+            return False
         return self.current_token.lower() == keyword.lower()
 
     def match_id(self) -> bool:

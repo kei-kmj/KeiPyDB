@@ -20,7 +20,6 @@ class Buffer:
             self.log_sequence_number = log_sequence_number
 
     def assign_to_block(self, block: BlockID) -> None:
-        print(f"[DEBUG] assign_to_block: {block}")
         self.flush()
         self.block = block
         self.file_manager.read(self.block, self.contents)
@@ -37,7 +36,6 @@ class Buffer:
 
     def unpin(self) -> None:
         self.pins -= 1
-        print(f"[DEBUG] unpin: {self.block}, pins={self.pins}")
 
     def is_pinned(self) -> bool:
         return self.pins > 0
