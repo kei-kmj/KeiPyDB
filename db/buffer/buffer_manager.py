@@ -45,8 +45,11 @@ class BufferManager:
             buffer = self._try_to_pin(block)
 
             while buffer is None and not self._waiting_too_long(time_stamp):
-                self.condition.wait(self.MAX_TIME)
-                buffer = self._try_to_pin(block)
+                try:
+                    self.condition.wait(self.MAX_TIME)
+                    buffer = self._try_to_pin(block)
+                except KeyboardInterrupt:
+                    raise BufferAbortException()
 
             if buffer is None:
                 raise BufferAbortException()
@@ -74,6 +77,7 @@ class BufferManager:
         for buffer in self.buffer_pool:
             if buffer.block == block:
                 return buffer
+        print(f"[DEBUG] no matching buffer found for {block}")
         return None
 
     def _choose_unpinned_buffer(self) -> Optional[Buffer]:

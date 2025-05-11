@@ -46,6 +46,7 @@ class RecordPage:
     def format(self) -> None:
         """このレコードページを初期化する"""
         slot = 0
+        count = 0
         while self._is_valid_slot(slot):
             self.transaction.set_int(self.block, self._offset(slot), self.EMPTY, False)
             schema = self.layout.get_schema()
@@ -55,7 +56,7 @@ class RecordPage:
                     self.transaction.set_int(self.block, field_position, 0, False)
                 else:
                     self.transaction.set_string(self.block, field_position, "", False)
-
+            count += 1
             slot += 1
 
     def next_after(self, slot: int) -> int:
@@ -89,7 +90,7 @@ class RecordPage:
 
     def _is_valid_slot(self, slot: int) -> bool:
         """指定されたスロットが有効かどうかを返す"""
-        return self._offset(slot + 1) <= self.transaction.block_size()
+        return self._offset(slot + 1) < self.transaction.block_size()
 
     def _offset(self, slot: int) -> int:
         """指定されたスロットのオフセットを返す"""

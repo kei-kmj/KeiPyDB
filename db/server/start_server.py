@@ -25,15 +25,16 @@ class StartServer:
             planner.execute_update(create_table_sql, tx)
             tx.commit()
 
-            tx = db.new_transaction()
+            tx2 = db.new_transaction()
             insert_sql = "INSERT INTO test (id) VALUES (1)"
             print(f"Executing: {insert_sql}")
-            planner.execute_update(insert_sql, tx)
+            planner.execute_update(insert_sql, tx2)
             tx.commit()
 
+            tx3 = db.new_transaction()
             select_sql = "SELECT id FROM test"
             print(f"Executing: {select_sql}")
-            plan = planner.create_query_plan(select_sql, tx)
+            plan = planner.create_query_plan(select_sql, tx3)
             scan = plan.open()
 
             while scan.next():

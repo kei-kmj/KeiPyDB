@@ -26,12 +26,11 @@ class ViewManager:
 
     def get_view_def(self, view_name: str, transaction: Transaction) -> str:
         """指定されたビューの定義を取得"""
-        result = None
         layout = self.table_manager.get_layout("view_catalog", transaction)
         table_scan = TableScan(transaction, "view_catalog", layout)
-        while table_scan.next():
-            if table_scan.get_string("view_name") == view_name:
-                result = table_scan.get_string("view_def")
-                break
-        table_scan.close()
-        return result
+        try:
+            while table_scan.next():
+                if table_scan.get_string("view_name") == view_name:
+                    return table_scan.get_string("view_def")
+        finally:
+            table_scan.close()
