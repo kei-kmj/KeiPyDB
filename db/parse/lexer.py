@@ -126,6 +126,9 @@ class Lexer:
 
     def eat_keyword(self, keyword: str) -> None:
         """指定されたキーワードを消費"""
+        if self.current_token is None:
+            raise SyntaxError("Expected keyword, but got end of input")
+
         if self.current_token.lower() != keyword.lower():
             raise SyntaxError(f"Expected {keyword}, but not found {self.current_token}")
 

@@ -27,7 +27,7 @@ class MetadataManager:
     def create_view(self, view_name: str, view_definition: str, transaction: Transaction) -> None:
         self.view_manager.create_view(view_name, view_definition, transaction)
 
-    def get_view_definition(self, view_name: str, transaction: Transaction) -> str:
+    def get_view_definition(self, view_name: str, transaction: Transaction) -> str | None:
         return self.view_manager.get_view_def(view_name, transaction)
 
     def create_index(self, index_name: str, table_name: str, field_name: str, transaction: Transaction) -> None:

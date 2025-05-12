@@ -1,9 +1,6 @@
 from collections.abc import Collection
 from typing import List
 
-import typing_extensions
-
-from db.constants import FieldType
 from db.parse.create_index import CreateIndex
 from db.parse.create_table import CreateTable
 from db.parse.create_view import CreateView
@@ -219,6 +216,10 @@ class Parser:
             self.lexer.eat_delimiter("(")
             string_length = self.lexer.eat_int_constant()
             self.lexer.eat_delimiter(")")
+
+            if string_length is None:
+                raise ValueError(f"String length must be provided for field '{field_name}'")
+
             schema.add_string_field(field_name, string_length)
         else:
             raise SyntaxError(f"Expected string_length, but not found {self.lexer.current_token}")

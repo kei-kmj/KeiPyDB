@@ -18,30 +18,31 @@ class StartServer:
 
         try:
             planner = db.get_planner()
-            tx = db.new_transaction()
+            if planner is not None:
+                tx = db.new_transaction()
 
-            create_table_sql = "CREATE TABLE test (id INT)"
-            print(f"Executing: {create_table_sql}")
-            planner.execute_update(create_table_sql, tx)
-            tx.commit()
+                create_table_sql = "CREATE TABLE test (id INT)"
+                print(f"Executing: {create_table_sql}")
+                planner.execute_update(create_table_sql, tx)
+                tx.commit()
 
-            tx2 = db.new_transaction()
-            insert_sql = "INSERT INTO test (id) VALUES (1)"
-            print(f"Executing: {insert_sql}")
-            planner.execute_update(insert_sql, tx2)
-            tx2.commit()
+                tx2 = db.new_transaction()
+                insert_sql = "INSERT INTO test (id) VALUES (1)"
+                print(f"Executing: {insert_sql}")
+                planner.execute_update(insert_sql, tx2)
+                tx2.commit()
 
-            tx3 = db.new_transaction()
-            select_sql = "SELECT id FROM test"
-            print(f"Executing: {select_sql}")
-            plan = planner.create_query_plan(select_sql, tx3)
-            scan = plan.open()
+                tx3 = db.new_transaction()
+                select_sql = "SELECT id FROM test"
+                print(f"Executing: {select_sql}")
+                plan = planner.create_query_plan(select_sql, tx3)
+                scan = plan.open()
 
-            while scan.next():
-                print(f"id = {scan.get_int('id')}")
+                while scan.next():
+                    print(f"id = {scan.get_int('id')}")
 
-            scan.close()
-            tx3.commit()
+                scan.close()
+                tx3.commit()
 
         except KeyboardInterrupt:
             print("Server stopped")

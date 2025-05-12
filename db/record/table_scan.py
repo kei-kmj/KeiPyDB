@@ -112,7 +112,13 @@ class TableScan(UpdateScan, ABC):
 
     def insert(self) -> None:
         """新しいスロットを挿入する"""
-        self.current_slot = self.record_page.insert_after(self.current_slot)
+        if self.record_page is None:
+            raise RuntimeError("Record page is not initialized. Call move_to_insert_position() first.")
+
+        slot = self.record_page.insert_after(self.current_slot)
+        if slot is None:
+            raise RuntimeError("Failed to insert new slot.")
+        self.current_slot = slot
 
         while self.current_slot is None or self.current_slot < 0:
             if self._at_last_block():
@@ -120,7 +126,10 @@ class TableScan(UpdateScan, ABC):
             else:
                 self._move_to_block(self.record_page.get_block().block_number + 1)
 
-            self.current_slot = self.record_page.insert_after(self.current_slot)
+            slot = self.record_page.insert_after(self.current_slot)
+            if slot is None:
+                raise RuntimeError("Failed to insert new slot after moving block.")
+            self.current_slot = slot
 
     def delete(self) -> None:
         """現在のスロットを削除する"""

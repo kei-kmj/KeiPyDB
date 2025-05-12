@@ -24,13 +24,15 @@ class ViewManager:
         table_scan.set_string("view_def", view_def)
         table_scan.close()
 
-    def get_view_def(self, view_name: str, transaction: Transaction) -> str:
+    def get_view_def(self, view_name: str, transaction: Transaction) -> str | None:
         """指定されたビューの定義を取得"""
+        result = None
         layout = self.table_manager.get_layout("view_catalog", transaction)
         table_scan = TableScan(transaction, "view_catalog", layout)
-        try:
-            while table_scan.next():
-                if table_scan.get_string("view_name") == view_name:
-                    return table_scan.get_string("view_def")
-        finally:
-            table_scan.close()
+
+        while table_scan.next():
+            if table_scan.get_string("view_name") == view_name:
+                result = table_scan.get_string("view_def")
+
+        table_scan.close()
+        return result

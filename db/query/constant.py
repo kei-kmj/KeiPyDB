@@ -17,11 +17,16 @@ class Constant:
             raise ValueError("Unknown field type")
 
     def as_int(self) -> int:
+        if self.int_value is None:
+            raise TypeError("Constant does not hold an int")
+
         return self.int_value
 
     def as_string(self) -> str:
         if self.int_value is not None:
             return str(self.int_value)
+        if self.str_value is None:
+            raise ValueError("Constant does not hold a string")
         return self.str_value
 
     def is_int(self) -> bool:
@@ -33,10 +38,12 @@ class Constant:
         return self.int_value == other.int_value and self.str_value == other.str_value
 
     def __lt__(self, other: "Constant") -> bool:
-        if self.int_value is not None:
+        if self.int_value is not None and other.int_value is not None:
             return self.int_value < other.int_value
-        else:
+        elif self.str_value is not None and other.str_value is not None:
             return self.str_value < other.str_value
+        else:
+            raise TypeError("Cannot compare Constants of mismatched types")
 
     def __hash__(self) -> int:
         if self.int_value is not None:
