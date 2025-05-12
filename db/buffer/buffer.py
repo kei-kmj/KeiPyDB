@@ -14,6 +14,9 @@ class Buffer:
         self.transaction_number = -1
         self.log_sequence_number = -1
 
+    def get_contents(self) -> Page:
+        return self.contents
+
     def set_modified(self, transaction_number: int, log_sequence_number: int) -> None:
         self.transaction_number = transaction_number
         if log_sequence_number >= 0:

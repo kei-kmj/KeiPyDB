@@ -18,6 +18,7 @@ class ConcurrencyManager:
 
     def lock_exclusive(self, block: BlockID) -> None:
         if not self.has_exclusive_lock(block):
+            self.lock_shared(block)
             self.lock_table.lock_exclusive(block)
             self.locks[block] = LockType.Exclusive
 

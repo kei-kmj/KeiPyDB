@@ -38,13 +38,13 @@ class RecoveryManager:
         self.log_manager.flush(lsn)
 
     def set_int(self, buffer: Buffer, offset: int) -> int:
-        old_value = buffer.contents.get_int(offset)
+        old_value = buffer.get_contents().get_int(offset)
         block = buffer.block
         return SetIntRecord.write_to_log(self.log_manager, self.tx_number, block, offset, old_value)
 
     def set_string(self, buffer: Buffer, offset: int) -> int:
 
-        old_value = buffer.contents.get_string(offset)
+        old_value = buffer.get_contents().get_string(offset)
         block = buffer.block
         return SetStringRecord.write_to_log(self.log_manager, self.tx_number, block, offset, old_value)
 

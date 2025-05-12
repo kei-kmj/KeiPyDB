@@ -91,6 +91,7 @@ class TableScan(UpdateScan, ABC):
 
     def set_string(self, field_name: str, value: str) -> None:
         """現在のスロットの指定されたフィールドに文字列を設定する"""
+        print(f"[DEBUG] Setting string value { self.file_name}")
         if self.record_page is None:
             raise RuntimeError("Record page is not initialized. Ensure you have moved to a valid block first")
 
@@ -98,6 +99,7 @@ class TableScan(UpdateScan, ABC):
 
     def set_value(self, field_name: str, value: Constant) -> None:
         """現在のスロットの指定されたフィールドに値を設定"""
+        print(f"[DEBUG] Set value {self.file_name}")
         try:
             if self.layout.get_schema().get_type(field_name) == FieldType.Integer:
                 self.set_int(field_name, value.as_int())
@@ -112,6 +114,7 @@ class TableScan(UpdateScan, ABC):
 
     def insert(self) -> None:
         """新しいスロットを挿入する"""
+        print("[DEBUG] Inserting new slot")
         self.current_slot = self.record_page.insert_after(self.current_slot)
 
         while self.current_slot is None or self.current_slot < 0:

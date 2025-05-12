@@ -147,6 +147,7 @@ class BtreePage:
             self.make_default_record(block, position)
 
     def make_default_record(self, block: BlockID, position: int) -> None:
+        print("make_default_record")
         for field_name in self.layout.schema.get_fields():
             offset = self.layout.get_offset(field_name)
 

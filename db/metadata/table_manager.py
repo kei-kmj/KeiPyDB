@@ -39,6 +39,7 @@ class TableManager:
         table_catalog.close()
 
         field_catalog = TableScan(transaction, "field_catalog", self.field_catalog_layout)
+        print("[DEBUG] field_catalog=", field_catalog)
         for field_name in schema.get_fields():
             field_catalog.insert()
             field_catalog.set_string("table_name", table_name)

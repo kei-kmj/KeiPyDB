@@ -21,11 +21,11 @@ class LockTable:
 
         with self.condition:
             start_time = time.time()
-            while self._has_exclusive_lock(block) and not self._waiting_too_long(start_time):
-                self.condition.wait(self.MAX_TIME)
-
-            if self._has_exclusive_lock(block):
-                raise LockAbortException("Unable to acquire shared lock within the maximum wait time")
+            while self._has_exclusive_lock(block):
+                timeout = self.MAX_TIME - (time.time() - start_time)
+                if timeout <= 0:
+                    raise LockAbortException("Unable to acquire shared lock within the maximum wait time")
+                self.condition.wait(timeout)
 
             current = self._get_lock_value(block)
             self.locks[block] = current + 1
@@ -55,7 +55,7 @@ class LockTable:
                 self.condition.notify_all()
 
     def _has_exclusive_lock(self, block: BlockID) -> bool:
-        return self._get_lock_value(block) < LockMode.No_Lock
+        return self._get_lock_value(block) == LockMode.Exclusive_Lock
 
     def _has_other_shared_locks(self, block: BlockID) -> bool:
         return self._get_lock_value(block) > LockMode.Shared_Lock

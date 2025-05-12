@@ -29,7 +29,7 @@ class StartServer:
             insert_sql = "INSERT INTO test (id) VALUES (1)"
             print(f"Executing: {insert_sql}")
             planner.execute_update(insert_sql, tx2)
-            tx.commit()
+            tx2.commit()
 
             tx3 = db.new_transaction()
             select_sql = "SELECT id FROM test"
@@ -41,7 +41,7 @@ class StartServer:
                 print(f"id = {scan.get_int('id')}")
 
             scan.close()
-            tx.commit()
+            tx3.commit()
 
         except KeyboardInterrupt:
             print("Server stopped")

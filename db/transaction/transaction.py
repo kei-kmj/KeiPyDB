@@ -31,7 +31,6 @@ class Transaction:
         self.recovery_manager.commit()
         self.concurrency_manager.release()
         self.buffer_list.unpin_all()
-        print(f"Transaction {self.tx_number} committed")
 
     def rollback(self) -> None:
         self.recovery_manager.rollback()
@@ -52,12 +51,12 @@ class Transaction:
     def get_int(self, block: BlockID, offset: int) -> int:
         self.concurrency_manager.lock_shared(block)
         buffer = self.buffer_manager.pin(block)
-        return buffer.contents.get_int(offset)
+        return buffer.get_contents().get_int(offset)
 
     def get_string(self, block: BlockID, offset: int) -> str:
         self.concurrency_manager.lock_shared(block)
         buffer = self.buffer_manager.pin(block)
-        return buffer.contents.get_string(offset)
+        return buffer.get_contents().get_string(offset)
 
     def set_int(self, block: BlockID, offset: int, value: int, ok_to_log: bool = True) -> None:
         self.concurrency_manager.lock_exclusive(block)
@@ -68,10 +67,10 @@ class Transaction:
         if ok_to_log:
             lsn = self.recovery_manager.set_int(buffer, offset)
 
-        buffer.contents.set_int(offset, value)
+        buffer.get_contents().set_int(offset, value)
         buffer.set_modified(self.tx_number, lsn)
 
-    def set_string(self, block: BlockID, offset: int, value: str, ok_to_log: bool = True) -> None:
+    def set_string(self, block: BlockID, offset: int, value: str, ok_to_log: bool = False) -> None:
         self.concurrency_manager.lock_exclusive(block)
         buffer = self.buffer_list.get_buffer(block)
         if not buffer:
@@ -79,7 +78,7 @@ class Transaction:
         lsn = -1
         if ok_to_log:
             lsn = self.recovery_manager.set_string(buffer, offset)
-        buffer.contents.set_string(offset, value)
+        buffer.get_contents().set_string(offset, value)
         buffer.set_modified(self.tx_number, lsn)
 
     def size(self, file_name: str) -> int:
