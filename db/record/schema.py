@@ -39,7 +39,6 @@ class Schema:
 
     def get_fields(self) -> List[str]:
         """スキーマに含まれるすべてのフィールド名を返す"""
-        # print(f"[DEBUG] creating fields for table={self.fields}, info={self.info}, length={len(self.fields)}")
         return self.fields
 
     def has_field(self, field_name: str) -> bool:

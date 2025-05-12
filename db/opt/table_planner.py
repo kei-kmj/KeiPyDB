@@ -53,7 +53,6 @@ class TablePlanner:
             value = self.predicate.equates_with_constant(filed_name)
 
             if value is not None:
-                print(f"Index on {filed_name} used")
                 return IndexSelectPlan(self.my_plan, index_info, value)
 
         return None
