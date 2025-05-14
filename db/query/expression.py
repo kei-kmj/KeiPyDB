@@ -20,13 +20,12 @@ class Expression:
 
     def evaluate(self, scan: Scan) -> Constant:
         """現在のスキャンに基づいて式を評価する"""
-        if not self.field_name or not self.constant:
-            raise ValueError("Expression is not a field name or a constant.")
-
         if self.constant is not None:
             return self.constant
         elif self.field_name is not None:
             return scan.get_value(self.field_name)
+        else:
+            raise ValueError("Expression must be either a constant or a field name.")
 
     def is_field_name(self) -> bool:
         """式がフィールド名かどうかを返す"""

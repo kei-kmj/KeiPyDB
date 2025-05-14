@@ -11,7 +11,6 @@ class BlockID:
         """ブロック番号を返す"""
         return self.block_number
 
-    # TODO: 後で、仮引数名を見直す
     def __eq__(self, other: object) -> bool:
         """BlockIDが等しいかどうかを判定
         :param other: 比較対象のBlockID

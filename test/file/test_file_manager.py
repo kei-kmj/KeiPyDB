@@ -52,17 +52,11 @@ def test_new_file_manager(setup_dir):
 
 def test_existing_file_manager(setup_dir):
 
-    block_size = 4096
-    db_directory = setup_dir
+    dummy_file = Path(setup_dir) / "dummy.txt"
+    dummy_file.write_text("test")
 
-    # テスト前にディレクトリが存在することを確認
-    assert Path(db_directory).exists()
+    manager = FileManager(setup_dir, 4096)
 
-    manager = FileManager(db_directory, block_size)
-
-    assert manager is not None
-    assert manager.db_directory == Path(db_directory)
-    assert manager.block_size == block_size
     assert not manager.is_new
 
 
