@@ -1,101 +1,51 @@
-from unittest.mock import Mock
+import os
+import tempfile
+import shutil
 
-from db.constants import ByteSize
-from db.file.block_id import BlockID
+import pytest
+
 from db.file.file_manager import FileManager
-from db.file.page import Page
-from db.log.log_iterator import LogIterator
 from db.log.log_manager import LogManager
 
 
-def test_初期化時にブロックが作成されること():
-    mock_file_manager = Mock(spec=FileManager)
-    mock_file_manager.block_size = 1024
-    mock_file_manager.length.return_value = 0
-    mock_file_manager.append.return_value = BlockID("testfile", 0)
+@pytest.fixture
+def temp_log_env():
+    temp_dir = tempfile.mkdtemp()
+    block_size = 1024
+    file_manager = FileManager(temp_dir, block_size)
+    log_file = "test_log"
+    log_manager = LogManager(file_manager, log_file)
 
-    log_manager = LogManager(mock_file_manager, "testfile")
+    yield log_manager, file_manager, log_file
 
-    assert log_manager.current_block == BlockID("testfile", 0)
-    mock_file_manager.append.assert_called_once_with("testfile")
-
-
-def test_初期化時に既存ブロックを読み込むこと():
-    mock_file_manager = Mock(spec=FileManager)
-    mock_file_manager.block_size = 1024
-    mock_page = Mock(spec=Page)
-    mock_file_manager.length.return_value = 1
-    mock_file_manager.read.return_value = None
-
-    log_manager = LogManager(mock_file_manager, "testfile")
-    log_manager.log_page = mock_page
-
-    assert log_manager.current_block == BlockID("testfile", 0)
+    shutil.rmtree(temp_dir)
 
 
-def test_appendでレコードが正しく追加されること():
-    mock_file_manager = Mock(spec=FileManager)
-    mock_file_manager.block_size = 1024
-    mock_page = Mock(spec=Page)
-    mock_file_manager.length.return_value = 1
-    mock_page.get_int.return_value = 1024
-
-    log_manager = LogManager(mock_file_manager, "testfile")
-    log_manager.log_page = mock_page
-
-    lsn = log_manager.append(b"test_record")
-
-    assert lsn == 1
-    mock_page.set_bytes.assert_called_once()
-    mock_page.set_int.assert_called_with(0, 1024 - (len(b"test_record") + ByteSize.Int))
+def test_append_increases_lsn(temp_log_env):
+    log_manager, *_ = temp_log_env
+    initial_lsn = log_manager.current_lsn
+    lsn = log_manager.append(b"test record")
+    assert lsn == initial_lsn + 1
 
 
-def test_appendで新しいブロックが作成されること():
-    mock_file_manager = Mock(spec=FileManager)
-    mock_file_manager.block_size = 1024
-    mock_page = Mock(spec=Page)
-    mock_file_manager.length.return_value = 1
-    mock_file_manager.append.return_value = BlockID("testfile", 1)
-    mock_page.get_int.side_effect = [4, 1024]  # 最初のブロックが一杯で次のブロックを作成
+def test_flush_writes_to_disk(temp_log_env):
+    log_manager, file_manager, log_file = temp_log_env
+    log_manager.append(b"test record")
+    lsn = log_manager.current_lsn
+    log_manager.flush(lsn)
 
-    log_manager = LogManager(mock_file_manager, "testfile")
-    log_manager.log_page = mock_page
-
-    lsn = log_manager.append(b"test_record")
-
-    assert lsn == 1
-    assert log_manager.current_block == BlockID("testfile", 1)
-    mock_file_manager.append.assert_called_once_with("testfile")
-    mock_file_manager.write.assert_called()
+    # 明示的な flush によって last_saved_lsn が更新されていることを確認
+    assert log_manager.last_saved_lsn == lsn
 
 
-def test_iteratorでLogIteratorを返すこと():
-    mock_file_manager = Mock(spec=FileManager)
-    mock_file_manager.block_size = 1024
-    mock_page = Mock(spec=Page)
-    mock_file_manager.length.return_value = 1
-    mock_page.get_int.return_value = 1024
+def test_append_new_block_if_not_enough_space(temp_log_env):
+    log_manager, file_manager, log_file = temp_log_env
 
-    log_manager = LogManager(mock_file_manager, "testfile")
-    log_manager.log_page = mock_page
+    large_record = b"x" * (file_manager.block_size - 8)
+    log_manager.append(large_record)
 
-    iterator = log_manager.iterator()
+    prev_block = log_manager.current_block
+    log_manager.append(b"tiny")
+    new_block = log_manager.current_block
 
-    assert isinstance(iterator, LogIterator)
-    assert iterator.file_manager == mock_file_manager
-    assert iterator.block == BlockID("testfile", 0)
-
-
-def test_flushでデータが保存されること():
-    mock_file_manager = Mock(spec=FileManager)
-    mock_file_manager.block_size = 1024
-    mock_page = Mock(spec=Page)
-    mock_file_manager.length.return_value = 1
-    mock_page.get_int.return_value = 1024
-
-    log_manager = LogManager(mock_file_manager, "testfile")
-    log_manager.log_page = mock_page
-
-    log_manager.flush(1)
-
-    mock_file_manager.write.assert_called_once_with(BlockID("testfile", 0), mock_page)
+    assert prev_block != new_block

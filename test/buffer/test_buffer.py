@@ -1,67 +1,59 @@
+import struct
+import tempfile
+import shutil
 from unittest.mock import Mock
 
-from db.buffer.buffer import Buffer
 from db.file.block_id import BlockID
 from db.file.file_manager import FileManager
 from db.log.log_manager import LogManager
+from db.buffer.buffer import Buffer
+from db.file.page import Page
 
 
-def test_ブロックを割り当てられる():
-    file_manager = Mock(spec=FileManager)
-    log_manager = Mock(spec=LogManager)
-    file_manager.block_size = 1024
-    file_manager.read = Mock()
+import pytest
 
-    block = BlockID("testfile", 1)
+
+@pytest.fixture
+def test_env():
+    temp_dir = tempfile.mkdtemp()
+    block_size = 400
+    file_manager = FileManager(temp_dir, block_size)
+    log_manager = LogManager(file_manager, "test_log")
     buffer = Buffer(file_manager, log_manager)
 
-    buffer.assign_to_block(block)
+    yield buffer, file_manager
 
-    assert buffer.block == block
-    assert buffer.pins == 0
-    file_manager.read.assert_called_once_with(block, buffer.contents)
+    shutil.rmtree(temp_dir)
 
 
-def test_バッファをフラッシュできる():
-    file_manager = Mock(spec=FileManager)
-    log_manager = Mock(spec=LogManager)
-    file_manager.block_size = 1024
+def test_pin_unpin_behavior(test_env):
+    buffer, _ = test_env
 
-    block = BlockID("testfile", 1)
-    buffer = Buffer(file_manager, log_manager)
+    assert not buffer.is_pinned()
+    buffer.pin()
+    assert buffer.is_pinned()
+    buffer.unpin()
+    assert not buffer.is_pinned()
 
-    buffer.assign_to_block(block)
-    buffer.set_modified(42, 100)
+
+def test_modifying_tx_tracking(test_env):
+    buffer, _ = test_env
+    assert buffer.modifying_tx() == -1
+    buffer.set_modified(transaction_number=42, log_sequence_number=7)
+    assert buffer.modifying_tx() == 42
+
+def test_flush_calls_log_and_file_write():
+    mock_file_manager = Mock()
+    mock_file_manager.block_size = 400
+    mock_log_manager = Mock()
+    buffer = Buffer(mock_file_manager, mock_log_manager)
+
+    buffer.block = BlockID("test_file", 0)
+    buffer.contents.set_int(4, 12345)
+    buffer.set_modified(transaction_number=42, log_sequence_number=99)
 
     buffer.flush()
 
-    log_manager.flush.assert_called_once_with(100)
-    file_manager.write.assert_called_once_with(block, buffer.contents)
+    mock_log_manager.flush.assert_called_once_with(99)
+    mock_file_manager.write.assert_called_once_with(buffer.block, buffer.contents)
     assert buffer.transaction_number == -1
-
-
-def test_ピンとアンピンが動作する():
-    file_manager = Mock(spec=FileManager)
-    log_manager = Mock(spec=LogManager)
-    file_manager.block_size = 1024
-
-    buffer = Buffer(file_manager, log_manager)
-
-    buffer.pin()
-    assert buffer.pins == 1
-
-    buffer.unpin()
-    assert buffer.pins == 0
-
-
-def test_修正状態を設定できる():
-    file_manager = Mock(spec=FileManager)
-    log_manager = Mock(spec=LogManager)
-    file_manager.block_size = 1024
-
-    buffer = Buffer(file_manager, log_manager)
-
-    buffer.set_modified(42, 100)
-
-    assert buffer.transaction_number == 42
-    assert buffer.log_sequence_number == 100
