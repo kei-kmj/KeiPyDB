@@ -21,9 +21,9 @@ def setup_file_manager(tmp_path):
 @pytest.mark.parametrize(
     "block_number, offset, expected",
     [
-        (0, 15, True),  # オフセットがブロックサイズ未満
-        (0, 16, False),  # オフセットがブロックサイズと同じ
-        (1, 0, True),  # ブロック番号が0より大きい場合
+        (0, 15, True),
+        (0, 16, False),
+        (1, 0, True),
     ],
 )
 def test_log_iterator_has_next(block_number, offset, expected, setup_file_manager):
@@ -36,20 +36,18 @@ def test_log_iterator_has_next(block_number, offset, expected, setup_file_manage
     assert log_iterator.has_next() == expected
 
 
-def test_log_iterator_next_not_finished(setup_file_manager):
-    block_size = 14
+def test_log_iterator_raises_value_error_on_invalid_block(setup_file_manager):
+    block_size = 16
     file_manager = setup_file_manager(block_size)
 
-    file_name = "log_file"
-    record = b"record"
+    file_name = "empty_log"
     page = Page(block_size)
 
-    page.set_int(0, 4)
-    page.set_bytes(4, record)
-    file_manager.write(BlockID(file_name, 3), page)
+    page.set_int(0, block_size)
+    file_manager.write(BlockID(file_name, 0), page)
 
-    log_iterator = LogIterator(file_manager, BlockID(file_name, 3))
+    log_iterator = LogIterator(file_manager, BlockID(file_name, 0))
+    log_iterator.current_offset = block_size
 
-    result = log_iterator.__next__()
-
-    assert result == record
+    with pytest.raises(ValueError, match="Invalid block number: -1"):
+        next(log_iterator)
