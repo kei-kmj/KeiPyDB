@@ -1,3 +1,4 @@
+import threading
 from unittest.mock import Mock
 
 import pytest
@@ -7,7 +8,7 @@ from db.file.block_id import BlockID
 from db.transaction.concurrency.lock_table import LockAbortException, LockTable
 
 
-def test_共有ロックが取得できることを確認する():
+def test_acquire_shared_lock():
     lock_table = LockTable()
     block = Mock(spec=BlockID)
 
@@ -16,7 +17,7 @@ def test_共有ロックが取得できることを確認する():
     assert lock_table.locks[block] == LockMode.Shared_Lock
 
 
-def test_排他ロックが取得できることを確認する():
+def test_acquire_exclusive_lock():
     lock_table = LockTable()
     block = Mock(spec=BlockID)
 
@@ -25,7 +26,7 @@ def test_排他ロックが取得できることを確認する():
     assert lock_table.locks[block] == LockMode.Exclusive_Lock
 
 
-def test_共有ロックが解除されることを確認する():
+def test_unlock_reduces_shared_lock_count():
     lock_table = LockTable()
     block = Mock(spec=BlockID)
 
@@ -35,7 +36,7 @@ def test_共有ロックが解除されることを確認する():
     assert block not in lock_table.locks
 
 
-def test_排他ロックが解除されることを確認する():
+def test_unlock_removes_exclusive_lock():
     lock_table = LockTable()
     block = BlockID("testfile", 0)
 
@@ -45,7 +46,7 @@ def test_排他ロックが解除されることを確認する():
     assert block not in lock_table.locks
 
 
-def test_排他ロック取得中に共有ロックが取得できないことを確認する():
+def test_shared_lock_fails_during_exclusive_lock():
     lock_table = LockTable()
     block = Mock(spec=BlockID)
 
@@ -55,11 +56,13 @@ def test_排他ロック取得中に共有ロックが取得できないこと�
         lock_table.lock_shared(block)
 
 
-def test_共有ロック取得中に排他ロックが取得できないことを確認する():
-    lock_table = LockTable()
-    block = Mock(spec=BlockID)
+def test_exclusive_lock_fails_during_shared_lock():
+    table = LockTable()
+    block = BlockID("test", 0)
+    table.MAX_TIME = 1
 
-    lock_table.lock_shared(block)
+    table.lock_shared(block)
 
-    with pytest.raises(LockAbortException):
-        lock_table.lock_exclusive(block)
+    def try_exclusive_lock():
+        with pytest.raises(LockAbortException):
+            table.lock_exclusive(block)
