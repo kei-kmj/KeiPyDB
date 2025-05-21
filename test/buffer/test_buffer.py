@@ -1,16 +1,13 @@
-import struct
-import tempfile
 import shutil
+import tempfile
 from unittest.mock import Mock
 
+import pytest
+
+from db.buffer.buffer import Buffer
 from db.file.block_id import BlockID
 from db.file.file_manager import FileManager
 from db.log.log_manager import LogManager
-from db.buffer.buffer import Buffer
-from db.file.page import Page
-
-
-import pytest
 
 
 @pytest.fixture
@@ -41,6 +38,7 @@ def test_modifying_tx_tracking(test_env):
     assert buffer.modifying_tx() == -1
     buffer.set_modified(transaction_number=42, log_sequence_number=7)
     assert buffer.modifying_tx() == 42
+
 
 def test_flush_calls_log_and_file_write():
     mock_file_manager = Mock()

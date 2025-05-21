@@ -1,4 +1,3 @@
-import pytest
 from db.metadata.stat_info import StatInfo
 
 

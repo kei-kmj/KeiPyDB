@@ -5,19 +5,19 @@ from db.log.log_manager import LogManager
 from db.transaction.recovery.checkpoint_record import CheckpointRecord
 
 
-def test_チェックポイントレコードの初期化を確認する():
+def test_checkpoint_record_initialization():
     checkpoint = CheckpointRecord()
     assert checkpoint.CHECKPOINT == 2
     assert str(checkpoint) == "<CHECKPOINT>"
 
 
-def test_チェックポイントレコードのトランザクションIDがダミー値であることを確認する():
+def test_checkpoint_record_tx_number_is_dummy():
     assert CheckpointRecord.tx_number() == -1
 
 
-def test_ログへのチェックポイントレコード書き込みを確認する():
+def test_checkpoint_record_write_to_log():
     log_manager = Mock(spec=LogManager)
-    log_manager.append.return_value = 123  # Mock LSN
+    log_manager.append.return_value = 123
 
     lsn = CheckpointRecord.write_to_log(log_manager)
 
