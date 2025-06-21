@@ -4,6 +4,9 @@ class BlockID:
         :param file_name: ファイル名
         :param block_number: ブロック番号
         """
+        if block_number < 0:
+            raise ValueError(f"Block number must be non-negative: {block_number}")
+
         self.file_name = file_name
         self.block_number = block_number
 

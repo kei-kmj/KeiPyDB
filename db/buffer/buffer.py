@@ -9,7 +9,7 @@ class Buffer:
         self.file_manager = file_manager
         self.log_manager = log_manager
         self.contents = Page(self.file_manager.block_size)
-        self.block = BlockID("", -1)
+        self.block = None
         self.pins = 0
         self.transaction_number = -1
         self.log_sequence_number = -1
@@ -29,7 +29,7 @@ class Buffer:
         self.pins = 0
 
     def flush(self) -> None:
-        if self.transaction_number >= 0:
+        if self.transaction_number >= 0 and self.transaction_number is not None:
             self.log_manager.flush(self.log_sequence_number)
             self.file_manager.write(self.block, self.contents)
             self.transaction_number = -1

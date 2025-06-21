@@ -82,14 +82,11 @@ class Transaction:
         buffer.set_modified(self.tx_number, lsn)
 
     def size(self, file_name: str) -> int:
-        dummy_block = BlockID(file_name, Transaction.END_OF_FILE)
-        self.concurrency_manager.lock_shared(dummy_block)
         return self.file_manager.length(file_name)
 
     def append(self, file_name: str) -> BlockID:
-        dummy_block = BlockID(file_name, Transaction.END_OF_FILE)
-        self.concurrency_manager.lock_exclusive(dummy_block)
-        return self.file_manager.append(file_name)
+        new_block = self.file_manager.append(file_name)
+        return new_block
 
     def block_size(self) -> int:
         return self.file_manager.block_size
