@@ -1,4 +1,5 @@
 import os
+import threading
 from pathlib import Path
 from typing import BinaryIO, Dict, cast
 
@@ -15,6 +16,10 @@ class FileManager:
         self.is_new: bool = not self.db_directory.exists() or not any(self.db_directory.iterdir())
         self.open_files: Dict[str, BinaryIO] = {}
 
+        # スレッドセーフなロックを使用
+        self._lock = threading.RLock()
+        self._file_locks: Dict[str, threading.RLock] = {}
+
         if self.is_new:
             self.db_directory.mkdir(parents=True, exist_ok=True)
 
@@ -25,23 +30,28 @@ class FileManager:
 
     def read(self, block_id: BlockID, page: Page) -> None:
         """ブロックIDに対応するファイルからデータを読み込む"""
+        if not block_id.file_name:
+            raise ValueError("File name cannot be empty")
+
         if block_id.number() < 0:
             raise ValueError(f"Invalid block number: {block_id.number()}")
 
-        try:
-            f = self._get_file(block_id.file_name)
-            f.seek(block_id.number() * self.block_size)
-            page.set_bytes(0, f.read(self.block_size))
+        with self._get_file_lock(block_id.file_name):
+            try:
+                f = self._get_file(block_id.file_name)
+                f.seek(block_id.number() * self.block_size)
+                data = f.read(self.block_size)
+                page.buffer[:len(data)] = data
 
-        except Exception as e:
-            raise RuntimeError(f"Cannot read block {block_id} from file: {e}")
+            except Exception as e:
+                raise RuntimeError(f"Cannot read block {block_id} from file: {e}")
 
     def write(self, block: BlockID, page: Page) -> None:
         """ブロックIDに対応するファイルにデータを書き込む"""
         try:
             f = self._get_file(block.file_name)
             f.seek(block.block_number * self.block_size)
-            f.write(page.get_contents())
+            f.write(page.buffer)
             f.flush()
 
         except Exception as e:
@@ -88,3 +98,11 @@ class FileManager:
             self.open_files[file_name] = cast(BinaryIO, open(file_path, mode))
 
         return self.open_files[file_name]
+
+
+    def _get_file_lock(self, file_name: str) -> threading.RLock:
+        """ファイル単位のロックを取得"""
+        with self._lock:
+            if file_name not in self._file_locks:
+                self._file_locks[file_name] = threading.RLock()
+            return self._file_locks[file_name]

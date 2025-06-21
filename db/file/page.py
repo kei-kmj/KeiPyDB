@@ -61,6 +61,6 @@ class Page:
         bytes_per_char = len(codecs.lookup(Page.CHARSET).incrementalencoder().encode("a"))
         return ByteSize.Int + (string_length * bytes_per_char)
 
-    def get_contents(self) -> bytearray:
+    def get_contents(self) -> bytes:
         """バッファ全体を含むバイト列を取得"""
-        return self.buffer
+        return bytes(self.buffer)

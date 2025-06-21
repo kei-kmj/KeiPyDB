@@ -35,6 +35,8 @@ class Buffer:
             self.transaction_number = -1
 
     def pin(self) -> None:
+
+
         self.pins += 1
 
     def unpin(self) -> None:
