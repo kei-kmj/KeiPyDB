@@ -88,10 +88,12 @@ class RecordPage:
 
     def _is_valid_slot(self, slot: int) -> bool:
         """指定されたスロットが有効かどうかを返す"""
-        return self._offset(slot + 1) < self.transaction.block_size()
+        return slot >= 0 and self._offset(slot + 1) <= self.transaction.block_size()
 
     def _offset(self, slot: int) -> int:
         """指定されたスロットのオフセットを返す"""
         slot_size = self.layout.get_slot_size()
         offset = slot * slot_size
         return offset
+
+

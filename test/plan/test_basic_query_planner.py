@@ -32,5 +32,5 @@ def basic_query_planner(mock_metadata_manager):
     return BasicQueryPlanner(mock_metadata_manager)
 
 
-def test_create_planでベーシックプランを作成できること():
+def test_create_plan():
     assert 1 + 1 == 2

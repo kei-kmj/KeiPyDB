@@ -27,20 +27,28 @@ class Buffer:
         self.block = block
         self.file_manager.read(self.block, self.contents)
         self.pins = 0
+        self.transaction_number = -1
+        self.log_sequence_number = -1
 
     def flush(self) -> None:
-        if self.transaction_number >= 0 and self.transaction_number is not None:
+        if self.block is None:
+            return
+
+        if self.log_sequence_number >= 0:
             self.log_manager.flush(self.log_sequence_number)
-            self.file_manager.write(self.block, self.contents)
-            self.transaction_number = -1
+
+        self.file_manager.write(self.block, self.contents)
+
+        self.transaction_number = -1
 
     def pin(self) -> None:
-
-
         self.pins += 1
 
     def unpin(self) -> None:
-        self.pins -= 1
+        if self.pins > 0:
+            self.pins -= 1
+        else:
+            raise ValueError("Cannot unpin buffer: pins count is already at minimum")
 
     def is_pinned(self) -> bool:
         return self.pins > 0

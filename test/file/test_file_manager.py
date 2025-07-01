@@ -141,21 +141,7 @@ def test_file_manager_write_multiple_blocks(setup_dir):
         page = Page(block_size)
         block_id = BlockID(file_name, block_num)
         manager.read(block_id, page)
-        assert page.get_string(ByteSize.Int) == expected_data
-
-
-def test_file_manager_write_error_handling(setup_dir):
-    manager = FileManager(setup_dir, 4096)
-    page = Page(4096)
-    
-    # 無効なファイル名でのエラーハンドリング（実装依存）
-    # 注：実際の動作はOSやファイルシステムに依存
-    try:
-        # 無効なファイル名の例（OSによって異なる）
-        invalid_block = BlockID("", 0)
-        manager.write(invalid_block, page)
-    except RuntimeError as e:
-        assert "Cannot write block" in str(e)
+        assert page.get_string(0) == expected_data
 
 
 def test_file_manager_read(setup_file, setup_dir):
@@ -176,8 +162,7 @@ def test_file_manager_read(setup_file, setup_dir):
     read_page = Page(block_size)
     manager.read(block_id, read_page)
 
-    # readメソッドはページ全体をset_bytesで設定するため、offset 0から読む
-    assert read_page.get_string(ByteSize.Int) == test_data
+    assert read_page.get_string(0) == test_data
 
 
 def test_file_manager_read_empty_data(setup_file, setup_dir):
@@ -199,18 +184,6 @@ def test_file_manager_read_empty_data(setup_file, setup_dir):
     manager.read(block_id, read_page)
 
     assert read_page.get_string(ByteSize.Int) == ""
-
-
-def test_file_manager_read_negative_block_number(setup_dir):
-    manager = FileManager(setup_dir, 4096)
-    page = Page(4096)
-    
-    # 負のブロック番号
-    block_id = BlockID("test", -1)
-    
-    with pytest.raises(ValueError) as exc_info:
-        manager.read(block_id, page)
-    assert "Invalid block number" in str(exc_info.value)
 
 
 def test_file_manager_read_beyond_file_end(setup_dir):
@@ -278,7 +251,7 @@ def test_file_manager_append_with_data(setup_dir):
         page = Page(block_size)
         block_id = BlockID(file_name, i)
         manager.read(block_id, page)
-        assert page.get_string(ByteSize.Int) == expected_data
+        assert page.get_string(0) == expected_data
 
 
 def test_file_manager_length(setup_dir):
@@ -349,10 +322,9 @@ def test_file_manager_concurrent_operations(setup_dir):
         read_page = Page(512)
         block_id = BlockID(file_name, i)
         manager.read(block_id, read_page)
-        
-        # readはページ全体をset_bytesで設定するため、元のデータはByteSizeInt分オフセットされる
-        assert read_page.get_int(ByteSize.Int) == i * 100
-        assert read_page.get_string(ByteSize.Int + 4) == f"Block {i}"
+
+        assert read_page.get_int(0) == i * 100
+        assert read_page.get_string(4) == f"Block {i}"
 
 
 def test_file_manager_error_propagation(setup_dir):

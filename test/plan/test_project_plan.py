@@ -28,29 +28,29 @@ def project_plan(mock_plan, field_list):
     return ProjectPlan(mock_plan, field_list)
 
 
-def test_openメソッドが正しいスキャンを返すこと(mock_plan, project_plan):
+def test_open_scan(mock_plan, project_plan):
     scan = Mock()
     mock_plan.open.return_value = scan
 
     assert isinstance(project_plan.open(), ProjectScan)
 
 
-def test_block_accessedメソッドが正しい値を返すこと(mock_plan, project_plan):
+def test_block_accessed_value(mock_plan, project_plan):
     assert project_plan.blocks_accessed() == 50
     mock_plan.blocks_accessed.assert_called_once()
 
 
-def test_record_outputメソッドが正しい値を返すこと(mock_plan, project_plan):
+def test_record_output_value(mock_plan, project_plan):
     assert project_plan.records_output() == 100
     mock_plan.records_output.assert_called_once()
 
 
-def test_distinct_valuesメソッドが正しい値を返すこと(mock_plan, project_plan):
+def test_distinct_values_value(mock_plan, project_plan):
     assert project_plan.distinct_values("test_field") == 10
     mock_plan.distinct_values.assert_called_once_with("test_field")
 
 
-def test_schemaメソッドが正しいスキーマを返すこと(mock_plan, project_plan):
+def test_schema_schema(mock_plan, project_plan):
     schema = project_plan.schema()
     assert isinstance(schema, Schema)
     mock_plan.schema.assert_any_call()

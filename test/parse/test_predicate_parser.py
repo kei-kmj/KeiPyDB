@@ -13,7 +13,7 @@ def mock_lexer():
     return mock
 
 
-def test_フィールドをパースできる(mock_lexer):
+def test_field(mock_lexer):
 
     mock_lexer.eat_id.return_value = "field_name"
     parser = PredicateParser("")
@@ -23,7 +23,7 @@ def test_フィールドをパースできる(mock_lexer):
     assert result == "field_name", "フィールドが正しくパースできません"
 
 
-def test_文字列定数をパースできる(mock_lexer):
+def test_string_constant(mock_lexer):
 
     mock_lexer.match_string_constant.return_value = True
     mock_lexer.eat_string_constant.return_value = "string"
@@ -34,7 +34,7 @@ def test_文字列定数をパースできる(mock_lexer):
     assert result is None, "文字列定数が正しくパースできません"
 
 
-def test_整数定数をパースできる(mock_lexer):
+def test_integer_constant(mock_lexer):
 
     mock_lexer.match_string_constant.return_value = False
     mock_lexer.eat_int_constant.return_value = 123
@@ -45,7 +45,7 @@ def test_整数定数をパースできる(mock_lexer):
     assert result is None, "整数定数が正しくパースできません"
 
 
-def test_フィールドで式をパースできる(mock_lexer):
+def test_field(mock_lexer):
 
     mock_lexer.match_id.return_value = True
     mock_lexer.eat_id.return_value = "field_name"
@@ -56,7 +56,7 @@ def test_フィールドで式をパースできる(mock_lexer):
     assert result is None, "式が正しくパースできません"
 
 
-def test_定数で式をパースできる(mock_lexer):
+def test_can_parse_expression_with_constant(mock_lexer):
 
     mock_lexer.match_id.return_value = False
     parser = PredicateParser("")
@@ -66,7 +66,7 @@ def test_定数で式をパースできる(mock_lexer):
     assert result is None, "式が正しくパースできません"
 
 
-def test_項をパースできる(mock_lexer):
+def test_can_parse_term(mock_lexer):
 
     parser = PredicateParser("")
     parser.lexer = mock_lexer
@@ -75,7 +75,7 @@ def test_項をパースできる(mock_lexer):
     assert result is None, "項が正しくパースできません"
 
 
-def test_条件式をパースできる(mock_lexer):
+def test_condition(mock_lexer):
 
     parser = PredicateParser("")
     parser.lexer = mock_lexer

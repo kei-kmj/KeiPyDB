@@ -7,7 +7,7 @@ from db.query.expression import Expression
 
 
 @pytest.mark.skip(reason="TODO:後で見直す")
-def test_定数式の評価ができる():
+def test_can_evaluate_constant_expression():
     constant = Constant(42)
     expression = Expression(constant)
 
@@ -17,7 +17,7 @@ def test_定数式の評価ができる():
 
 
 @pytest.mark.skip(reason="TODO:後で見直す")
-def test_フィールド式の評価ができる():
+def test_field():
     field_name = "field_name"
     scan = Mock()
     scan.get_value.return_value = Constant(42)
@@ -28,7 +28,7 @@ def test_フィールド式の評価ができる():
     assert result == Constant(42), "フィールド式の評価が正しくありません"
 
 
-def test_フィールド名判定が正しい():
+def test_field():
     field_name = "field_name"
     expression = Expression(field_name)
 
@@ -37,7 +37,7 @@ def test_フィールド名判定が正しい():
     assert result is True, "フィールド名判定が正しくありません"
 
 
-def test_フィールド名を取得できる():
+def test_field():
     field_name = "field_name"
     expression = Expression(field_name)
 
@@ -46,7 +46,7 @@ def test_フィールド名を取得できる():
     assert result == field_name, "フィールド名を取得できません"
 
 
-def test_スキーマに適用可能かを判定できる():
+def test_schema():
     field_name = "field_name"
     schema = Mock()
     schema.has_field.return_value = True
@@ -55,3 +55,17 @@ def test_スキーマに適用可能かを判定できる():
     result = expression.applies_to(schema)
 
     assert result is True, "スキーマに適用可能かを判定できません"
+
+
+def test_expression_basic():
+    """Test Expression class basic functionality"""
+    
+    # Test constant expression
+    const = Constant(42)
+    expr = Expression(const)
+    assert expr.is_field_name() is False
+    
+    # Test field expression
+    field_expr = Expression("test_field")
+    assert field_expr.is_field_name() is True
+    assert field_expr.as_field_name() == "test_field"

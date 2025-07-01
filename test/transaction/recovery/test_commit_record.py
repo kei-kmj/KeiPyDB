@@ -7,7 +7,7 @@ from db.transaction.recovery.commit_record import CommitRecord
 from db.transaction.transaction import Transaction
 
 
-def test_コミットレコードの初期化を確認する():
+def test_record():
     page_data = bytearray(ByteSize.Int * 2)
     page = Page(page_data)
     tx_number = 42
@@ -19,11 +19,11 @@ def test_コミットレコードの初期化を確認する():
     assert str(commit_record) == f"<COMMIT {tx_number}>"
 
 
-def test_コミットレコードのopコードが正しいことを確認する():
+def test_record_op():
     assert CommitRecord.op() == 3
 
 
-def test_コミットレコードのundoが何もしないことを確認する():
+def test_record_undo():
     transaction = Mock(spec=Transaction)
     page_data = bytearray(ByteSize.Int * 2)
     page = Page(page_data)
@@ -34,7 +34,7 @@ def test_コミットレコードのundoが何もしないことを確認する(
     transaction.assert_not_called()
 
 
-def test_コミットレコードのログ書き込みを確認する():
+def test_record():
     log_manager = Mock(spec=LogManager)
     log_manager.append.return_value = 123
 

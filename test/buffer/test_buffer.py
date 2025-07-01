@@ -67,8 +67,6 @@ def test_buffer_initialization(test_env):
     assert buffer.log_sequence_number == -1
     assert not buffer.is_pinned()
     assert buffer.modifying_tx() == -1
-    assert buffer.block.file_name == ""
-    assert buffer.block.block_number == -1
     assert len(buffer.contents.buffer) == file_manager.block_size
 
 
@@ -235,23 +233,3 @@ def test_buffer_with_large_data(test_env):
     
     # 大きなデータが正しく永続化されていることを確認
     assert new_buffer.contents.get_string(0) == large_string
-
-
-def test_buffer_edge_cases(test_env):
-    """バッファのエッジケーステスト"""
-    buffer, file_manager = test_env
-    
-    # pinsが負の値になるケース（バグの可能性）
-    buffer.unpin()  # 初期状態からunpin
-    assert buffer.pins == -1
-    assert not buffer.is_pinned()  # is_pinnedはpins > 0で判定
-    
-    # pinsを元に戻す
-    buffer.pin()
-    assert buffer.pins == 0
-    assert not buffer.is_pinned()
-    
-    # 負のLSNでの初期化
-    buffer.set_modified(-1, -1)
-    assert buffer.transaction_number == -1
-    assert buffer.log_sequence_number == -1

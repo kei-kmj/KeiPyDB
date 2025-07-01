@@ -6,7 +6,7 @@ from db.record.layout import Layout
 from db.record.schema import Schema
 
 
-def test_スキーマから正しいオフセットとスロットサイズが計算されることを確認():
+def test_correct_offsets_and_slot_size_calculated_from_schema():
     schema = Schema()
     schema.add_field("test1", 1, 1)
     schema.add_field("test2", 2, 3)
@@ -20,7 +20,7 @@ def test_スキーマから正しいオフセットとスロットサイズが�
     assert layout.get_slot_size() == 19
 
 
-def test_既存のオフセットとスロットサイズからLayoutを作成できることを確認する():
+def test_can_create_layout_from_existing_offsets_and_slot_size():
     schema = Schema()
     schema.add_field("test1", 1, 1)
     schema.add_field("test2", 2, 3)
@@ -37,7 +37,7 @@ def test_既存のオフセットとスロットサイズからLayoutを作成�
     assert layout.get_slot_size() == 19
 
 
-def test_存在しないフィールド名で例外が発生することを確認():
+def test_exception_raised_for_nonexistent_field_name():
     schema = Schema()
     schema.add_field("test1", 1, 1)
     schema.add_field("test2", 2, 3)
@@ -50,7 +50,7 @@ def test_存在しないフィールド名で例外が発生することを確�
     assert "Unknown field name test4" in str(exc_info.value)
 
 
-def test_不明なフィールドタイプに対して例外が発生することを確認する():
+def test_exception_raised_for_unknown_field_type():
     schema = Schema()
     schema.add_field("test1", 1, 1)
     schema.add_field("test2", 2, 3)
@@ -62,7 +62,7 @@ def test_不明なフィールドタイプに対して例外が発生するこ�
         layout._length_in_bytes("test4")
 
 
-def test_整数フィールドのレイアウト計算():
+def test_integer_field_layout_calculation():
     schema = Schema()
     schema.add_int_field("id")
     schema.add_int_field("age")
@@ -77,7 +77,7 @@ def test_整数フィールドのレイアウト計算():
     assert layout.get_slot_size() == ByteSize.Int + 3 * ByteSize.Int  # 16
 
 
-def test_文字列フィールドのレイアウト計算():
+def test_string_field_layout_calculation():
     schema = Schema()
     schema.add_string_field("name", 10)
     schema.add_string_field("email", 50)
@@ -90,7 +90,7 @@ def test_文字列フィールドのレイアウト計算():
     assert layout.get_slot_size() == ByteSize.Int + Page.get_max_length(10) + Page.get_max_length(50)
 
 
-def test_混合フィールドタイプのレイアウト():
+def test_mixed_field_type_layout():
     schema = Schema()
     schema.add_int_field("id")
     schema.add_string_field("name", 20)
@@ -114,7 +114,7 @@ def test_get_schema():
     assert layout.get_schema() is schema
 
 
-def test_空のスキーマのレイアウト():
+def test_empty_schema_layout():
     schema = Schema()
     layout = Layout(schema)
     
@@ -123,7 +123,7 @@ def test_空のスキーマのレイアウト():
     assert layout.offsets == {}
 
 
-def test_不正なフィールドタイプ():
+def test_invalid_field_type():
     schema = Schema()
     # 不正なフィールドタイプ（1=Integer, 2=Varcharではない値）
     schema.add_field("invalid_field", 999, 10)
@@ -167,7 +167,7 @@ def test_layout_memory_efficiency():
     assert layout.get_slot_size() == expected_slot_size
 
 
-def test_カスタムオフセットの検証():
+def test_custom_offset_validation():
     schema = Schema()
     schema.add_int_field("id")
     schema.add_string_field("name", 10)
@@ -183,7 +183,7 @@ def test_カスタムオフセットの検証():
     assert layout.get_slot_size() == 100
 
 
-def test_オフセットの順序性():
+def test_offset_ordering():
     # フィールドの追加順序とオフセットの関係を確認
     schema = Schema()
     schema.add_int_field("first")
@@ -205,7 +205,7 @@ def test_オフセットの順序性():
     assert layout.get_offset("fourth") == 12 + Page.get_max_length(20)
 
 
-def test_部分的なカスタムオフセット():
+def test_partial_custom_offset():
     # offsetsまたはslot_sizeのどちらか一方だけがNoneの場合
     schema = Schema()
     schema.add_int_field("id")

@@ -49,7 +49,7 @@ def test_log_iterator_raises_value_error_on_invalid_block(setup_file_manager):
     log_iterator = LogIterator(file_manager, BlockID(file_name, 0))
     log_iterator.current_offset = block_size
 
-    with pytest.raises(ValueError, match="Invalid block number: -1"):
+    with pytest.raises(ValueError, match="Block number must be non-negative: -1"):
         next(log_iterator)
 
 

@@ -40,31 +40,31 @@ def optimized_product_plan(mock_plan_first, mock_plan_second):
     return OptimizedProductPlan(mock_plan_first, mock_plan_second)
 
 
-def test_openメソッドが最適なプランを開くこと(mock_plan_first, mock_plan_second, optimized_product_plan):
+def test_open(mock_plan_first, mock_plan_second, optimized_product_plan):
     scan = optimized_product_plan.open()
     assert isinstance(scan, ProductScan)
 
 
-def test_block_accessedメソッドが最適な値を返すこと(mock_plan_first, mock_plan_second, optimized_product_plan):
+def test_block_accessed_value(mock_plan_first, mock_plan_second, optimized_product_plan):
     expected_value = mock_plan_first.blocks_accessed() + (
         mock_plan_second.records_output() * mock_plan_first.blocks_accessed()
     )
     assert optimized_product_plan.blocks_accessed() == expected_value
 
 
-def test_record_outputメソッドが最適な値を返すこと(mock_plan_first, mock_plan_second, optimized_product_plan):
+def test_record_output_value(mock_plan_first, mock_plan_second, optimized_product_plan):
     assert (
         optimized_product_plan.records_output() == mock_plan_first.records_output() * mock_plan_second.records_output()
     )
 
 
-def test_distinct_valuesメソッドが正しい値を返すこと(mock_plan_first, mock_plan_second, optimized_product_plan):
+def test_distinct_values_value(mock_plan_first, mock_plan_second, optimized_product_plan):
     mock_plan_first.schema.return_value.has_field.return_value = True
     assert optimized_product_plan.distinct_values("field1") == 10
     mock_plan_first.distinct_values.assert_called_once_with("field1")
 
 
-def test_schemaメソッドが正しいスキーマを返すこと(mock_plan_first, mock_plan_second, optimized_product_plan):
+def test_schema_schema(mock_plan_first, mock_plan_second, optimized_product_plan):
     schema = optimized_product_plan.schema()
     assert isinstance(schema, Schema)
     mock_plan_first.schema.assert_any_call()

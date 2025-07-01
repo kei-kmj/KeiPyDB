@@ -36,7 +36,7 @@ def setup_managers(setup_db_dir):
     return file_manager, log_manager, buffer_manager
 
 
-def test_整数値を正しく取得設定できることを確認する(setup_managers):
+def test_can_correctly_set_and_get_integer_values(setup_managers):
     file_manager, log_manager, buffer_manager = setup_managers
     
     # トランザクションを作成
@@ -65,7 +65,7 @@ def test_整数値を正しく取得設定できることを確認する(setup_m
     transaction.commit()
 
 
-def test_文字列値を正しく取得設定できることを確認する(setup_managers):
+def test_can_correctly_set_and_get_string_values(setup_managers):
     file_manager, log_manager, buffer_manager = setup_managers
     
     transaction = Transaction(file_manager, log_manager, buffer_manager)
@@ -89,7 +89,7 @@ def test_文字列値を正しく取得設定できることを確認する(setu
     transaction.commit()
 
 
-def test_レコードを削除できることを確認する(setup_managers):
+def test_can_delete_records(setup_managers):
     file_manager, log_manager, buffer_manager = setup_managers
     
     transaction = Transaction(file_manager, log_manager, buffer_manager)
@@ -121,7 +121,7 @@ def test_レコードを削除できることを確認する(setup_managers):
     transaction.commit()
 
 
-def test_フォーマット処理が正しく動作することを確認する(setup_managers):
+def test_format_operation_works_correctly(setup_managers):
     file_manager, log_manager, buffer_manager = setup_managers
     
     transaction = Transaction(file_manager, log_manager, buffer_manager)
@@ -159,7 +159,7 @@ def test_フォーマット処理が正しく動作することを確認する(s
     transaction.commit()
 
 
-def test_次の使用中スロットを検索できることを確認する(setup_managers):
+def test_can_search_for_next_used_slot(setup_managers):
     file_manager, log_manager, buffer_manager = setup_managers
     
     transaction = Transaction(file_manager, log_manager, buffer_manager)
@@ -190,7 +190,7 @@ def test_次の使用中スロットを検索できることを確認する(setu
     transaction.commit()
 
 
-def test_次の空スロットを検索して設定できることを確認する(setup_managers):
+def test_can_search_and_set_next_empty_slot(setup_managers):
     file_manager, log_manager, buffer_manager = setup_managers
     
     transaction = Transaction(file_manager, log_manager, buffer_manager)
@@ -219,7 +219,7 @@ def test_次の空スロットを検索して設定できることを確認す�
     transaction.commit()
 
 
-def test_スロットの有効性を確認する(setup_managers):
+def test_validates_slot_validity(setup_managers):
     file_manager, log_manager, buffer_manager = setup_managers
     
     transaction = Transaction(file_manager, log_manager, buffer_manager)
@@ -249,7 +249,7 @@ def test_スロットの有効性を確認する(setup_managers):
     transaction.commit()
 
 
-def test_複雑なレコード操作(setup_managers):
+def test_complex_record_operations(setup_managers):
     file_manager, log_manager, buffer_manager = setup_managers
     
     transaction = Transaction(file_manager, log_manager, buffer_manager)
@@ -397,11 +397,13 @@ def test_concurrent_record_operations(setup_managers):
     page1.set_int(0, "id", 100)
     page1.set_string(0, "name", "Transaction1")
     
+    # transaction1をコミットしてからtransaction2で読み取り
+    transaction1.commit()
+    
     # page2から同じデータを読み取り
     assert page2.get_int(0, "id") == 100
     assert page2.get_string(0, "name") == "Transaction1"
     
-    transaction1.commit()
     transaction2.commit()
 
 

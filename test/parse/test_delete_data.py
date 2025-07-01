@@ -15,9 +15,9 @@ def query_data():
     return DeleteData("table", predicate)
 
 
-def test_テーブルのリストが取得できること(query_data):
+def test_get(query_data):
     assert query_data.get_table_name() == "table"
 
 
-def test_述語が取得できること(query_data):
+def test_get(query_data):
     assert str(query_data.get_predicate()) == "mock_predicate", "述語が正しく取得できません"

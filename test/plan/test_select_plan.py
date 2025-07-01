@@ -31,7 +31,7 @@ def select_plan(mock_plan, mock_predicate):
     return SelectPlan(mock_plan, mock_predicate)
 
 
-def test_openメソッドが正しいスキャンを返すこと(mock_plan, mock_predicate, select_plan):
+def test_open_scan(mock_plan, mock_predicate, select_plan):
     scan = Mock()
     mock_plan.open.return_value = scan
 
@@ -40,32 +40,32 @@ def test_openメソッドが正しいスキャンを返すこと(mock_plan, mock
     assert select_plan.open().predicate == mock_predicate
 
 
-def test_block_accessedメソッドが正しい値を返すこと(mock_plan, select_plan):
+def test_block_accessed_value(mock_plan, select_plan):
 
     assert select_plan.blocks_accessed() == 42
     mock_plan.blocks_accessed.assert_called_once()
 
 
-def test_record_outputメソッドが正しい値を返すこと(mock_plan, select_plan):
+def test_record_output_value(mock_plan, select_plan):
 
     assert select_plan.records_output() == 100
     mock_plan.records_output.assert_called_once()
 
 
-def test_distinct_valuesメソッドで条件に一致する場合(mock_plan, mock_predicate, select_plan):
+def test_distinct_values_match(mock_plan, mock_predicate, select_plan):
     mock_predicate.equates_with_constant.return_value = 1
 
     assert select_plan.distinct_values("test_field") == 1
     mock_predicate.equates_with_constant.assert_called_once()
 
 
-def test_distinct_valuesメソッドで条件が一致しない場合(mock_plan, mock_predicate, select_plan):
+def test_distinct_values_match(mock_plan, mock_predicate, select_plan):
     assert select_plan.distinct_values("test_field") == 10
     mock_predicate.equates_with_constant.assert_called_once()
     mock_plan.distinct_values.assert_called_once()
 
 
-def test_schemaメソッドが正しい値を返すこと(mock_plan, select_plan):
+def test_schema_value(mock_plan, select_plan):
 
     assert select_plan.schema() == mock_plan.schema()
     mock_plan.schema.assert_any_call()

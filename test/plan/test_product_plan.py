@@ -40,23 +40,23 @@ def product_plan(mock_left_plan, mock_right_plan):
     return ProductPlan(mock_left_plan, mock_right_plan)
 
 
-def test_openメソッドが正しいスキャンを返すこと(mock_left_plan, mock_right_plan, product_plan):
+def test_open_scan(mock_left_plan, mock_right_plan, product_plan):
     scan = product_plan.open()
     assert isinstance(scan, ProductScan)
 
 
-def test_block_accessedメソッドが正しい値を返すこと(mock_left_plan, mock_right_plan, product_plan):
+def test_block_accessed_value(mock_left_plan, mock_right_plan, product_plan):
     expected_value = mock_left_plan.blocks_accessed() + (
         mock_right_plan.records_output() * mock_left_plan.blocks_accessed()
     )
     assert product_plan.blocks_accessed() == expected_value
 
 
-def test_record_outputメソッドが正しい値を返すこと(mock_left_plan, mock_right_plan, product_plan):
+def test_record_output_value(mock_left_plan, mock_right_plan, product_plan):
     assert product_plan.records_output() == mock_left_plan.records_output() * mock_right_plan.records_output()
 
 
-def test_distinct_valuesメソッドが左プランのフィールドで正しい値を返すこと(
+def test_distinct_values_field(
     mock_left_plan, mock_right_plan, product_plan
 ):
     mock_left_plan.schema.return_value.has_field.return_value = True
@@ -65,7 +65,7 @@ def test_distinct_valuesメソッドが左プランのフィールドで正し�
     mock_right_plan.distinct_values.assert_not_called()
 
 
-def test_distinct_valuesメソッドが右プランのフィールドで正しい値を返すこと(
+def test_distinct_values_field(
     mock_left_plan, mock_right_plan, product_plan
 ):
     mock_left_plan.schema.return_value.has_field.return_value = False
@@ -74,7 +74,7 @@ def test_distinct_valuesメソッドが右プランのフィールドで正し�
     mock_right_plan.distinct_values.assert_called_with("field_name")
 
 
-def test_schemaメソッドが正しいスキーマを返すこと(mock_left_plan, mock_right_plan, product_plan):
+def test_schema_schema(mock_left_plan, mock_right_plan, product_plan):
     schema = product_plan.schema()
     assert isinstance(schema, Schema)
     assert schema.get_fields() == ["field1", "field2", "field3", "field4"]

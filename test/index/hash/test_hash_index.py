@@ -114,3 +114,54 @@ def test_delete(hash_index):
     #
     # with pytest.raises(ValueError, match="Record not found"):
     #     hash_index.delete(data_value, record_id)
+
+
+@pytest.mark.skip(reason="Integration test - requires real database setup")
+def test_hash_index_integration():
+    """Integration test for hash index with real components"""
+    import tempfile
+    import shutil
+    from db.file.file_manager import FileManager
+    from db.log.log_manager import LogManager
+    from db.buffer.buffer_manager import BufferManager
+    from db.record.schema import Schema
+    from db.record.record_id import RecordID
+    from db.constants import FieldType
+    
+    temp_dir = tempfile.mkdtemp()
+    try:
+        # Setup database environment
+        file_manager = FileManager(temp_dir, 1024)
+        log_manager = LogManager(file_manager, "test_log")
+        buffer_manager = BufferManager(file_manager, log_manager, 5)
+        transaction = Transaction(file_manager, log_manager, buffer_manager)
+        
+        # Create index schema
+        index_schema = Schema()
+        index_schema.add_field("block", FieldType.Integer, 0)
+        index_schema.add_field("id", FieldType.Integer, 0)
+        index_schema.add_field("data_value", FieldType.Integer, 0)
+        index_layout = Layout(index_schema)
+        
+        # Test hash index operations
+        hash_index = HashIndex(transaction, "test_index", index_layout)
+        
+        # Insert and search test
+        data_value = Constant(10)
+        record_id = RecordID(1, 1)
+        
+        hash_index.before_first(data_value)
+        hash_index.insert(data_value, record_id)
+        
+        hash_index.before_first(Constant(10))
+        found = hash_index.next()
+        assert found, "Should find inserted record"
+        
+        found_record_id = hash_index.get_data_record_id()
+        assert found_record_id.block_number == 1
+        assert found_record_id.slot == 1
+        
+        transaction.commit()
+        
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)

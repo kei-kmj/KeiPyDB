@@ -179,30 +179,51 @@ def test_page_max_length():
     assert Page.get_max_length(1) == ByteSize.Int + 1
 
 
-def test_page_get_contents():
+def test_page_get_contents_returns_copy():
+    """get_contentsがコピーを返すことを確認"""
+    page = Page(256)
+    contents = page.get_contents()
+
+    assert contents == bytes(page.buffer)
+    assert contents is not page.buffer
+    assert isinstance(contents, bytes)
+
+
+def test_page_get_contents_initial_state():
+    """初期状態のページの内容を確認"""
     size = 256
     page = Page(size)
-    
-    # 初期状態
     contents = page.get_contents()
+
     assert len(contents) == size
     assert all(b == 0 for b in contents)
-    
-    # contentsとpage.bufferは同じオブジェクトを参照している
-    assert contents is page.buffer
-    
-    # データを書き込んだ後
+
+
+def test_page_get_contents_after_modification():
+    """ページ変更後のget_contentsの動作を確認"""
+    page = Page(256)
+
+    contents_before = page.get_contents()
+
     page.set_int(0, 12345)
     page.set_string(10, "test")
-    
-    contents2 = page.get_contents()
-    assert len(contents2) == size
-    
-    # contentsとcontents2は同じオブジェクト（page.buffer）を参照しているため、
-    # 内容は同じになる
-    assert contents2 is contents
-    assert contents2 is page.buffer
-    
-    # ただし、内容自体は変更されている
+
+    contents_after = page.get_contents()
+
+    assert contents_after != contents_before
     assert page.get_int(0) == 12345
     assert page.get_string(10) == "test"
+
+
+def test_page_get_contents_isolation():
+    """取得したコピーが元のページから独立していることを確認"""
+    page = Page(256)
+    page.set_int(0, 42)
+
+    contents = page.get_contents()
+
+    page.set_int(0, 100)
+
+    original_value = int.from_bytes(contents[0:4], byteorder='big')
+    assert original_value == 42
+    assert page.get_int(0) == 100

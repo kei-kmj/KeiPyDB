@@ -27,10 +27,18 @@ class BufferManager:
             return self.num_available
 
     def flush_all(self, tx_num: int) -> None:
+        """指定されたトランザクションの全バッファをフラッシュ"""
         with self.condition:
+            # バッファのスナップショットを取得
+            buffers_to_flush = []
             for buffer in self.buffer_pool:
+                # Bufferクラス内でもロックが必要
                 if buffer.modifying_tx() == tx_num:
-                    buffer.flush()
+                    buffers_to_flush.append(buffer)
+
+            # ロックを保持したままフラッシュ
+            for buffer in buffers_to_flush:
+                buffer.flush()
 
     def unpin(self, buffer: Buffer) -> None:
         with self.condition:
@@ -74,8 +82,11 @@ class BufferManager:
         return buffer
 
     def _find_existing_buffer(self, block: BlockID) -> Optional[Buffer]:
+        """既存のバッファを検索"""
         for buffer in self.buffer_pool:
-            if buffer.block == block:
+            # Bufferクラスにもロックが必要
+            buffer_block = buffer.block  # スレッドセーフなgetter
+            if buffer_block is not None and buffer_block == block:
                 return buffer
         return None
 

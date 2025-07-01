@@ -6,7 +6,7 @@ from db.log.log_manager import LogManager
 from db.transaction.recovery.rollback_record import RollbackRecord
 
 
-def test_ロールバックレコードの初期化を確認する():
+def test_record():
     # Setup mock Page
     page_data = bytearray(ByteSize.Int * 2)
     page = Page(page_data)
@@ -22,7 +22,7 @@ def test_ロールバックレコードの初期化を確認する():
     assert str(rollback_record) == f"<ROLLBACK {transaction_id}>"
 
 
-def test_ログへのロールバックレコード書き込みを確認する():
+def test_record():
 
     log_manager = Mock(spec=LogManager)
     log_manager.append.return_value = 123

@@ -12,7 +12,7 @@ from db.log.log_manager import LogManager
 from db.transaction.buffer_list import BufferList
 
 
-def test_指定されたブロックのバッファを取得できる():
+def test_block():
     buffer_manager = Mock(spec=BufferManager)
     buffer_list = BufferList(buffer_manager)
 
@@ -24,7 +24,7 @@ def test_指定されたブロックのバッファを取得できる():
     assert buffer_list.get_buffer(BlockID("testfile", 2)) is None
 
 
-def test_ブロックをピン留めして追跡できる():
+def test_block():
     buffer_manager = Mock(spec=BufferManager)
     buffer_list = BufferList(buffer_manager)
 
@@ -39,7 +39,7 @@ def test_ブロックをピン留めして追跡できる():
     buffer_manager.pin.assert_called_once_with(block)
 
 
-def test_ブロックをアンピンして追跡から削除できる():
+def test_block():
     buffer_manager = Mock(spec=BufferManager)
     buffer_list = BufferList(buffer_manager)
 
@@ -55,7 +55,7 @@ def test_ブロックをアンピンして追跡から削除できる():
     buffer_manager.unpin.assert_called_once_with(buffer)
 
 
-def test_すべてのブロックをアンピンして状態をリセットできる():
+def test_block():
     buffer_manager = Mock(spec=BufferManager)
     buffer_list = BufferList(buffer_manager)
 

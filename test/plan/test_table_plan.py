@@ -29,35 +29,35 @@ def table_plan(mock_transaction, mock_metadata_manager):
     return TablePlan(mock_transaction, "test_table", mock_metadata_manager)
 
 
-def test_openメソッドが正しいスキャンを返すこと(mock_transaction, mock_metadata_manager, table_plan):
+def test_open_scan(mock_transaction, mock_metadata_manager, table_plan):
 
     scan = table_plan.open()
 
     assert isinstance(scan, TableScan)
 
 
-def test_block_accessedメソッドが正しい値を返すこと(mock_transaction, mock_metadata_manager, table_plan):
+def test_block_accessed_value(mock_transaction, mock_metadata_manager, table_plan):
     stat_info = mock_metadata_manager.get_stat_info.return_value
     stat_info.blocks_accessed.return_value = 100
 
     assert table_plan.blocks_accessed() == 100
 
 
-def test_record_outputメソッドが正しい値を返すこと(mock_transaction, mock_metadata_manager, table_plan):
+def test_record_output_value(mock_transaction, mock_metadata_manager, table_plan):
     stat_info = mock_metadata_manager.get_stat_info.return_value
     stat_info.records_output.return_value = 200
 
     assert table_plan.records_output() == 200
 
 
-def test_distinct_valuesメソッドが正しい値を返すこと(mock_transaction, mock_metadata_manager, table_plan):
+def test_distinct_values_value(mock_transaction, mock_metadata_manager, table_plan):
     stat_info = mock_metadata_manager.get_stat_info.return_value
     stat_info.distinct_values.return_value = 300
 
     assert table_plan.distinct_values("test_field") == 300
 
 
-def test_schemaメソッドが正しい値を返すこと(mock_transaction, mock_metadata_manager, table_plan):
+def test_schema_value(mock_transaction, mock_metadata_manager, table_plan):
     layout = mock_metadata_manager.get_layout.return_value
     schema = Mock(spec=Schema)
     layout.schema = schema

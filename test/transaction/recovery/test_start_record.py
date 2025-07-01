@@ -6,7 +6,7 @@ from db.log.log_manager import LogManager
 from db.transaction.recovery.start_record import StartRecord
 
 
-def test_スタートレコードが正しく初期化されること():
+def test_record():
     page = Mock(spec=Page)
     page.get_int.return_value = 42
 
@@ -16,14 +16,14 @@ def test_スタートレコードが正しく初期化されること():
     page.get_int.assert_called_once_with(ByteSize.Int)
 
 
-def test_opメソッドがスタート操作コードを返すこと():
+def test_op_operation():
     page = Mock(spec=Page)
     start_record = StartRecord(page)
 
     assert start_record.op() == StartRecord.START
 
 
-def test_tx_numberメソッドがトランザクション番号を返すこと():
+def test_tx_number_transaction():
     page = Mock(spec=Page)
     page.get_int.return_value = 42
 
@@ -32,7 +32,7 @@ def test_tx_numberメソッドがトランザクション番号を返すこと()
     assert start_record.tx_number() == 42
 
 
-def test_スタートレコードの文字列表現が正しいこと():
+def test_record():
     page = Mock(spec=Page)
     page.get_int.return_value = 42
 
@@ -41,7 +41,7 @@ def test_スタートレコードの文字列表現が正しいこと():
     assert str(start_record) == "<START 42>"
 
 
-def test_write_to_logが正しいデータをログに書き込むこと():
+def test_write_to_log_log():
     log_manager = Mock(spec=LogManager)
     log_manager.append.return_value = 100
 

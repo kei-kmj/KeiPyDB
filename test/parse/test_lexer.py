@@ -1,7 +1,7 @@
 from db.parse.lexer import Lexer
 
 
-def test_デリミタが一致することを確認する():
+def test_delimiter_matches_correctly():
     sql = "SELECT * FROM table;"
     lexer = Lexer(sql)
 
@@ -12,7 +12,7 @@ def test_デリミタが一致することを確認する():
     assert lexer.match_delimiter("FROM") is True
 
 
-def test_整数定数が一致することを確認する():
+def test_integer_constant_matches_correctly():
     sql = "SELECT 123 FROM table;"
     lexer = Lexer(sql)
 
@@ -20,7 +20,7 @@ def test_整数定数が一致することを確認する():
     assert lexer.match_int_constant() is True
 
 
-def test_文字列定数が一致することを確認する():
+def test_string_constant_matches_correctly():
     sql = "SELECT 'value' FROM table;"
     lexer = Lexer(sql)
 
@@ -28,7 +28,7 @@ def test_文字列定数が一致することを確認する():
     assert lexer.match_string_constant() is True
 
 
-def test_識別子が一致することを確認する():
+def test_identifier_matches_correctly():
     sql = "SELECT Column_name FROM table;"
     lexer = Lexer(sql)
 
@@ -36,7 +36,7 @@ def test_識別子が一致することを確認する():
     assert lexer.match_id() is True
 
 
-def test_整数定数を消費できることを確認する():
+def test_can_consume_integer_constant():
     sql = "SELECT 123 FROM table;"
     lexer = Lexer(sql)
 
@@ -44,7 +44,7 @@ def test_整数定数を消費できることを確認する():
     assert lexer.eat_int_constant() == 123
 
 
-def test_文字列定数を消費できることを確認する():
+def test_can_consume_string_constant():
     sql = "SELECT 'value' FROM table;"
     lexer = Lexer(sql)
 
@@ -52,7 +52,7 @@ def test_文字列定数を消費できることを確認する():
     assert lexer.eat_string_constant() == "'value'"
 
 
-def test_識別子を消費できることを確認する():
+def test_can_consume_identifier():
     sql = "SELECT Column_name FROM table;"
     lexer = Lexer(sql)
 
@@ -60,7 +60,7 @@ def test_識別子を消費できることを確認する():
     assert lexer.eat_id() == "column_name"
 
 
-def test_キーワードを消費できることを確認する():
+def test_can_consume_keyword():
     sql = "SELECT * FROM table;"
     lexer = Lexer(sql)
 

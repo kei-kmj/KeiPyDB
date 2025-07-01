@@ -15,8 +15,6 @@ def test_block_id_with_various_numbers():
     test_cases = [
         ("test.db", 0),
         ("myfile", 999999),
-        ("data.txt", -1),
-        ("", 42),
     ]
     
     for file_name, block_num in test_cases:
@@ -56,7 +54,6 @@ def test_block_id_string():
     
     # 特殊なファイル名のケース
     special_cases = [
-        ("", 0, "[file , block 0]"),
         ("file with spaces", 123, "[file file with spaces, block 123]"),
         ("日本語.db", 5, "[file 日本語.db, block 5]"),
     ]

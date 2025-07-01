@@ -297,6 +297,6 @@ def test_table_manager_catalog_integrity(real_metadata_env):
     tx.commit()
 
 
-def test_テーブルレイアウトを取得できることを確認する():
-    """元のテスト関数は残しておく"""
+def test_can_get_table_layout():
+    """Original test function is kept"""
     assert 1 + 1 == 2

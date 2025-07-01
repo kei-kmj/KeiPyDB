@@ -4,7 +4,7 @@ from db.constants import ByteSize, FieldType
 from db.record.schema import Schema
 
 
-def test_フィールドをスキーマに追加できる():
+def test_can_add_field_to_schema():
     schema = Schema()
     schema.add_field("test", 4, 1)
 
@@ -13,7 +13,7 @@ def test_フィールドをスキーマに追加できる():
     assert schema.get_length("test") == 1
 
 
-def test_整数型のフィールドをスキーマに追加できる():
+def test_can_add_integer_field_to_schema():
     schema = Schema()
     schema.add_field("test", 4)
 
@@ -21,7 +21,7 @@ def test_整数型のフィールドをスキーマに追加できる():
     assert schema.get_length("test") == 0
 
 
-def test_文字列フィールドを追加できる():
+def test_can_add_string_field():
     schema = Schema()
     schema.add_field("test", 2, 10)
 
@@ -29,7 +29,7 @@ def test_文字列フィールドを追加できる():
     assert schema.get_length("test") == 10
 
 
-def test_他のスキーマに基づいてフィールドを追加できる():
+def test_can_add_field_based_on_other_schema():
     source_schema = Schema()
     source_schema.add_field("id", 4, 0)
     source_schema.add_field("name", 12, 50)
@@ -44,7 +44,7 @@ def test_他のスキーマに基づいてフィールドを追加できる():
     assert target_schema.get_length("name") == 50
 
 
-def test_他のスキーマのすべてのフィールドを追加できる():
+def test_can_add_all_fields_from_other_schema():
     source_schema = Schema()
     source_schema.add_field("id", 4, 0)
     source_schema.add_field("name", 12, 50)
@@ -58,7 +58,7 @@ def test_他のスキーマのすべてのフィールドを追加できる():
     assert target_schema.get_length("name") == 50
 
 
-def test_指定されたフィールドがスキーマに含まれているかどうかを確認できる():
+def test_can_check_if_field_exists_in_schema():
     schema = Schema()
     schema.add_field("test", 4, 1)
 
@@ -66,7 +66,7 @@ def test_指定されたフィールドがスキーマに含まれているか�
     assert schema.has_field("test2") is False
 
 
-def test_存在しないフィールドの型を取得しようとするとエラーになる():
+def test_error_when_getting_type_of_nonexistent_field():
     schema = Schema()
     schema.add_field("test", 4, 1)
 
@@ -95,7 +95,7 @@ def test_add_string_field():
     assert schema.get_length("username") == 50
 
 
-def test_複数フィールドの追加順序が保持される():
+def test_multiple_field_addition_order_is_preserved():
     schema = Schema()
     field_names = ["id", "name", "age", "email", "created_at"]
     
@@ -105,7 +105,7 @@ def test_複数フィールドの追加順序が保持される():
     assert schema.get_fields() == field_names
 
 
-def test_同じフィールド名を複数回追加した場合():
+def test_adding_same_field_name_multiple_times():
     schema = Schema()
     
     # 同じフィールド名を複数回追加
@@ -120,7 +120,7 @@ def test_同じフィールド名を複数回追加した場合():
     assert schema.get_length("test") == 20
 
 
-def test_空のスキーマ():
+def test_empty_schema():
     schema = Schema()
     
     assert schema.get_fields() == []
@@ -130,7 +130,7 @@ def test_空のスキーマ():
         schema.get_type("any_field")
 
 
-def test_フィールド情報の内部クラス():
+def test_field_info_internal_class():
     # FieldInfoクラスのテスト
     field_info = Schema.FieldInfo(FieldType.Varchar, 100)
     
@@ -138,7 +138,7 @@ def test_フィールド情報の内部クラス():
     assert field_info.length == 100
 
 
-def test_スキーマの複雑な結合():
+def test_complex_schema_combination():
     # 複数のスキーマを結合
     user_schema = Schema()
     user_schema.add_int_field("user_id")
