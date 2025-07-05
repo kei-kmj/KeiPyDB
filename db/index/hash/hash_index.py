@@ -79,5 +79,11 @@ class HashIndex(Index, ABC):
             self.table_scan.close()
 
     @staticmethod
-    def search_cost(num_blocks: int) -> int:
-        return num_blocks // HashIndex.NUM_BUCKETS
+    def search_cost(num_blocks: int, record_per_block: int) -> int:
+        blocks_per_bucket = max(1, num_blocks // HashIndex.NUM_BUCKETS)
+
+        records_per_bucket = blocks_per_bucket * record_per_block
+
+        avg_records_to_search = max(1, records_per_bucket // 2)
+
+        return max(1, (avg_records_to_search + record_per_block - 1) // record_per_block)

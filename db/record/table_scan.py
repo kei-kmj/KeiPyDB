@@ -21,13 +21,13 @@ class TableScan(UpdateScan, ABC):
         self.record_page: Optional[RecordPage] = None
 
         try:
-            if self.transaction.size(self.file_name) == 0:
+            file_size = self.transaction.size(self.file_name)
+            if file_size == 0:
                 self._move_to_new_block()
-
             else:
                 self._move_to_block(0)
-        except FileNotFoundError:
-            raise FileNotFoundError(f"Table {table_name} does not exist")
+        except Exception as e:
+            raise FileNotFoundError(f"Table {table_name} does not exist or cannot be accessed: {e}")
 
     def before_first(self) -> None:
         """最初のブロックをバッファに読み込む"""
@@ -115,20 +115,16 @@ class TableScan(UpdateScan, ABC):
         if self.record_page is None:
             raise RuntimeError("Record page is not initialized. Call move_to_insert_position() first.")
 
-        slot = self.record_page.insert_after(self.current_slot)
-        if slot is None:
-            raise RuntimeError("Failed to insert new slot.")
-        self.current_slot = slot
+        while True:
+            slot = self.record_page.insert_after(self.current_slot)
+            if slot is not None and slot >= 0:
+                self.current_slot = slot
+                return
 
-        while self.current_slot is None or self.current_slot < 0:
             if self._at_last_block():
                 self._move_to_new_block()
             else:
                 self._move_to_block(self.record_page.get_block().block_number + 1)
-
-            slot = self.record_page.insert_after(self.current_slot)
-            if slot is None:
-                raise RuntimeError("Failed to insert new slot after moving block.")
             self.current_slot = slot
 
     def delete(self) -> None:

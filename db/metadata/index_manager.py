@@ -26,23 +26,29 @@ class IndexManager:
 
     def create_index(
         self, index_name: str, table_name: str, field_name: str, transaction: Transaction
-    ) -> Dict[str, IndexInfo]:
+    ) -> None:
         """インデックスを作成"""
-
-        result: Dict[str, IndexInfo] = {}
         table_scan = TableScan(transaction, "index_catalog", self.layout)
-
-        while table_scan.next():
-            if table_scan.get_string("table_name") == table_name:
-                index_name = table_scan.get_string(index_name)
-                field_name = table_scan.get_string(field_name)
-                table_layout = self.table_manager.get_layout(table_name, transaction)
-                stat_info = self.stat_manager.get_stat_info(table_name, table_layout, transaction)
-                index_info = IndexInfo(index_name, field_name, table_layout.get_schema(), transaction, stat_info)
-                result[field_name] = index_info
-
+        table_scan.insert()
+        table_scan.set_string("index_name", index_name)
+        table_scan.set_string("table_name", table_name)
+        table_scan.set_string("field_name", field_name)
         table_scan.close()
-        return result
+
+        # 2. 実際のインデックス構造を作成
+        table_layout = self.table_manager.get_layout(table_name, transaction)
+        stat_info = self.stat_manager.get_stat_info(table_name, transaction)
+        index_info = IndexInfo(index_name, field_name, table_layout.schema, stat_info)
+        hash_index = index_info.open(transaction)
+
+        # 3. 既存のデータでインデックスを埋める
+        data_scan = TableScan(transaction, table_name, table_layout)
+        while data_scan.next():
+            dataval = data_scan.get_value(field_name)
+            rid = data_scan.get_rid()
+            hash_index.insert(dataval, rid)
+        data_scan.close()
+        hash_index.close()
 
     def get_index_info(self, table_name: str, transaction: Transaction) -> Dict[str, IndexInfo]:
 
@@ -54,8 +60,8 @@ class IndexManager:
                 index_name = table_scan.get_string("index_name")
                 field_name = table_scan.get_string("field_name")
                 table_layout = self.table_manager.get_layout(table_name, transaction)
-                stat_info = self.stat_manager.get_stat_info(table_name, table_layout, transaction)
-                index_info = IndexInfo(index_name, field_name, table_layout.get_schema(), transaction, stat_info)
+                stat_info = self.stat_manager.get_stat_info(table_name, transaction)
+                index_info = IndexInfo(index_name, field_name, table_layout.get_schema(), stat_info)
                 result[field_name] = index_info
 
         table_scan.close()

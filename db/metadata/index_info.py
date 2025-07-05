@@ -9,31 +9,30 @@ from db.transaction.transaction import Transaction
 
 class IndexInfo:
     def __init__(
-        self, index_name: str, field_name: str, table_schema: Schema, transaction: Transaction, stat_info: StatInfo
+        self, index_name: str, field_name: str, table_schema: Schema, stat_info: StatInfo
     ) -> None:
         self.index_name = index_name
         self.field_name = field_name
         self.table_schema = table_schema
-        self.transaction = transaction
         self.index_layout = self._create_index_layout()
         self.stat_info = stat_info
 
-    # TODO:HshIndexクラスを実装
-    def open(self) -> Index:
+    def open(self, transaction: Transaction) -> Index:
         """インデックスを開く"""
-        return HashIndex(self.transaction, self.index_name, self.index_layout)
+        return HashIndex(transaction, self.index_name, self.index_layout)
 
-    def blocks_accessed(self) -> int:
+    def blocks_accessed(self, transaction: Transaction) -> int:
         """アクセスしたブロック数を返す"""
-        return self.stat_info.records_output() // self.stat_info.distinct_values()
+        record_per_block = transaction.block_size() // self.index_layout.slot_size
+        num_blocks = self.stat_info.records_output() // record_per_block
+        return HashIndex.search_cost(num_blocks, record_per_block)
 
-    # TODO:distinct_values()の引数確認
     def records_output(self) -> int:
         """出力されたレコード数を返す"""
         return self.stat_info.records_output() // self.stat_info.distinct_values()
 
-    def distinct_values(self, field_name: str) -> int:
-        return 1 if field_name == self.field_name else self.stat_info.distinct_values()
+    def distinct_values(self) -> int:
+        return self.stat_info.distinct_values()
 
     def _create_index_layout(self) -> Layout:
         """インデックスのレイアウトを作成"""
@@ -42,10 +41,9 @@ class IndexInfo:
         schema.add_int_field("id")
 
         if self.table_schema.get_type(self.field_name) == FieldType.Integer:
-            schema.add_string_field("dat", self.table_schema.get_length(self.field_name))
-
+            schema.add_int_field("dataval")
         else:
             field_length = self.table_schema.get_length(self.field_name)
-            schema.add_string_field("dat", field_length)
+            schema.add_string_field("dataval", field_length)
 
         return Layout(schema)

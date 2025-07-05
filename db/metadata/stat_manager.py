@@ -16,8 +16,14 @@ class StatManager:
         self.lock = Lock()
         self.refresh_statistics(transaction)
 
-    def get_stat_info(self, table_name: str, layout: Layout, transaction: Transaction) -> StatInfo:
+    def get_stat_info(self, table_name: str, transaction: Transaction) -> StatInfo:
         """指定されたテーブルの統計情報を取得"""
+
+        layout = self.table_manager.get_layout(table_name, transaction)
+
+        if layout is None:
+            return StatInfo(0, 0)  # テーブルが存在しない場合は空の統計情報を返す
+
         with self.lock:
             self.num_calls += 1
             if self.num_calls > 100:
@@ -42,6 +48,10 @@ class StatManager:
             table_scan.close()
 
     def _calculate_table_stats(self, table_name: str, layout: Layout, transaction: Transaction) -> StatInfo:
+
+        if layout is None:
+            return StatInfo(0, 0)
+
         num_records = 0
         num_blocks = 0
         table_scan = TableScan(transaction, table_name, layout)

@@ -15,7 +15,7 @@ class TablePlan(Plan, ABC):
         self.table_name = table_name
         self.transaction = transaction
         self.layout = metadata_manager.get_layout(table_name, transaction)
-        self.stat_info = metadata_manager.get_stat_info(table_name, self.layout, transaction)
+        self.stat_info = metadata_manager.get_stat_info(table_name,transaction)
 
     def open(self) -> Scan:
         return TableScan(self.transaction, self.table_name, self.layout)
