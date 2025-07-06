@@ -18,6 +18,8 @@ class LogManager:
 
         if log_size == 0:
             self.current_block = self.file_manager.append(log_file)
+            self.log_page.set_int(0, self.file_manager.block_size)
+            self.file_manager.write(self.current_block, self.log_page)
         else:
             self.current_block = BlockID(log_file, log_size - 1)
             self.file_manager.read(self.current_block, self.log_page)
@@ -52,6 +54,7 @@ class LogManager:
 
     def _append_new_block(self) -> BlockID:
         block = self.file_manager.append(self.log_file)
+        self.log_page = Page(self.file_manager.block_size)
         self.log_page.set_int(0, self.file_manager.block_size)
         self.file_manager.write(block, self.log_page)
         return block

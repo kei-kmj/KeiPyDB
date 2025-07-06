@@ -28,4 +28,4 @@ class StartRecord:
         page = Page(rec)
         page.set_int(0, StartRecord.START)
         page.set_int(ByteSize.Int, tx_number)
-        return log_manager.append(rec)
+        return log_manager.append(page.get_contents())

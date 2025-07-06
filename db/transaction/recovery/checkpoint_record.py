@@ -5,7 +5,7 @@ from db.transaction.transaction import Transaction
 
 
 class CheckpointRecord:
-    CHECKPOINT = 2
+    CHECKPOINT = 0
 
     def __init__(self) -> None:
         pass

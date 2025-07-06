@@ -55,4 +55,4 @@ class SetStringRecord:
         page.set_int(offset_pos, offset)
         page.set_string(value_pos, value)
 
-        return log_manager.append(rec)
+        return log_manager.append(page.get_contents())

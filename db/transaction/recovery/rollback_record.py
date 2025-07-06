@@ -5,7 +5,7 @@ from db.transaction.transaction import Transaction
 
 
 class RollbackRecord:
-    ROLLBACK = 1
+    ROLLBACK = 3
 
     def __init__(self, page: Page) -> None:
         self._tx_number = page.get_int(ByteSize.Int)
@@ -30,4 +30,4 @@ class RollbackRecord:
         page.set_int(0, RollbackRecord.ROLLBACK)
         page.set_int(ByteSize.Int, tx_number)
 
-        return log_manager.append(rec)
+        return log_manager.append(page.get_contents())

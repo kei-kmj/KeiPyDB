@@ -5,7 +5,7 @@ from db.transaction.transaction import Transaction
 
 
 class CommitRecord:
-    COMMIT = 3
+    COMMIT = 2
 
     def __init__(self, page: Page) -> None:
         self.tx_num = page.get_int(ByteSize.Int)
@@ -29,4 +29,4 @@ class CommitRecord:
         page = Page(rec)
         page.set_int(0, CommitRecord.COMMIT)
         page.set_int(ByteSize.Int, tx_number)
-        return log_manager.append(rec)
+        return log_manager.append(page.get_contents())

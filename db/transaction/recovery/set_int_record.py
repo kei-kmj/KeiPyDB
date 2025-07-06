@@ -17,8 +17,8 @@ class SetIntRecord:
         self.block = BlockID(file_name, block_number)
 
         self.offset = page.get_int(block_pos + ByteSize.Int)
-
-        self.value = page.get_int(block_pos + ByteSize.Int)
+        offset_pos = block_pos + ByteSize.Int
+        self.value = page.get_int(offset_pos + ByteSize.Int)
 
     @staticmethod
     def op() -> int:
@@ -53,4 +53,4 @@ class SetIntRecord:
         page.set_int(offset_pos, offset)
         page.set_int(value_pos, value)
 
-        return log_manager.append(rec)
+        return log_manager.append(page.get_contents())
