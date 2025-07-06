@@ -1,6 +1,6 @@
 import pytest
 
-from db.parse.bad_syntax_exception import BadSyntaxException
+from db.exception import BadSyntaxException
 from db.parse.parser import Parser
 from db.parse.lexer import Lexer
 

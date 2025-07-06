@@ -47,6 +47,10 @@ class BasicUpdatePlanner(UpdatePlanner, ABC):
         plan = SelectPlan(plan, data.predicate)
 
         scan = plan.open()
+
+        if not isinstance(scan, UpdateScan):
+            raise TypeError(f"UpdateScanが期待されましたが、{type(scan)}が渡されました")
+
         scan = cast(UpdateScan, scan)
 
         count = 0

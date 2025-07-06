@@ -83,14 +83,14 @@ def test_metadata_manager_table_operations(real_metadata_manager_env):
     assert layout.schema.has_field("age")
     
     # フィールドタイプの確認
-    assert layout.schema.type("user_id") == FieldType.Integer
-    assert layout.schema.type("username") == FieldType.Varchar
-    assert layout.schema.type("email") == FieldType.Varchar
-    assert layout.schema.type("age") == FieldType.Integer
+    assert layout.schema.get_type("user_id") == FieldType.Integer
+    assert layout.schema.get_type("username") == FieldType.Varchar
+    assert layout.schema.get_type("email") == FieldType.Varchar
+    assert layout.schema.get_type("age") == FieldType.Integer
     
     # フィールド長の確認
-    assert layout.schema.length("username") == 30
-    assert layout.schema.length("email") == 50
+    assert layout.schema.get_length("username") == 30
+    assert layout.schema.get_length("email") == 50
     
     tx.commit()
 

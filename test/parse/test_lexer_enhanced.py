@@ -1,7 +1,7 @@
 import pytest
 
 from db.parse.lexer import Lexer
-from db.parse.bad_syntax_exception import BadSyntaxException
+from db.exception import BadSyntaxException
 
 
 class TestLexerEnhanced:

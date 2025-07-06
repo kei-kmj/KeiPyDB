@@ -1,7 +1,7 @@
 import pytest
 
 from db.constants import FieldType
-from db.parse.bad_syntax_exception import BadSyntaxException
+from db.exception import BadSyntaxException
 from db.parse.parser import Parser
 from db.parse.lexer import Lexer
 from db.parse.query_data import QueryData
@@ -44,8 +44,8 @@ class TestParseIntegration:
         assert schema.has_field("user_id")
         assert schema.has_field("email")
         assert schema.has_field("password_hash")
-        assert schema.length("email") == 100
-        assert schema.length("password_hash") == 255
+        assert schema.get_length("email") == 100
+        assert schema.get_length("password_hash") == 255
 
     @pytest.mark.skip
     def test_real_world_ecommerce_queries(self):
@@ -152,15 +152,15 @@ class TestParseIntegration:
         schema = create_table.get_schema()
         
         # varchar長の確認
-        assert schema.length("short_text") == 10
-        assert schema.length("medium_text") == 100
-        assert schema.length("long_text") == 500
-        assert schema.length("status") == 20
+        assert schema.get_length("short_text") == 10
+        assert schema.get_length("medium_text") == 100
+        assert schema.get_length("long_text") == 500
+        assert schema.get_length("status") == 20
         
         # int型の確認
-        assert schema.type("id") == FieldType.Integer
-        assert schema.type("counter") == FieldType.Integer
-        assert schema.type("flag") == FieldType.Integer
+        assert schema.get_type("id") == FieldType.Integer
+        assert schema.get_type("counter") == FieldType.Integer
+        assert schema.get_type("flag") == FieldType.Integer
 
     @pytest.mark.skip
     def test_sql_injection_patterns(self):

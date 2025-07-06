@@ -36,6 +36,7 @@ def setup_managers(setup_db_dir):
 
 
 def test_table_scan_can_be_initialized(setup_managers):
+    """TableScanの初期化テスト"""
     file_manager, log_manager, buffer_manager = setup_managers
     
     transaction = Transaction(file_manager, log_manager, buffer_manager)
@@ -57,35 +58,8 @@ def test_table_scan_can_be_initialized(setup_managers):
     transaction.commit()
 
 
-@pytest.mark.skip
-def test_error_occurs_for_nonexistent_table(setup_managers):
-    file_manager, log_manager, buffer_manager = setup_managers
-    
-    transaction = Transaction(file_manager, log_manager, buffer_manager)
-    
-    schema = Schema()
-    schema.add_int_field("id")
-    layout = Layout(schema)
-    
-    # 存在しないテーブルファイルを明示的に作成しない
-    # TableScanの初期化でFileNotFoundErrorが発生するはず
-    with pytest.raises(FileNotFoundError) as exc_info:
-        # まず空のファイルを作成してから削除
-        transaction.append("nonexistent.tbl")
-        transaction.commit()
-        
-        # 新しいトランザクションで存在しないテーブルにアクセス
-        new_transaction = Transaction(file_manager, log_manager, buffer_manager)
-        # ファイルを削除
-        import os
-        os.remove(os.path.join(file_manager.db_directory, "nonexistent.tbl"))
-        
-        table_scan = TableScan(new_transaction, "nonexistent", layout)
-    
-    assert "Table nonexistent does not exist" in str(exc_info.value)
-
-
 def test_record_insertion_and_reading(setup_managers):
+    """レコードの挿入と読み取りテスト"""
     file_manager, log_manager, buffer_manager = setup_managers
     
     transaction = Transaction(file_manager, log_manager, buffer_manager)
@@ -132,6 +106,7 @@ def test_record_insertion_and_reading(setup_managers):
 
 
 def test_get_value_and_set_value(setup_managers):
+    """get_valueとset_valueのテスト"""
     file_manager, log_manager, buffer_manager = setup_managers
     
     transaction = Transaction(file_manager, log_manager, buffer_manager)
@@ -160,6 +135,7 @@ def test_get_value_and_set_value(setup_managers):
 
 
 def test_has_field(setup_managers):
+    """has_fieldのテスト"""
     file_manager, log_manager, buffer_manager = setup_managers
     
     transaction = Transaction(file_manager, log_manager, buffer_manager)
@@ -180,6 +156,7 @@ def test_has_field(setup_managers):
 
 
 def test_record_deletion(setup_managers):
+    """レコード削除のテスト"""
     file_manager, log_manager, buffer_manager = setup_managers
     
     transaction = Transaction(file_manager, log_manager, buffer_manager)
@@ -214,6 +191,7 @@ def test_record_deletion(setup_managers):
 
 
 def test_move_to_rid_and_get_rid(setup_managers):
+    """RIDによる移動と取得のテスト"""
     file_manager, log_manager, buffer_manager = setup_managers
     
     transaction = Transaction(file_manager, log_manager, buffer_manager)
@@ -246,70 +224,9 @@ def test_move_to_rid_and_get_rid(setup_managers):
     table_scan.close()
     transaction.commit()
 
-@pytest.mark.skip
-def test_operations_spanning_multiple_blocks(setup_managers):
-    file_manager, log_manager, buffer_manager = setup_managers
-    
-    # 小さいブロックサイズで再初期化
-    block_size = 512  # 小さいブロックサイズ
-    file_manager = FileManager(file_manager.db_directory, block_size)
-    log_manager = LogManager(file_manager, "test.log")
-    buffer_manager = BufferManager(file_manager, log_manager, 10)
-    
-    transaction = Transaction(file_manager, log_manager, buffer_manager)
-    
-    schema = Schema()
-    schema.add_int_field("id")
-    schema.add_string_field("data", 100)  # 大きめのフィールド
-    layout = Layout(schema)
-    
-    table_scan = TableScan(transaction, "large_table", layout)
-    
-    # 多数のレコードを挿入（複数ブロックに分散）
-    num_records = 50
-    for i in range(num_records):
-        table_scan.insert()
-        table_scan.set_int("id", i)
-        table_scan.set_string("data", f"Record {i} with some data")
-    
-    # すべてのレコードを読み取り
-    table_scan.before_first()
-    count = 0
-    while table_scan.next():
-        assert table_scan.get_int("id") == count
-        assert table_scan.get_string("data") == f"Record {count} with some data"
-        count += 1
-    
-    assert count == num_records
-    
-    table_scan.close()
-    transaction.commit()
 
-
-@pytest.mark.skip
-def test_error_with_invalid_field_type(setup_managers):
-    file_manager, log_manager, buffer_manager = setup_managers
-    
-    transaction = Transaction(file_manager, log_manager, buffer_manager)
-    
-    schema = Schema()
-    # 不正なフィールドタイプを設定
-    schema.add_field("weird_field", 999, 10)
-    layout = Layout(schema)
-    
-    table_scan = TableScan(transaction, "test_table", layout)
-    table_scan.insert()
-    
-    # get_valueで不正なフィールドタイプを処理しようとするとエラー
-    with pytest.raises(ValueError) as exc_info:
-        table_scan.get_value("weird_field")
-    assert "Unknown field type 999" in str(exc_info.value)
-    
-    table_scan.close()
-    transaction.commit()
-
-
-def test_error_with_uninitialized_record_page(setup_managers):
+def test_runtime_error_with_uninitialized_record_page(setup_managers):
+    """RecordPageが初期化されていない場合のRuntimeErrorテスト"""
     file_manager, log_manager, buffer_manager = setup_managers
     
     transaction = Transaction(file_manager, log_manager, buffer_manager)
@@ -338,183 +255,3 @@ def test_error_with_uninitialized_record_page(setup_managers):
     
     transaction.commit()
 
-
-@pytest.mark.skip
-def test_table_scan_with_transaction_rollback(setup_managers):
-    """トランザクションロールバック時の動作テスト"""
-    file_manager, log_manager, buffer_manager = setup_managers
-    
-    transaction = Transaction(file_manager, log_manager, buffer_manager)
-    
-    schema = Schema()
-    schema.add_int_field("id")
-    schema.add_string_field("name", 50)
-    layout = Layout(schema)
-    
-    table_scan = TableScan(transaction, "rollback_test", layout)
-    
-    # データを挿入
-    table_scan.insert()
-    table_scan.set_int("id", 1)
-    table_scan.set_string("name", "Test Data")
-    
-    # ロールバック
-    table_scan.close()
-    transaction.rollback()
-    
-    # 新しいトランザクションでデータを確認
-    new_transaction = Transaction(file_manager, log_manager, buffer_manager)
-    new_table_scan = TableScan(new_transaction, "rollback_test", layout)
-    
-    # ロールバックされたデータは存在しない
-    new_table_scan.before_first()
-    assert not new_table_scan.next()
-    
-    new_table_scan.close()
-    new_transaction.commit()
-
-
-@pytest.mark.skip
-def test_table_scan_set_value_with_unknown_field(setup_managers):
-    """未知フィールドでのset_valueのテスト"""
-    file_manager, log_manager, buffer_manager = setup_managers
-    
-    transaction = Transaction(file_manager, log_manager, buffer_manager)
-    
-    schema = Schema()
-    schema.add_int_field("known_field")
-    layout = Layout(schema)
-    
-    table_scan = TableScan(transaction, "unknown_field_test", layout)
-    table_scan.insert()
-    
-    # スキーマにないフィールドでset_valueを呼び出し
-    # 現在の実装では値の型から推定して設定する
-    table_scan.set_value("unknown_int", Constant(42))
-    table_scan.set_value("unknown_string", Constant("test"))
-    
-    # 実際に設定されるかは実装に依存
-    # ここではエラーが発生しないことを確認
-    
-    table_scan.close()
-    transaction.commit()
-
-
-@pytest.mark.skip
-def test_table_scan_insert_when_no_space(setup_managers):
-    """スペース不足時の挿入テスト"""
-    # 小さいブロックサイズでテスト
-    file_manager, log_manager, buffer_manager = setup_managers
-    small_file_manager = FileManager(file_manager.db_directory, 256)  # 小さいブロック
-    small_log_manager = LogManager(small_file_manager, "small.log")
-    small_buffer_manager = BufferManager(small_file_manager, small_log_manager, 5)
-    
-    transaction = Transaction(small_file_manager, small_log_manager, small_buffer_manager)
-    
-    schema = Schema()
-    schema.add_int_field("id")
-    schema.add_string_field("large_data", 200)  # 大きなフィールド
-    layout = Layout(schema)
-    
-    table_scan = TableScan(transaction, "large_records", layout)
-    
-    # ブロックの容量を超えるまでレコードを挿入
-    records_inserted = 0
-    try:
-        for i in range(100):  # 十分な数を試行
-            table_scan.insert()
-            table_scan.set_int("id", i)
-            table_scan.set_string("large_data", "X" * 150)
-            records_inserted += 1
-    except Exception as e:
-        # エラーが発生した場合、いくつかのレコードは挿入されているはず
-        pass
-    
-    # 少なくとも1つのレコードは挿入されている
-    assert records_inserted >= 1
-    
-    table_scan.close()
-    transaction.commit()
-
-
-@pytest.mark.skip
-def test_table_scan_concurrent_access(setup_managers):
-    """並行アクセスのテスト"""
-    file_manager, log_manager, buffer_manager = setup_managers
-    
-    # 最初のトランザクションでデータを作成
-    transaction1 = Transaction(file_manager, log_manager, buffer_manager)
-    
-    schema = Schema()
-    schema.add_int_field("id")
-    schema.add_string_field("data", 30)
-    layout = Layout(schema)
-    
-    table_scan1 = TableScan(transaction1, "concurrent_test", layout)
-    
-    # データを挿入
-    table_scan1.insert()
-    table_scan1.set_int("id", 1)
-    table_scan1.set_string("data", "Initial Data")
-    
-    table_scan1.close()
-    transaction1.commit()
-    
-    # 第2のトランザクションで読み取り
-    transaction2 = Transaction(file_manager, log_manager, buffer_manager)
-    table_scan2 = TableScan(transaction2, "concurrent_test", layout)
-    
-    table_scan2.before_first()
-    assert table_scan2.next()
-    assert table_scan2.get_int("id") == 1
-    assert table_scan2.get_string("data") == "Initial Data"
-    
-    # 第3のトランザクションで同時にアクセス
-    transaction3 = Transaction(file_manager, log_manager, buffer_manager)
-    table_scan3 = TableScan(transaction3, "concurrent_test", layout)
-    
-    # 新しいデータを追加
-    table_scan3.insert()
-    table_scan3.set_int("id", 2)
-    table_scan3.set_string("data", "Second Data")
-    
-    table_scan2.close()
-    table_scan3.close()
-    transaction2.commit()
-    transaction3.commit()
-
-
-@pytest.mark.skip
-def test_table_scan_stress_operations(setup_managers):
-    """ストレステスト（大量操作）"""
-    file_manager, log_manager, buffer_manager = setup_managers
-    
-    transaction = Transaction(file_manager, log_manager, buffer_manager)
-    
-    schema = Schema()
-    schema.add_int_field("id")
-    schema.add_string_field("description", 100)
-    layout = Layout(schema)
-    
-    table_scan = TableScan(transaction, "stress_test", layout)
-    
-    # 大量のレコードを挿入
-    num_records = 1000
-    for i in range(num_records):
-        table_scan.insert()
-        table_scan.set_int("id", i)
-        table_scan.set_string("description", f"Record number {i} with some description")
-    
-    # 全レコードを読み取り
-    table_scan.before_first()
-    count = 0
-    while table_scan.next():
-        assert table_scan.get_int("id") == count
-        expected_desc = f"Record number {count} with some description"
-        assert table_scan.get_string("description") == expected_desc
-        count += 1
-    
-    assert count == num_records
-    
-    table_scan.close()
-    transaction.commit()

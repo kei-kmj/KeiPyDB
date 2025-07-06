@@ -82,14 +82,14 @@ def test_create_table_with_various_field_types(real_metadata_env):
     assert layout.schema.has_field("description")
     
     # フィールドタイプの確認
-    assert layout.schema.type("id") == FieldType.Integer
-    assert layout.schema.type("name") == FieldType.Varchar
-    assert layout.schema.type("age") == FieldType.Integer
-    assert layout.schema.type("description") == FieldType.Varchar
+    assert layout.schema.get_type("id") == FieldType.Integer
+    assert layout.schema.get_type("name") == FieldType.Varchar
+    assert layout.schema.get_type("age") == FieldType.Integer
+    assert layout.schema.get_type("description") == FieldType.Varchar
     
     # フィールド長の確認
-    assert layout.schema.length("name") == 50
-    assert layout.schema.length("description") == 100
+    assert layout.schema.get_length("name") == 50
+    assert layout.schema.get_length("description") == 100
     
     tx.commit()
 
@@ -122,9 +122,9 @@ def test_multiple_tables_creation(real_metadata_env):
         
         for field_name, field_type, length in fields:
             assert layout.schema.has_field(field_name)
-            assert layout.schema.type(field_name) == field_type
+            assert layout.schema.get_type(field_name) == field_type
             if field_type == FieldType.Varchar:
-                assert layout.schema.length(field_name) == length
+                assert layout.schema.get_length(field_name) == length
     
     tx.commit()
 
@@ -227,9 +227,9 @@ def test_table_manager_persistence_across_transactions(real_metadata_env):
     assert layout is not None
     assert layout.schema.has_field("id")
     assert layout.schema.has_field("data")
-    assert layout.schema.type("id") == FieldType.Integer
-    assert layout.schema.type("data") == FieldType.Varchar
-    assert layout.schema.length("data") == 50
+    assert layout.schema.get_type("id") == FieldType.Integer
+    assert layout.schema.get_type("data") == FieldType.Varchar
+    assert layout.schema.get_length("data") == 50
     
     tx2.commit()
 

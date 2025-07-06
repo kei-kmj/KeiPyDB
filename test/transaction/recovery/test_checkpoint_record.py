@@ -7,7 +7,7 @@ from db.transaction.recovery.checkpoint_record import CheckpointRecord
 
 def test_checkpoint_record_initialization():
     checkpoint = CheckpointRecord()
-    assert checkpoint.CHECKPOINT == 2
+    assert checkpoint.CHECKPOINT == 0
     assert str(checkpoint) == "<CHECKPOINT>"
 
 

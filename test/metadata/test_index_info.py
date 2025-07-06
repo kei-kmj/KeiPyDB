@@ -76,7 +76,7 @@ def test_index_info_with_integer_field(real_index_info_env):
     index_info = IndexInfo("idx_id", "id", table_schema, stat_info)
     
     # インデックスレイアウトのdatavalフィールドがInteger型であることを確認
-    dataval_type = index_info.index_layout.schema.type("dataval")
+    dataval_type = index_info.index_layout.schema.get_type("dataval")
     assert dataval_type == FieldType.Integer
     
     # スロットサイズが適切に計算されていることを確認
@@ -95,12 +95,12 @@ def test_index_info_with_varchar_field(real_index_info_env):
     index_info = IndexInfo("idx_name", "name", table_schema, stat_info)
     
     # インデックスレイアウトのdatavalフィールドがVarchar型であることを確認
-    dataval_type = index_info.index_layout.schema.type("dataval")
+    dataval_type = index_info.index_layout.schema.get_type("dataval")
     assert dataval_type == FieldType.Varchar
     
     # フィールド長が正しく設定されていることを確認
-    dataval_length = index_info.index_layout.schema.length("dataval")
-    expected_length = table_schema.length("name")
+    dataval_length = index_info.index_layout.schema.get_length("dataval")
+    expected_length = table_schema.get_length("name")
     assert dataval_length == expected_length
 
 
@@ -209,12 +209,12 @@ def test_index_info_with_different_field_types(real_index_info_env):
         
         # インデックスレイアウトが正しく作成されていることを確認
         assert index_info.index_layout.schema.has_field("dataval")
-        dataval_type = index_info.index_layout.schema.type("dataval")
+        dataval_type = index_info.index_layout.schema.get_type("dataval")
         assert dataval_type == expected_type
         
         if expected_type == FieldType.Varchar:
-            dataval_length = index_info.index_layout.schema.length("dataval")
-            expected_length = schema.length(field_name)
+            dataval_length = index_info.index_layout.schema.get_length("dataval")
+            expected_length = schema.get_length(field_name)
             assert dataval_length == expected_length
 
 

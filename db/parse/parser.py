@@ -1,6 +1,7 @@
 from collections.abc import Collection
 from typing import List
 
+from db.exception import BadSyntaxException
 from db.parse.create_index import CreateIndex
 from db.parse.create_table import CreateTable
 from db.parse.create_view import CreateView
@@ -21,13 +22,10 @@ class Parser:
     def __init__(self, sql: str) -> None:
         self.lexer = Lexer(sql)
 
-    def filed(self) -> str:
-        field_name = self.lexer.eat_id()
-        # return field_name
-
-        if field_name is None:
-            raise SyntaxError(f"Expected field_name, but not found {self.lexer.current_token}")
-        return field_name
+    def field(self) -> str:
+        if not self.lexer.match_id():
+            raise BadSyntaxException(f"Expected identifier, but found {self.lexer.current_token}")
+        return self.lexer.eat_id()
 
     def constant(self) -> Constant:
         if self.lexer.match_int_constant():
@@ -47,7 +45,7 @@ class Parser:
 
     def expression(self) -> Expression:
         if self.lexer.match_id():
-            return Expression(self.filed())
+            return Expression(self.field())
         else:
             return Expression(self.constant())
 
@@ -79,22 +77,19 @@ class Parser:
         return QueryData(field_list, tables, predicate)
 
     def select_list(self) -> list[str]:
-        field_list = [self.filed()]
+        field_list = [self.field()]
         while self.lexer.match_delimiter(","):
             self.lexer.eat_delimiter(",")
-            field_list.append(self.filed())
+            field_list.append(self.field())
         return field_list
 
     def table_list(self) -> Collection[str]:
         table_name = self.lexer.eat_id()
-        if table_name is None:
-            raise SyntaxError("Expected table name but got None.")
+
         tables: List[str] = [table_name]
         while self.lexer.match_delimiter(","):
             self.lexer.eat_delimiter(",")
             table_name = self.lexer.eat_id()
-            if table_name is None:
-                raise SyntaxError("Expected table name but got None.")
             tables.append(table_name)
         return tables
 
@@ -128,9 +123,6 @@ class Parser:
             self.lexer.eat_keyword("where")
             predicate = self.predicate()
 
-        if not table_name:
-            raise SyntaxError(f"Expected table_name, but not found {self.lexer.current_token}")
-
         return DeleteData(table_name, predicate)
 
     def insert(self) -> InsertData:
@@ -139,10 +131,10 @@ class Parser:
         table_name = self.lexer.eat_id()
 
         self.lexer.eat_delimiter("(")
-        field_list = [self.filed()]
+        field_list = [self.field()]
         while self.lexer.match_delimiter(","):
             self.lexer.eat_delimiter(",")
-            field_list.append(self.filed())
+            field_list.append(self.field())
         self.lexer.eat_delimiter(")")
 
         self.lexer.eat_keyword("values")
@@ -166,7 +158,7 @@ class Parser:
         self.lexer.eat_keyword("update")
         table_name = self.lexer.eat_id()
         self.lexer.eat_keyword("set")
-        field_name = self.filed()
+        field_name = self.field()
         self.lexer.eat_delimiter("=")
         value = self.expression()
         predicate = Predicate()
@@ -203,7 +195,7 @@ class Parser:
         return schema
 
     def field_def(self) -> Schema:
-        field_name = self.filed()
+        field_name = self.field()
         return self.field_type(field_name)
 
     def field_type(self, field_name: str) -> Schema:
@@ -244,7 +236,7 @@ class Parser:
         self.lexer.eat_keyword("on")
         table_name = self.lexer.eat_id()
         self.lexer.eat_delimiter("(")
-        field_name = self.filed()
+        field_name = self.field()
         self.lexer.eat_delimiter(")")
 
         if not index_name or not table_name or not field_name:

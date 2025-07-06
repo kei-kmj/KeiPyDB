@@ -1,7 +1,7 @@
 import pytest
 
 from db.constants import FieldType
-from db.parse.bad_syntax_exception import BadSyntaxException
+from db.exception import BadSyntaxException
 from db.parse.parser import Parser
 from db.parse.query_data import QueryData
 from db.parse.insert_data import InsertData
@@ -182,12 +182,12 @@ def test_parser_create_table_basic():
     assert schema.has_field("age")
     
     # フィールドタイプの確認
-    assert schema.type("id") == FieldType.Integer
-    assert schema.type("name") == FieldType.Varchar
-    assert schema.type("age") == FieldType.Integer
+    assert schema.get_type("id") == FieldType.Integer
+    assert schema.get_type("name") == FieldType.Varchar
+    assert schema.get_type("age") == FieldType.Integer
     
     # varchar長の確認
-    assert schema.length("name") == 50
+    assert schema.get_length("name") == 50
 
 
 def test_parser_create_table_complex():
@@ -245,7 +245,7 @@ def test_parser_field_parsing():
     
     # fieldsの部分をテスト
     parser.lexer.eat_keyword("SELECT")
-    field = parser.filed()
+    field = parser.field()
     
     assert field == "id"
 
@@ -452,13 +452,13 @@ def test_parser_create_table_various_types():
     assert isinstance(create_table, CreateTable)
     schema = create_table.get_schema()
     
-    assert schema.type("small_int") == FieldType.Integer
-    assert schema.type("medium_text") == FieldType.Varchar
-    assert schema.type("large_text") == FieldType.Varchar
-    assert schema.type("another_int") == FieldType.Integer
+    assert schema.get_type("small_int") == FieldType.Integer
+    assert schema.get_type("medium_text") == FieldType.Varchar
+    assert schema.get_type("large_text") == FieldType.Varchar
+    assert schema.get_type("another_int") == FieldType.Integer
     
-    assert schema.length("medium_text") == 100
-    assert schema.length("large_text") == 500
+    assert schema.get_length("medium_text") == 100
+    assert schema.get_length("large_text") == 500
 
 
 def test_parser_stress_test_large_insert():

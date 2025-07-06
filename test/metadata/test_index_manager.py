@@ -283,7 +283,7 @@ def test_index_manager_with_different_field_types(real_index_manager_env):
         for field_name, index_info in index_info_dict.items():
             print(f"Index for {field_name}: {index_info.index_name}")
             # インデックスのデータ型が正しく設定されているか確認
-            dataval_type = index_info.index_layout.schema.type("dataval")
+            dataval_type = index_info.index_layout.schema.get_type("dataval")
             print(f"  dataval type: {dataval_type}")
             
     except Exception as e:

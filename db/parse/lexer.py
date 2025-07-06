@@ -1,5 +1,7 @@
 import re
-from typing import Optional
+from collections import deque
+
+from db.exception import BadSyntaxException
 
 
 class Lexer:
@@ -58,13 +60,14 @@ class Lexer:
             "limit",
             "offset",
         }
-        self.tokens = self._tokenize(sql)
-        self.current_token: Optional[str] = None
+        self.sql = sql
+        self.tokens = deque(self._tokenize(sql))
+        self.current_token_index = 0
         self.next_token()
 
     def _tokenize(self, sql: str) -> list[str]:
         """SQL文をトークンに分割"""
-        token_pattern = r"[a-zA-Z_][a-zA-Z_0-9]*|'[^']*'|\d+|[=,()<>*+-/]|."
+        token_pattern = r"[a-zA-Z_][a-zA-Z_0-9]*|'(?:[^']|'')*'|\d+(?:\.\d+)?|[=,()<>*+-/;]|\s+|."
         tokens = re.findall(token_pattern, sql.lower())
 
         return [token for token in tokens if not token.isspace()]
@@ -108,17 +111,22 @@ class Lexer:
 
         self.next_token()
 
-    def eat_int_constant(self) -> int | None:
+    def eat_int_constant(self) -> int:
         """整数定数を消費"""
-        if not self.current_token:
-            raise SyntaxError(f"Expected integer constant, but not found {self.current_token}")
+        if not self.match_int_constant():
+            raise BadSyntaxException(f"Expected integer constant, but found {self.current_token}")
 
-        value = int(self.current_token)
-        self.next_token()
-        return value
+        try:
+            value = int(self.current_token)
+            self.next_token()
+            return value
+        except ValueError:
+            raise BadSyntaxException(f"Invalid integer format: {self.current_token}")
 
     def eat_string_constant(self) -> str | None:
         """文字列定数を消費"""
+        if not self.match_string_constant():
+            raise BadSyntaxException(f"Expected string constant, but found {self.current_token}")
 
         value = self.current_token
         self.next_token()
@@ -145,7 +153,7 @@ class Lexer:
 
     def next_token(self) -> None:
         """次のトークンに進む"""
-        try:
-            self.current_token = self.tokens.pop(0)
-        except IndexError:
+        if self.tokens:
+            self.current_token = self.tokens.popleft()
+        else:
             self.current_token = None
