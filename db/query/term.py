@@ -41,18 +41,15 @@ class Term:
         raise ValueError("Reduction factor cannot be determined due to incomparable constants.")
 
     def equates_with_constant(self, field_name: str) -> Optional[Constant]:
-        """TermがF1==F2であることを確認し、フィールドF2を返す"""
-        if self.left.is_field_name() and self.left.as_field_name() == field_name and self.right.is_field_name():
-
-            return Constant(self.right.as_field_name())
-
-        elif self.right.is_field_name() and self.right.as_field_name() == field_name and self.left.is_field_name():
-
-            return Constant(self.left.as_field_name())
-
+        """指定されたフィールドが定数と等しい場合、その定数を返す"""
+        if self.left.is_field_name() and self.left.as_field_name() == field_name and not self.right.is_field_name():
+            return self.right.as_constant()
+        elif self.right.is_field_name() and self.right.as_field_name() == field_name and not self.left.is_field_name():
+            return self.left.as_constant()
         return None
 
     def equates_with_field(self, field_name: str) -> Optional[str]:
+        """指定されたフィールドが他のフィールドと等しい場合、そのフィールド名を返す"""
         if self.left.is_field_name() and self.left.as_field_name() == field_name and self.right.is_field_name():
             return self.right.as_field_name()
         elif self.right.is_field_name() and self.right.as_field_name() == field_name and self.left.is_field_name():

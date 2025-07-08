@@ -25,11 +25,12 @@ class SelectPlan(Plan, ABC):
 
     def distinct_values(self, field_name: str) -> int:
 
-        if self.predicate.equates_with_constant(field_name) is not None:
+        constant = self.predicate.equates_with_constant(field_name)
+        if constant is not None:
             return 1
-
         else:
-            return self.plan.distinct_values(field_name)
+            base_distinct = self.plan.distinct_values(field_name)
+            return max(1, base_distinct // 2)
 
     def schema(self) -> Schema:
         return self.plan.schema()

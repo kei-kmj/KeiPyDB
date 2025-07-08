@@ -24,9 +24,7 @@ class IndexManager:
         self.stat_manager = stat_manager
         self.layout = table_manager.get_layout("index_catalog", transaction)
 
-    def create_index(
-        self, index_name: str, table_name: str, field_name: str, transaction: Transaction
-    ) -> None:
+    def create_index(self, index_name: str, table_name: str, field_name: str, transaction: Transaction) -> None:
         """インデックスを作成"""
         table_scan = TableScan(transaction, "index_catalog", self.layout)
         table_scan.insert()

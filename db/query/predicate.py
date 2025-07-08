@@ -15,9 +15,18 @@ class Predicate:
         """単一のTermを追加"""
         self.terms.append(term)
 
-    def conjoin_with(self, other: "Predicate") -> None:
-        """自信と指定された述語の論理積を取る"""
+    def conjoin_with_term(self, term: Term) -> None:
+        """単一のTermを述語に追加"""
+        self.terms.append(term)
+
+    def conjoin_with_predicate(self, other: "Predicate") -> None:
+        """他の述語との論理積を取る"""
         self.terms.extend(other.terms)
+
+    # 既存のconjoin_withは下位互換性のために保持
+    def conjoin_with(self, other: "Predicate") -> None:
+        """他の述語との論理積を取る（非推奨: conjoin_with_predicateを使用）"""
+        self.conjoin_with_predicate(other)
 
     def is_satisfied(self, scan: Scan) -> bool:
         """指定されたスキャンに述語が適用されるかどうかを返す"""

@@ -27,11 +27,15 @@ class BtreeIndex:
         if self.transaction.size(self.leaf_table) == self.EMPTY:
             block = self.transaction.append(self.leaf_table)
             node = BtreePage(self.transaction, block, leaf_layout)
-            node.format(block, Node.Overflow)
+            node.format(block, Node.Valid)
 
         dir_schema = Schema()
-        dir_schema.add("block", self.leaf_layout.get_schema())
-        dir_schema.add("data_value", self.leaf_layout.get_schema())
+        block_field_type = self.leaf_layout.get_schema().get_type("block")
+        data_value_field_type = self.leaf_layout.get_schema().get_type("data_value")
+
+        dir_schema.add_field("block", block_field_type, 0)
+        dir_schema.add_field("data_value", data_value_field_type, 0)
+
         dir_table = index_name + "dir"
         self.dir_layout = Layout(dir_schema)
         self.root_block = BlockID(dir_table, self.ROOT_BLOCK_INDEX)
@@ -44,7 +48,8 @@ class BtreeIndex:
             field_type = dir_schema.get_type("data_value")
             min_value = Constant(int("-inf")) if field_type == FieldType.Integer else Constant("")
 
-            root.insert_directory(Slot.First, min_value, self.ROOT_BLOCK_INDEX)
+            first_leaf_block = 0
+            root.insert_directory(Slot.First, min_value, first_leaf_block)
             root.close()
 
     def before_first(self, search_key: Constant) -> None:

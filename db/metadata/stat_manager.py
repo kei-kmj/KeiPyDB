@@ -14,7 +14,8 @@ class StatManager:
         self.table_stats: Dict[str, StatInfo] = {}
         self.num_calls = 0
         self.lock = Lock()
-        self.refresh_statistics(transaction)
+        # Don't refresh on init - let it be lazy loaded
+        # self.refresh_statistics(transaction)
 
     def get_stat_info(self, table_name: str, transaction: Transaction) -> StatInfo:
         """指定されたテーブルの統計情報を取得"""
@@ -42,6 +43,9 @@ class StatManager:
 
             while table_scan.next():
                 table_name = table_scan.get_string("table_name")
+                # Skip catalog tables to avoid recursion/performance issues
+                if table_name in ["table_catalog", "field_catalog"]:
+                    continue
                 layout = self.table_manager.get_layout(table_name, transaction)
                 self.table_stats[table_name] = self._calculate_table_stats(table_name, layout, transaction)
 

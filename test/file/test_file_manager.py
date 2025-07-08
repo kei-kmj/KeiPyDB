@@ -62,7 +62,7 @@ def test_file_manager_init_with_path_object(setup_dir):
     # Path オブジェクトでも初期化できることを確認
     path = Path(setup_dir)
     manager = FileManager(path, 1024)
-    
+
     assert manager.db_directory == path
     assert manager.block_size == 1024
 
@@ -71,17 +71,17 @@ def test_file_manager_temp_file_cleanup(setup_dir):
     # 一時ファイルを作成
     temp_files = ["temp123.txt", "tempfile.db", "temp_data"]
     non_temp_files = ["data.db", "test.txt"]
-    
+
     for file_name in temp_files + non_temp_files:
         (Path(setup_dir) / file_name).write_text("test")
-    
+
     # FileManager初期化時に一時ファイルが削除される
     FileManager(setup_dir, 4096)
-    
+
     # 一時ファイルは削除され、通常ファイルは残る
     for file_name in temp_files:
         assert not (Path(setup_dir) / file_name).exists()
-    
+
     for file_name in non_temp_files:
         assert (Path(setup_dir) / file_name).exists()
 
@@ -117,7 +117,7 @@ def test_file_manager_write_multiple_blocks(setup_dir):
     block_size = 512
     manager = FileManager(setup_dir, block_size)
     file_name = "multi_block_file"
-    
+
     # 複数のブロックに書き込み
     blocks_data = [
         (0, "First block"),
@@ -125,17 +125,17 @@ def test_file_manager_write_multiple_blocks(setup_dir):
         (2, "Third block"),
         (5, "Sixth block"),  # ブロック番号が飛んでいる
     ]
-    
+
     # まず必要なブロックを作成
     for i in range(6):  # 0から5までのブロックを作成
         manager.append(file_name)
-    
+
     for block_num, data in blocks_data:
         page = Page(block_size)
         page.set_string(0, data)
         block_id = BlockID(file_name, block_num)
         manager.write(block_id, page)
-    
+
     # 各ブロックを読み込んで検証
     for block_num, expected_data in blocks_data:
         page = Page(block_size)
@@ -189,14 +189,14 @@ def test_file_manager_read_empty_data(setup_file, setup_dir):
 def test_file_manager_read_beyond_file_end(setup_dir):
     manager = FileManager(setup_dir, 4096)
     file_name = "small_file.db"
-    
+
     # ファイルに1ブロックだけ追加
     manager.append(file_name)
-    
+
     # 存在しないブロック番号5を読もうとする
     page = Page(4096)
     block_id = BlockID(file_name, 5)
-    
+
     # ファイルの終端を超えて読もうとすると、空のデータが返される（FileManagerの実装による）
     # この場合、エラーは発生しない可能性がある
     try:
@@ -211,19 +211,19 @@ def test_file_manager_append(setup_dir):
     block_size = 512
     manager = FileManager(setup_dir, block_size)
     file_name = "append_test.db"
-    
+
     # 新しいファイルに対してappend
     block1 = manager.append(file_name)
     assert block1.file_name == file_name
     assert block1.number() == 0
-    
+
     # 続けてappend
     block2 = manager.append(file_name)
     assert block2.number() == 1
-    
+
     block3 = manager.append(file_name)
     assert block3.number() == 2
-    
+
     # ファイルサイズを確認
     file_path = Path(setup_dir) / file_name
     assert file_path.stat().st_size == block_size * 3
@@ -233,19 +233,19 @@ def test_file_manager_append_with_data(setup_dir):
     block_size = 512
     manager = FileManager(setup_dir, block_size)
     file_name = "data_append.db"
-    
+
     # データを持つブロックを追加
     data_list = ["First", "Second", "Third"]
-    
+
     for i, data in enumerate(data_list):
         block_id = manager.append(file_name)
         assert block_id.number() == i
-        
+
         # データを書き込む
         page = Page(block_size)
         page.set_string(0, data)
         manager.write(block_id, page)
-    
+
     # 各ブロックのデータを確認
     for i, expected_data in enumerate(data_list):
         page = Page(block_size)
@@ -258,19 +258,19 @@ def test_file_manager_length(setup_dir):
     block_size = 1024
     manager = FileManager(setup_dir, block_size)
     file_name = "length_test.db"
-    
+
     # 新しいファイルの長さは0
     assert manager.length(file_name) == 0
-    
+
     # ブロックを追加していく
     for i in range(5):
         manager.append(file_name)
         assert manager.length(file_name) == i + 1
-    
+
     # 別のファイル
     another_file = "another.db"
     assert manager.length(another_file) == 0
-    
+
     manager.append(another_file)
     manager.append(another_file)
     assert manager.length(another_file) == 2
@@ -280,16 +280,16 @@ def test_file_manager_length(setup_dir):
 def test_file_manager_get_file_caching(setup_dir):
     manager = FileManager(setup_dir, 4096)
     file_name = "cache_test.db"
-    
+
     # 最初のアクセス
     manager.append(file_name)
     assert file_name in manager.open_files
-    
+
     # 同じファイルへの再アクセス（キャッシュから取得）
     first_file = manager.open_files[file_name]
     manager.append(file_name)
     assert manager.open_files[file_name] is first_file  # 同じオブジェクト
-    
+
     # 別のファイル
     another_file = "another.db"
     manager.append(another_file)
@@ -301,11 +301,11 @@ def test_file_manager_concurrent_operations(setup_dir):
     # 同じファイルに対する複数の操作
     manager = FileManager(setup_dir, 512)
     file_name = "concurrent.db"
-    
+
     # すべての必要なブロックを最初に作成
     for i in range(10):
         manager.append(file_name)
-    
+
     # 複数のブロックに書き込み
     pages = []
     for i in range(10):
@@ -313,10 +313,10 @@ def test_file_manager_concurrent_operations(setup_dir):
         page.set_int(0, i * 100)
         page.set_string(4, f"Block {i}")
         pages.append(page)
-        
+
         block_id = BlockID(file_name, i)
         manager.write(block_id, page)
-    
+
     # すべてのブロックを読み込んで検証
     for i in range(10):
         read_page = Page(512)
@@ -329,13 +329,13 @@ def test_file_manager_concurrent_operations(setup_dir):
 
 def test_file_manager_error_propagation(setup_dir):
     manager = FileManager(setup_dir, 4096)
-    
+
     # appendのエラー
     with pytest.raises(RuntimeError) as exc_info:
         # 無効なファイル名（実装とOSに依存）
         manager.append("")
     assert "Cannot append block" in str(exc_info.value)
-    
+
     # lengthのエラー
     with pytest.raises(RuntimeError) as exc_info:
         manager.length("")

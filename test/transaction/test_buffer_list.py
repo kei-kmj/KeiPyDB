@@ -1,5 +1,5 @@
-import tempfile
 import shutil
+import tempfile
 from unittest.mock import Mock
 
 import pytest
@@ -94,32 +94,32 @@ def test_buffer_list_with_real_managers(real_buffer_list_env):
     """実際のマネージャーでのBufferListテスト"""
     file_manager, log_manager, buffer_manager = real_buffer_list_env
     buffer_list = BufferList(buffer_manager)
-    
+
     # テストファイルを作成
     test_block = BlockID("buffer_list_test.db", 0)
     file_manager.append("buffer_list_test.db")
-    
+
     # ブロックをピン
     buffer_list.pin(test_block)
-    
+
     # バッファが正しく取得できることを確認
     buffer = buffer_list.get_buffer(test_block)
     assert buffer is not None
     assert buffer.is_pinned()
     assert test_block in buffer_list.pins
     assert test_block in buffer_list.buffers
-    
+
     # データを書き込み
     buffer.get_contents().set_int(0, 12345)
     buffer.get_contents().set_string(4, "buffer list test")
-    
+
     # データを読み取り
     assert buffer.get_contents().get_int(0) == 12345
     assert buffer.get_contents().get_string(4) == "buffer list test"
-    
+
     # アンピン
     buffer_list.unpin(test_block)
-    
+
     # アンピン後の状態確認
     assert not buffer.is_pinned()
     assert test_block not in buffer_list.pins
@@ -130,36 +130,36 @@ def test_buffer_list_multiple_pins_same_block(real_buffer_list_env):
     """同じブロックの複数ピンテスト"""
     file_manager, log_manager, buffer_manager = real_buffer_list_env
     buffer_list = BufferList(buffer_manager)
-    
+
     # テストファイルを作成
     test_block = BlockID("multi_pin_test.db", 0)
     file_manager.append("multi_pin_test.db")
-    
+
     # 同じブロックを複数回ピン
     buffer_list.pin(test_block)
     buffer_list.pin(test_block)
     buffer_list.pin(test_block)
-    
+
     # pinsリストに複数回追加される
     assert buffer_list.pins.count(test_block) == 3
-    
+
     # しかしbuffersには1つだけ
     assert len([k for k in buffer_list.buffers.keys() if k == test_block]) == 1
-    
+
     # バッファのピン数を確認
     buffer = buffer_list.get_buffer(test_block)
     assert buffer.pins == 3
-    
+
     # 一度アンピン
     buffer_list.unpin(test_block)
     assert buffer_list.pins.count(test_block) == 2
     assert buffer.pins == 2
     assert test_block in buffer_list.buffers  # まだバッファに残っている
-    
+
     # 残りをアンピン
     buffer_list.unpin(test_block)
     buffer_list.unpin(test_block)
-    
+
     # 完全にアンピンされた
     assert test_block not in buffer_list.pins
     assert test_block not in buffer_list.buffers
@@ -170,36 +170,36 @@ def test_buffer_list_multiple_blocks(real_buffer_list_env):
     """複数ブロックでのBufferListテスト"""
     file_manager, log_manager, buffer_manager = real_buffer_list_env
     buffer_list = BufferList(buffer_manager)
-    
+
     # 複数のテストファイルを作成
     blocks = []
     for i in range(3):
         block = BlockID(f"multi_block_test_{i}.db", 0)
         file_manager.append(f"multi_block_test_{i}.db")
         blocks.append(block)
-        
+
         # ブロックをピンしてデータを書き込み
         buffer_list.pin(block)
         buffer = buffer_list.get_buffer(block)
         buffer.get_contents().set_int(0, i * 100)
         buffer.get_contents().set_string(4, f"Block {i}")
-    
+
     # 全ブロックがピンされていることを確認
     assert len(buffer_list.pins) == 3
     assert len(buffer_list.buffers) == 3
-    
+
     # 各ブロックのデータを確認
     for i, block in enumerate(blocks):
         buffer = buffer_list.get_buffer(block)
         assert buffer.get_contents().get_int(0) == i * 100
         assert buffer.get_contents().get_string(4) == f"Block {i}"
-    
+
     # 一部のブロックをアンピン
     buffer_list.unpin(blocks[1])
     assert len(buffer_list.pins) == 2
     assert len(buffer_list.buffers) == 2
     assert blocks[1] not in buffer_list.buffers
-    
+
     # 全てアンピン
     buffer_list.unpin_all()
     assert len(buffer_list.pins) == 0
@@ -210,14 +210,14 @@ def test_buffer_list_edge_cases(real_buffer_list_env):
     """BufferListのエッジケーステスト"""
     file_manager, log_manager, buffer_manager = real_buffer_list_env
     buffer_list = BufferList(buffer_manager)
-    
+
     # 存在しないブロックの取得
     non_existent_block = BlockID("non_existent.db", 0)
     assert buffer_list.get_buffer(non_existent_block) is None
-    
+
     # 存在しないブロックのアンピン（エラーにならない）
     buffer_list.unpin(non_existent_block)  # 何も起こらない
-    
+
     # 空の状態でunpin_all
     buffer_list.unpin_all()  # 何も起こらない
     assert len(buffer_list.pins) == 0
@@ -228,11 +228,11 @@ def test_buffer_list_stress_test(real_buffer_list_env):
     """BufferListのストレステスト"""
     file_manager, log_manager, buffer_manager = real_buffer_list_env
     buffer_list = BufferList(buffer_manager)
-    
+
     # 大量のブロックでテスト
     num_blocks = 20  # バッファプールサイズ（5）より多い
     blocks = []
-    
+
     # ブロックを順次ピン（バッファ不足になる可能性がある）
     for i in range(min(num_blocks, 5)):  # バッファプールサイズに制限
         try:
@@ -240,25 +240,25 @@ def test_buffer_list_stress_test(real_buffer_list_env):
             file_manager.append(f"stress_test_{i}.db")
             buffer_list.pin(block)
             blocks.append(block)
-            
+
             buffer = buffer_list.get_buffer(block)
             buffer.get_contents().set_int(0, i * 1000)
-            
+
         except Exception as e:
             # バッファ不足の場合はスキップ
             print(f"Buffer shortage at block {i}: {e}")
             break
-    
+
     # ピンされたブロック数を確認
     pinned_count = len(buffer_list.pins)
     assert pinned_count <= 5  # バッファプールサイズ以下
-    
+
     # 各ブロックのデータを確認
     for i, block in enumerate(blocks):
         buffer = buffer_list.get_buffer(block)
         if buffer:  # バッファが存在する場合のみ
             assert buffer.get_contents().get_int(0) == i * 1000
-    
+
     # 全てクリーンアップ
     buffer_list.unpin_all()
     assert len(buffer_list.pins) == 0

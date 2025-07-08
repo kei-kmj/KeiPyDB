@@ -8,9 +8,7 @@ from db.transaction.transaction import Transaction
 
 
 class IndexInfo:
-    def __init__(
-        self, index_name: str, field_name: str, table_schema: Schema, stat_info: StatInfo
-    ) -> None:
+    def __init__(self, index_name: str, field_name: str, table_schema: Schema, stat_info: StatInfo) -> None:
         self.index_name = index_name
         self.field_name = field_name
         self.table_schema = table_schema

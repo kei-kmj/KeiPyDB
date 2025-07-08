@@ -81,36 +81,36 @@ def test_scan():
 
 def test_product_scan_basic_logic():
     """Test ProductScan basic logic with mocks"""
-    
+
     left_scan = Mock()
     right_scan = Mock()
-    
+
     # Setup mock behavior
     left_count = 0
     right_count = 0
-    
+
     def left_next():
         nonlocal left_count
         left_count += 1
         return left_count <= 2
-    
+
     def right_next():
         nonlocal right_count
         right_count += 1
         if right_count > 3:
             right_count = 1  # Reset for next left iteration
         return right_count <= 3
-    
+
     left_scan.next = left_next
     right_scan.next = right_next
     left_scan.has_field.return_value = True
     right_scan.has_field.return_value = False
-    
+
     product_scan = ProductScan(left_scan, right_scan)
-    
+
     # Test field resolution (left scan first)
     assert product_scan.has_field("test") is True
-    
+
     # Test basic navigation
     product_scan.before_first()
     combinations = 0
@@ -118,6 +118,6 @@ def test_product_scan_basic_logic():
         combinations += 1
         if combinations > 10:  # Prevent infinite loop
             break
-    
+
     # Should process some combinations
     assert combinations >= 0

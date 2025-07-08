@@ -13,8 +13,12 @@ class ProjectPlan(Plan, ABC):
         super().__init__()
         self.plan = plan
         self._schema = Schema()
+        base_schema = self.plan.schema()
+
         for field_name in field_list:
-            self._schema.add(field_name, self.plan.schema())
+            if not base_schema.has_field(field_name):
+                raise ValueError(f"フィールド '{field_name}' はベーススキーマに存在しません")
+            self._schema.add(field_name, base_schema)
 
     def open(self) -> Scan:
         scan = self.plan.open()

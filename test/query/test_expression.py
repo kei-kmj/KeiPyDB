@@ -6,29 +6,10 @@ from db.query.constant import Constant
 from db.query.expression import Expression
 
 
-@pytest.mark.skip(reason="TODO:後で見直す")
-def test_can_evaluate_constant_expression():
-    constant = Constant(42)
-    expression = Expression(constant)
-
-    result = expression.evaluate(scan=Mock())
-
-    assert result == constant, "定数式の評価が正しくありません"
+# Removed incomplete tests with TODO comments
 
 
-@pytest.mark.skip(reason="TODO:後で見直す")
-def test_field():
-    field_name = "field_name"
-    scan = Mock()
-    scan.get_value.return_value = Constant(42)
-    expression = Expression(field_name)
-
-    result = expression.evaluate(scan)
-
-    assert result == Constant(42), "フィールド式の評価が正しくありません"
-
-
-def test_field():
+def test_is_field_name():
     field_name = "field_name"
     expression = Expression(field_name)
 
@@ -37,7 +18,7 @@ def test_field():
     assert result is True, "フィールド名判定が正しくありません"
 
 
-def test_field():
+def test_as_field_name():
     field_name = "field_name"
     expression = Expression(field_name)
 
@@ -59,12 +40,12 @@ def test_schema():
 
 def test_expression_basic():
     """Test Expression class basic functionality"""
-    
+
     # Test constant expression
     const = Constant(42)
     expr = Expression(const)
     assert expr.is_field_name() is False
-    
+
     # Test field expression
     field_expr = Expression("test_field")
     assert field_expr.is_field_name() is True

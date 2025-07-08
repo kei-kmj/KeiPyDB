@@ -10,6 +10,7 @@ class ConcurrencyManager:
 
     def __init__(self) -> None:
         self.locks: Dict[BlockID, str] = {}
+        self.lock_table = LockTable()
 
     def lock_shared(self, block: BlockID) -> None:
         if block not in self.locks:

@@ -51,5 +51,13 @@ class Constant:
         else:
             return hash(self.str_value)
 
+    def __str__(self) -> str:
+        """定数の値を文字列として返す"""
+        if self.int_value is not None:
+            return str(self.int_value)
+        else:
+            return self.str_value
+
     def __repr__(self) -> str:
+        """デバッグ用の詳細な文字列表現を返す"""
         return f"Constant(value={self.int_value if self.int_value is not None else repr(self.str_value)})"

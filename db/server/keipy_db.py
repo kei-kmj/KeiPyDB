@@ -16,32 +16,37 @@ class KeiPyDB:
     LOG_FILE = "keipydb.log"
 
     def __init__(self, dir_name: str, block_size: int = BLOCK_SIZE, buffer_size: int = BUFFER_SIZE) -> None:
+        try:
+            self.file_manager = FileManager(dir_name, block_size)
+            self.log_manager = LogManager(self.file_manager, KeiPyDB.LOG_FILE)
+            self.buffer_manager = BufferManager(self.file_manager, self.log_manager, buffer_size)
 
-        self.file_manager = FileManager(dir_name, block_size)
-        self.log_manager = LogManager(self.file_manager, KeiPyDB.LOG_FILE)
-        self.buffer_manager = BufferManager(self.file_manager, self.log_manager, buffer_size)
+            is_new = self.file_manager.is_new
+            self.metadata_manager = None
+            self.planner = None
 
-        is_new = self.file_manager.is_new
-        self.metadata_manager = None
-        self.planner = None
+            if is_new:
+                print("creating new database")
+            else:
+                print("recovering existing database")
 
-        if is_new:
-            print("creating new database")
-        else:
-            print("recovering existing database")
+            transaction = self.new_transaction()
+            if not is_new:
+                transaction.recover()
 
-        transaction = self.new_transaction()
-        if not is_new:
-            transaction.recover()
+            self.metadata_manager = MetadataManager(is_new, transaction)
 
-        self.metadata_manager = MetadataManager(is_new, transaction)
+            self.query_planner = BasicQueryPlanner(self.metadata_manager)
+            self.update_planner = BasicUpdatePlanner(self.metadata_manager)
 
-        self.query_planner = BasicQueryPlanner(self.metadata_manager)
-        self.update_planner = BasicUpdatePlanner(self.metadata_manager)
+            self.planner = Planner(self.query_planner, self.update_planner)
 
-        self.planner = Planner(self.query_planner, self.update_planner)
+            transaction.commit()
 
-        transaction.commit()
+        except Exception as e:
+            # 部分的に初期化されたコンポーネントのクリーンアップ
+            # self._cleanup()
+            raise RuntimeError(f"データベース初期化に失敗しました: {e}") from e
 
     def new_transaction(self) -> Transaction:
         return Transaction(self.file_manager, self.log_manager, self.buffer_manager)

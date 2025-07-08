@@ -41,7 +41,7 @@ class FileManager:
                 f = self._get_file(block_id.file_name)
                 f.seek(block_id.number() * self.block_size)
                 data = f.read(self.block_size)
-                page.buffer[:len(data)] = data
+                page.buffer[: len(data)] = data
 
             except Exception as e:
                 raise RuntimeError(f"Cannot read block {block_id} from file: {e}")
@@ -98,7 +98,6 @@ class FileManager:
             self.open_files[file_name] = cast(BinaryIO, open(file_path, mode))
 
         return self.open_files[file_name]
-
 
     def _get_file_lock(self, file_name: str) -> threading.RLock:
         """ファイル単位のロックを取得"""

@@ -95,5 +95,3 @@ class RecordPage:
         slot_size = self.layout.get_slot_size()
         offset = slot * slot_size
         return offset
-
-

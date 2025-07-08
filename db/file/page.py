@@ -63,4 +63,4 @@ class Page:
 
     def get_contents(self) -> bytes:
         """バッファ全体を含むバイト列を取得"""
-        return bytes(self.buffer) 
+        return bytes(self.buffer)

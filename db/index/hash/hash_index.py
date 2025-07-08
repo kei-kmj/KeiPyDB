@@ -39,7 +39,7 @@ class HashIndex(Index, ABC):
 
         while self.table_scan.next():
 
-            if self.search_key is self.table_scan.get_value("data_value"):
+            if self.search_key == self.table_scan.get_value("data_value"):
 
                 return True
         return False
@@ -54,9 +54,6 @@ class HashIndex(Index, ABC):
         return RecordID(block_number, slot)
 
     def insert(self, data_value: Constant, data_record_id: RecordID) -> None:
-        if not self.table_scan:
-            raise RuntimeError("Table scan is not initialized")
-
         self.before_first(data_value)
         self.table_scan.insert()
         self.table_scan.set_int("block", data_record_id.block_number)

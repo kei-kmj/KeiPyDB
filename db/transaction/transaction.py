@@ -50,7 +50,9 @@ class Transaction:
 
     def get_int(self, block: BlockID, offset: int) -> int:
         self.concurrency_manager.lock_shared(block)
-        buffer = self.buffer_manager.pin(block)
+        buffer = self.buffer_list.get_buffer(block)
+        if not buffer:
+            raise ValueError(f"Block {block} not pinned")
         return buffer.get_contents().get_int(offset)
 
     def get_string(self, block: BlockID, offset: int) -> str:
@@ -70,7 +72,7 @@ class Transaction:
         buffer.get_contents().set_int(offset, value)
         buffer.set_modified(self.tx_number, lsn)
 
-    def set_string(self, block: BlockID, offset: int, value: str, ok_to_log: bool = False) -> None:
+    def set_string(self, block: BlockID, offset: int, value: str, ok_to_log: bool = True) -> None:
         self.concurrency_manager.lock_exclusive(block)
         buffer = self.buffer_list.get_buffer(block)
         if not buffer:

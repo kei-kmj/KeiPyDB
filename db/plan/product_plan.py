@@ -31,10 +31,36 @@ class ProductPlan(Plan, ABC):
         return self.plan_left.records_output() * self.plan_right.records_output()
 
     def distinct_values(self, field_name: str) -> int:
-        if self.schema_obj.has_field(field_name):
-            return self.plan_left.distinct_values(field_name)
-        else:
+        if self.plan_left.schema().has_field(field_name):
+            left_distinct = self.plan_left.distinct_values(field_name)
+            if self.plan_right.schema().has_field(field_name):
+                # フィールドが両方のスキーマに存在
+                right_distinct = self.plan_right.distinct_values(field_name)
+                # 保守的に最大値を返す
+                return max(left_distinct, right_distinct)
+            return left_distinct
+        elif self.plan_right.schema().has_field(field_name):
             return self.plan_right.distinct_values(field_name)
+        else:
+            raise ValueError(f"フィールド '{field_name}' はどちらのスキーマにも見つかりません")
 
     def schema(self) -> Schema:
-        return self.schema_obj
+        combined_schema = Schema()
+
+        # 左スキーマのフィールドを最初に追加
+        for field_name in self.plan_left.schema().fields:
+            field_info = self.plan_left.schema().info[field_name]
+            combined_schema.add_field(field_name, field_info.field_type, field_info.length)
+
+        # 右スキーマのフィールドを衝突検出と共に追加
+        for field_name in self.plan_right.schema().fields:
+            if field_name not in combined_schema.fields:
+                field_info = self.plan_right.schema().info[field_name]
+                combined_schema.add_field(field_name, field_info.field_type, field_info.length)
+            else:
+                # 衝突を避けるためテーブルプレフィックスを付けて追加
+                prefixed_name = f"right_{field_name}"
+                field_info = self.plan_right.schema().info[field_name]
+                combined_schema.add_field(prefixed_name, field_info.field_type, field_info.length)
+
+        return combined_schema

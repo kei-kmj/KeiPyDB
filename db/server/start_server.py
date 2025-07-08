@@ -72,7 +72,6 @@ class StartServer:
                 delete_sql = "DELETE FROM test WHERE id = 'world'"
                 print(f"Executing: {delete_sql}")
                 planner.execute_update(delete_sql, tx6)
-                scan.close()
                 tx6.commit()
 
                 tx5 = db.new_transaction()
@@ -86,7 +85,6 @@ class StartServer:
 
                 scan.close()
                 tx5.commit()
-
 
                 # tx4 = db.new_transaction()
                 # delete_sql = "DELETE FROM test"
