@@ -23,8 +23,16 @@ class ProductScan(Scan, ABC):
             return self.scan_left.get_int(field_name)
         elif self.scan_right.has_field(field_name):
             return self.scan_right.get_int(field_name)
+        elif field_name.startswith("right_") and self.scan_right.has_field(field_name[6:]):
+            # right_プレフィックスを除去してチェック
+            return self.scan_right.get_int(field_name[6:])
         else:
-            raise ValueError(f"Field '{field_name}' not found in either scan")
+            available_fields = []
+            if hasattr(self.scan_left, 'get_fields'):
+                available_fields.extend(self.scan_left.get_fields())
+            if hasattr(self.scan_right, 'get_fields'):
+                available_fields.extend([f"right_{f}" for f in self.scan_right.get_fields()])
+            raise ValueError(f"Field '{field_name}' not found. Available fields: {available_fields}")
 
     def get_string(self, field_name: str) -> str:
         """文字列を取得（左スキャン優先）"""
@@ -32,8 +40,16 @@ class ProductScan(Scan, ABC):
             return self.scan_left.get_string(field_name)
         elif self.scan_right.has_field(field_name):
             return self.scan_right.get_string(field_name)
+        elif field_name.startswith("right_") and self.scan_right.has_field(field_name[6:]):
+            # right_プレフィックスを除去してチェック
+            return self.scan_right.get_string(field_name[6:])
         else:
-            raise ValueError(f"Field '{field_name}' not found in either scan")
+            available_fields = []
+            if hasattr(self.scan_left, 'get_fields'):
+                available_fields.extend(self.scan_left.get_fields())
+            if hasattr(self.scan_right, 'get_fields'):
+                available_fields.extend([f"right_{f}" for f in self.scan_right.get_fields()])
+            raise ValueError(f"Field '{field_name}' not found. Available fields: {available_fields}")
 
     def get_value(self, field_name: str) -> Constant:
         """値を取得（左スキャン優先）"""
@@ -41,8 +57,16 @@ class ProductScan(Scan, ABC):
             return self.scan_left.get_value(field_name)
         elif self.scan_right.has_field(field_name):
             return self.scan_right.get_value(field_name)
+        elif field_name.startswith("right_") and self.scan_right.has_field(field_name[6:]):
+            # right_プレフィックスを除去してチェック
+            return self.scan_right.get_value(field_name[6:])
         else:
-            raise ValueError(f"Field '{field_name}' not found in either scan")
+            available_fields = []
+            if hasattr(self.scan_left, 'get_fields'):
+                available_fields.extend(self.scan_left.get_fields())
+            if hasattr(self.scan_right, 'get_fields'):
+                available_fields.extend([f"right_{f}" for f in self.scan_right.get_fields()])
+            raise ValueError(f"Field '{field_name}' not found. Available fields: {available_fields}")
 
     def next(self) -> bool:
         """次のレコードに進む"""
@@ -56,7 +80,11 @@ class ProductScan(Scan, ABC):
 
     def has_field(self, field_name: str) -> bool:
         """フィールドが存在するかどうか"""
-        return self.scan_left.has_field(field_name) or self.scan_right.has_field(field_name)
+        if self.scan_left.has_field(field_name) or self.scan_right.has_field(field_name):
+            return True
+        elif field_name.startswith("right_") and self.scan_right.has_field(field_name[6:]):
+            return True
+        return False
 
     def close(self) -> None:
         """クローズ"""

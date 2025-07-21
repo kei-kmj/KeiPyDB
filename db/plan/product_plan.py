@@ -12,9 +12,7 @@ class ProductPlan(Plan, ABC):
         super().__init__()
         self.plan_left = left_plan
         self.plan_right = right_plan
-        self.schema_obj = Schema()
-        self.schema_obj.add_all(left_plan.schema())
-        self.schema_obj.add_all(right_plan.schema())
+        self._schema = None  # 遅延初期化のため
 
     def open(self) -> Scan:
 
@@ -45,22 +43,24 @@ class ProductPlan(Plan, ABC):
             raise ValueError(f"フィールド '{field_name}' はどちらのスキーマにも見つかりません")
 
     def schema(self) -> Schema:
-        combined_schema = Schema()
-
-        # 左スキーマのフィールドを最初に追加
-        for field_name in self.plan_left.schema().fields:
-            field_info = self.plan_left.schema().info[field_name]
-            combined_schema.add_field(field_name, field_info.field_type, field_info.length)
-
-        # 右スキーマのフィールドを衝突検出と共に追加
-        for field_name in self.plan_right.schema().fields:
-            if field_name not in combined_schema.fields:
-                field_info = self.plan_right.schema().info[field_name]
-                combined_schema.add_field(field_name, field_info.field_type, field_info.length)
-            else:
-                # 衝突を避けるためテーブルプレフィックスを付けて追加
-                prefixed_name = f"right_{field_name}"
-                field_info = self.plan_right.schema().info[field_name]
-                combined_schema.add_field(prefixed_name, field_info.field_type, field_info.length)
-
-        return combined_schema
+        # スキーマを一度だけ計算して保持
+        if self._schema is None:
+            self._schema = Schema()
+            
+            # 左スキーマのフィールドを最初に追加
+            for field_name in self.plan_left.schema().fields:
+                field_info = self.plan_left.schema().info[field_name]
+                self._schema.add_field(field_name, field_info.field_type, field_info.length)
+            
+            # 右スキーマのフィールドを衝突検出と共に追加
+            for field_name in self.plan_right.schema().fields:
+                if field_name not in self._schema.fields:
+                    field_info = self.plan_right.schema().info[field_name]
+                    self._schema.add_field(field_name, field_info.field_type, field_info.length)
+                else:
+                    # 衝突を避けるためテーブルプレフィックスを付けて追加
+                    prefixed_name = f"right_{field_name}"
+                    field_info = self.plan_right.schema().info[field_name]
+                    self._schema.add_field(prefixed_name, field_info.field_type, field_info.length)
+        
+        return self._schema
