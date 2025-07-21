@@ -14,6 +14,7 @@ class ProductScan(Scan, ABC):
     def before_first(self) -> None:
         """最初のレコードに戻る"""
         self.scan_left.before_first()
+        self.scan_left.next()
         self.scan_right.before_first()
 
     def get_int(self, field_name: str) -> int:
@@ -47,9 +48,11 @@ class ProductScan(Scan, ABC):
         """次のレコードに進む"""
         if self.scan_right.next():
             return True
-        else:
+        elif self.scan_left.next():
             self.scan_right.before_first()
-            return self.scan_left.next() and self.scan_right.next()
+            return self.scan_right.next()
+        else:
+            return False
 
     def has_field(self, field_name: str) -> bool:
         """フィールドが存在するかどうか"""
