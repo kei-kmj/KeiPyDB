@@ -1,4 +1,3 @@
-from typing import Dict
 
 from db.metadata.index_info import IndexInfo
 from db.metadata.stat_manager import StatManager
@@ -48,9 +47,9 @@ class IndexManager:
         data_scan.close()
         hash_index.close()
 
-    def get_index_info(self, table_name: str, transaction: Transaction) -> Dict[str, IndexInfo]:
+    def get_index_info(self, table_name: str, transaction: Transaction) -> dict[str, IndexInfo]:
 
-        result: Dict[str, IndexInfo] = {}
+        result: dict[str, IndexInfo] = {}
         table_scan = TableScan(transaction, "index_catalog", self.layout)
 
         while table_scan.next():

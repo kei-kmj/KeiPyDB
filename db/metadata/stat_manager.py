@@ -1,5 +1,4 @@
 from threading import Lock
-from typing import Dict
 
 from db.metadata.stat_info import StatInfo
 from db.metadata.table_manager import TableManager
@@ -11,7 +10,7 @@ from db.transaction.transaction import Transaction
 class StatManager:
     def __init__(self, table_manager: TableManager, transaction: Transaction) -> None:
         self.table_manager = table_manager
-        self.table_stats: Dict[str, StatInfo] = {}
+        self.table_stats: dict[str, StatInfo] = {}
         self.num_calls = 0
         self.lock = Lock()
         # Don't refresh on init - let it be lazy loaded

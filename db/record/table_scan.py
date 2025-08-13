@@ -26,6 +26,12 @@ class TableScan(UpdateScan, ABC):
                 self._move_to_new_block()
             else:
                 self._move_to_block(0)
+        except (OSError, IOError) as e:
+            raise FileNotFoundError(f"Table {table_name} file access error: {e}")
+        except PermissionError as e:
+            raise FileNotFoundError(f"Permission denied accessing table {table_name}: {e}")
+        except ValueError as e:
+            raise FileNotFoundError(f"Invalid table name or configuration {table_name}: {e}")
         except Exception as e:
             raise FileNotFoundError(f"Table {table_name} does not exist or cannot be accessed: {e}")
 

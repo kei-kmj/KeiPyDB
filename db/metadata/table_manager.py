@@ -1,4 +1,3 @@
-from typing import Dict
 
 from db.record.layout import Layout
 from db.record.schema import Schema
@@ -64,7 +63,7 @@ class TableManager:
 
         # field_catalogからフィールド情報を取得
         schema = Schema()
-        offsets: Dict[str, int] = {}
+        offsets: dict[str, int] = {}
         field_catalog = TableScan(transaction, "field_catalog", self.field_catalog_layout)
         while field_catalog.next():
             name = field_catalog.get_string("table_name")

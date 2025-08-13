@@ -74,8 +74,8 @@ class TestSQLRegression:
         while scan.next():
             id_val = scan.get_string("id")
             name_val = scan.get_string("name")
-            assert id_val in ["'1'", "'2'"]  # 文字列の引用符問題を考慮
-            assert name_val in ["'alice'", "'bob'"]  # 小文字変換を考慮
+            assert id_val in ["1", "2"]  # 引用符なしの文字列
+            assert name_val in ["alice", "bob"]  # 小文字変換を考慮
             count += 1
 
         scan.close()
@@ -251,7 +251,7 @@ class TestSQLRegression:
         scan.before_first()
         while scan.next():
             number_value = scan.get_string("number")
-            assert number_value in ["'42'", "'100'"]  # 引用符問題を考慮
+            assert number_value in ["42", "100"]  # 引用符なしの文字列
             count += 1
 
         scan.close()
@@ -308,8 +308,8 @@ def test_comprehensive_sql_workflow(fresh_database):
 
     # 各レコードの状態確認
     statuses = [r["status"] for r in final_records]
-    assert "'in_progress'" in statuses  # Task1が更新されている
-    assert "'pending'" in statuses  # Task2がそのまま
+    assert "in_progress" in statuses  # Task1が更新されている
+    assert "pending" in statuses  # Task2がそのまま
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from db.buffer.buffer import Buffer
 from db.buffer.buffer_manager import BufferManager
@@ -9,7 +9,7 @@ class BufferList:
     def __init__(self, buffer_manager: BufferManager) -> None:
         self.buffer_manager = buffer_manager
         self.buffers: dict[BlockID, Buffer] = {}
-        self.pins: List[BlockID] = []
+        self.pins: list[BlockID] = []
 
     def get_buffer(self, block: BlockID) -> Optional[Buffer]:
         return self.buffers.get(block)

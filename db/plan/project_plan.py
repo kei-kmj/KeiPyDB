@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import List
 
 from db.plan.plan import Plan
 from db.query.project_scan import ProjectScan
@@ -9,7 +8,7 @@ from db.record.schema import Schema
 
 class ProjectPlan(Plan, ABC):
 
-    def __init__(self, plan: Plan, field_list: List[str]) -> None:
+    def __init__(self, plan: Plan, field_list: list[str]) -> None:
         super().__init__()
         self.plan = plan
         self._schema = Schema()

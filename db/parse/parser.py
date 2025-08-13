@@ -1,5 +1,4 @@
 from collections.abc import Collection
-from typing import List
 
 from db.exception import BadSyntaxException
 from db.parse.create_index import CreateIndex
@@ -86,7 +85,7 @@ class Parser:
     def table_list(self) -> Collection[str]:
         table_name = self.lexer.eat_id()
 
-        tables: List[str] = [table_name]
+        tables: list[str] = [table_name]
         while self.lexer.match_delimiter(","):
             self.lexer.eat_delimiter(",")
             table_name = self.lexer.eat_id()

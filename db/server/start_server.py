@@ -22,7 +22,7 @@ class StartServer:
             if planner is not None:
                 tx = db.new_transaction()
 
-                create_table_sql = "CREATE TABLE users (id varchar(10), name varchar(50))"
+                create_table_sql = "CREATE TABLE users (id int, name varchar(50))"
                 print(f"Executing: {create_table_sql}")
                 planner.execute_update(create_table_sql, tx)
                 tx.commit()
@@ -34,15 +34,31 @@ class StartServer:
                 # planner.execute_update(create_table_sql2, tx2)
                 # tx2.commit()
 
+                # INSERT
                 tx_insert = db.new_transaction()
-                insert_sql = "INSERT INTO users (id, name) VALUES ('001', 'Alice')"
+                insert_sql = "INSERT INTO users (id, name) VALUES (255, 'Alice')"
                 print(f"Executing: {insert_sql}")
                 rows_affected = planner.execute_update(insert_sql, tx_insert)
                 print(f"Rows affected: {rows_affected}")
                 tx_insert.commit()
-                
+
+                # SELECT
+                tx_select = db.new_transaction()
+                select_sql = "SELECT id, name FROM users WHERE name = 'Alice'"
+                print(f"Executing: {select_sql}")
+                plan = planner.create_query_plan(select_sql, tx_select)
+                scan = plan.open()
+
+                while scan.next():
+                    print(f"id = {scan.get_int('id')}, name = {scan.get_string('name')}")
+
+                scan.close()
+                tx_select.commit()
+
+
+                # もう一つデータを挿入
                 tx_insert2 = db.new_transaction()
-                insert_sql2 = "INSERT INTO users (id, name) VALUES ('002', 'Bob')"
+                insert_sql2 = "INSERT INTO users (id, name) VALUES (256, 'Bob')"
                 print(f"Executing: {insert_sql2}")
                 rows_affected2 = planner.execute_update(insert_sql2, tx_insert2)
                 print(f"Rows affected: {rows_affected2}")
@@ -70,51 +86,51 @@ class StartServer:
 
                 # 結果を表示
                 while scan.next():
-                    print(f"id = {scan.get_string('id')}, name = {scan.get_string('name')}")
+                    print(f"id = {scan.get_int('id')}, name = {scan.get_string('name')}")
                 
                 scan.close()
                 tx3.commit()
 
                 # もう一つテーブルを作成
-                tx_create2 = db.new_transaction()
-                create_table_sql2 = "CREATE TABLE products (pid varchar(10), price varchar(10))"
-                print(f"\nExecuting: {create_table_sql2}")
-                planner.execute_update(create_table_sql2, tx_create2)
-                tx_create2.commit()
-                
-                # productsテーブルにデータを挿入
-                tx_insert3 = db.new_transaction()
-                insert_sql3 = "INSERT INTO products (pid, price) VALUES ('P001', '100')"
-                print(f"Executing: {insert_sql3}")
-                planner.execute_update(insert_sql3, tx_insert3)
-                tx_insert3.commit()
-                
-                tx_insert4 = db.new_transaction()
-                insert_sql4 = "INSERT INTO products (pid, price) VALUES ('P002', '200')"
-                print(f"Executing: {insert_sql4}")
-                planner.execute_update(insert_sql4, tx_insert4)
-                tx_insert4.commit()
-                
-                # CROSS JOINを実行
-                tx_join = db.new_transaction()
-                join_sql = "SELECT id, name, pid, price FROM users, products"
-                print(f"\nExecuting: {join_sql}")
-                plan_join = planner.create_query_plan(join_sql, tx_join)
-                scan_join = plan_join.open()
-                
-                print("Cross join results:")
-                record_count = 0
-                while scan_join.next():
-                    record_count += 1
-                    user_id = scan_join.get_string('id')
-                    user_name = scan_join.get_string('name')
-                    product_id = scan_join.get_string('pid')
-                    product_price = scan_join.get_string('price')
-                    print(f"  User: {user_id}, {user_name} | Product: {product_id}, ${product_price}")
-                
-                scan_join.close()
-                tx_join.commit()
-                print(f"Total records: {record_count}")
+                # tx_create2 = db.new_transaction()
+                # create_table_sql2 = "CREATE TABLE products (pid varchar(10), price varchar(10))"
+                # print(f"\nExecuting: {create_table_sql2}")
+                # planner.execute_update(create_table_sql2, tx_create2)
+                # tx_create2.commit()
+                #
+                # # productsテーブルにデータを挿入
+                # tx_insert3 = db.new_transaction()
+                # insert_sql3 = "INSERT INTO products (pid, price) VALUES ('P001', '100')"
+                # print(f"Executing: {insert_sql3}")
+                # planner.execute_update(insert_sql3, tx_insert3)
+                # tx_insert3.commit()
+                #
+                # tx_insert4 = db.new_transaction()
+                # insert_sql4 = "INSERT INTO products (pid, price) VALUES ('P002', '200')"
+                # print(f"Executing: {insert_sql4}")
+                # planner.execute_update(insert_sql4, tx_insert4)
+                # tx_insert4.commit()
+                #
+                # # CROSS JOINを実行
+                # tx_join = db.new_transaction()
+                # join_sql = "SELECT id, name, pid, price FROM users, products"
+                # print(f"\nExecuting: {join_sql}")
+                # plan_join = planner.create_query_plan(join_sql, tx_join)
+                # scan_join = plan_join.open()
+                #
+                # print("Cross join results:")
+                # record_count = 0
+                # while scan_join.next():
+                #     record_count += 1
+                #     user_id = scan_join.get_string('id')
+                #     user_name = scan_join.get_string('name')
+                #     product_id = scan_join.get_string('pid')
+                #     product_price = scan_join.get_string('price')
+                #     print(f"  User: {user_id}, {user_name} | Product: {product_id}, ${product_price}")
+                #
+                # scan_join.close()
+                # tx_join.commit()
+                # print(f"Total records: {record_count}")
                 
                 # select_sql_s = "SELECT id FROM sample"
                 # print(f"Executing: {select_sql_s}")

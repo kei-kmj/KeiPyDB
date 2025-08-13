@@ -43,9 +43,17 @@ class KeiPyDB:
 
             transaction.commit()
 
+        except (OSError, IOError) as e:
+            # ファイルアクセスエラー
+            raise RuntimeError(f"データベースファイルアクセスエラー: {e}") from e
+        except PermissionError as e:
+            # 権限エラー
+            raise RuntimeError(f"データベースディレクトリの権限が不足: {e}") from e
+        except ValueError as e:
+            # 設定値エラー
+            raise RuntimeError(f"データベース設定値エラー: {e}") from e
         except Exception as e:
-            # 部分的に初期化されたコンポーネントのクリーンアップ
-            # self._cleanup()
+            # その他の予期しないエラー
             raise RuntimeError(f"データベース初期化に失敗しました: {e}") from e
 
     def new_transaction(self) -> Transaction:

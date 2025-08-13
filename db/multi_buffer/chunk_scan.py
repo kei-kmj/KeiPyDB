@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import List
 
 from db.constants import FieldType
 from db.file.block_id import BlockID
@@ -23,7 +22,7 @@ class ChunkScan(Scan, ABC):
         self.start_block = start_block
         self.end_block = end_block
         self.current_block = start_block
-        self.buffers: List[RecordPage] = []
+        self.buffers: list[RecordPage] = []
         self.current_slot = self.INVALID_SLOT
         self.record_page: RecordPage = RecordPage(transaction, BlockID(file_name, start_block), layout)
 

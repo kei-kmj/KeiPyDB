@@ -1,16 +1,15 @@
 from collections.abc import Collection
-from typing import List
 
 from db.query.predicate import Predicate
 
 
 class QueryData:
-    def __init__(self, fields: List[str], tables: Collection[str], predicate: Predicate) -> None:
+    def __init__(self, fields: list[str], tables: Collection[str], predicate: Predicate) -> None:
         self.fields = fields
         self.tables = tables
         self.predicate = predicate
 
-    def get_fields(self) -> List[str]:
+    def get_fields(self) -> list[str]:
         return self.fields
 
     def get_tables(self) -> Collection[str]:

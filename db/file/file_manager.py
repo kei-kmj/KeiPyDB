@@ -1,7 +1,7 @@
 import os
 import threading
 from pathlib import Path
-from typing import BinaryIO, Dict, cast
+from typing import BinaryIO, cast
 
 from db.constants import FileMode
 from db.file.block_id import BlockID
@@ -14,11 +14,11 @@ class FileManager:
         self.db_directory: Path = Path(db_directory)
         self.block_size: int = block_size
         self.is_new: bool = not self.db_directory.exists() or not any(self.db_directory.iterdir())
-        self.open_files: Dict[str, BinaryIO] = {}
+        self.open_files: dict[str, BinaryIO] = {}
 
         # スレッドセーフなロックを使用
         self._lock = threading.RLock()
-        self._file_locks: Dict[str, threading.RLock] = {}
+        self._file_locks: dict[str, threading.RLock] = {}
 
         if self.is_new:
             self.db_directory.mkdir(parents=True, exist_ok=True)
@@ -43,8 +43,12 @@ class FileManager:
                 data = f.read(self.block_size)
                 page.buffer[: len(data)] = data
 
-            except Exception as e:
+            except (OSError, IOError) as e:
                 raise RuntimeError(f"Cannot read block {block_id} from file: {e}")
+            except PermissionError as e:
+                raise RuntimeError(f"Permission denied reading block {block_id}: {e}")
+            except ValueError as e:
+                raise RuntimeError(f"Invalid block or buffer for {block_id}: {e}")
 
     def write(self, block: BlockID, page: Page) -> None:
         """ブロックIDに対応するファイルにデータを書き込む"""
@@ -53,9 +57,14 @@ class FileManager:
             f.seek(block.block_number * self.block_size)
             f.write(page.buffer)
             f.flush()
+            os.fsync(f.fileno())  # 確実にディスクに書き込み
 
-        except Exception as e:
+        except (OSError, IOError) as e:
             raise RuntimeError(f"Cannot write block {block} to file: {e}")
+        except PermissionError as e:
+            raise RuntimeError(f"Permission denied writing block {block}: {e}")
+        except ValueError as e:
+            raise RuntimeError(f"Invalid block or page data for {block}: {e}")
 
     def append(self, file_name: str) -> BlockID:
         """ファイルに新しいブロックを追加して、そのブロックIDを返す"""
@@ -69,10 +78,15 @@ class FileManager:
             empty_data = b"\x00" * self.block_size
             f.write(empty_data)
             f.flush()
+            os.fsync(f.fileno())  # 確実にディスクに書き込み
             return block
 
-        except Exception as e:
+        except (OSError, IOError) as e:
             raise RuntimeError(f"Cannot append block to file {file_name}: {e}")
+        except PermissionError as e:
+            raise RuntimeError(f"Permission denied appending to file {file_name}: {e}")
+        except ValueError as e:
+            raise RuntimeError(f"Invalid file name or block data: {file_name}: {e}")
 
     def length(self, file_name: str) -> int:
         """ファイルのブロック数を返す"""
@@ -81,8 +95,10 @@ class FileManager:
             f.seek(0, os.SEEK_END)
             file_size = f.tell()
             return file_size // self.block_size
-        except Exception as e:
+        except (OSError, IOError) as e:
             raise RuntimeError(f"Cannot get length of file {file_name}: {e}")
+        except PermissionError as e:
+            raise RuntimeError(f"Permission denied accessing file {file_name}: {e}")
 
     def _get_file(self, file_name: str) -> BinaryIO:
         """ファイルを取得する"""
@@ -98,6 +114,17 @@ class FileManager:
             self.open_files[file_name] = cast(BinaryIO, open(file_path, mode))
 
         return self.open_files[file_name]
+
+    def close_all(self) -> None:
+        """すべてのファイルを閉じるリソース管理メソッド"""
+        with self._lock:
+            for file_name, file_obj in self.open_files.items():
+                try:
+                    file_obj.close()
+                except Exception:
+                    pass  # ファイルクローズエラーを無視
+            self.open_files.clear()
+            self._file_locks.clear()
 
     def _get_file_lock(self, file_name: str) -> threading.RLock:
         """ファイル単位のロックを取得"""

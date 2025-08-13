@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import List
 
 from db.materialize.materialize_plan import MaterializePlan
 from db.materialize.record_comparator import RecordComparator
@@ -34,7 +33,7 @@ class SortPlan(Plan, ABC):
         return SortScan(runs, self.comparator)
 
     def _split_into_runs(self, source_scan: Scan) -> list[TempTable]:
-        temp_tables: List[TempTable] = []
+        temp_tables: list[TempTable] = []
         source_scan.before_first()
 
         if not source_scan.next():

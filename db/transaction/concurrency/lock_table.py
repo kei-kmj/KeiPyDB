@@ -1,6 +1,5 @@
 import threading
 import time
-from typing import Dict
 
 from db.constants import LockMode
 from db.file.block_id import BlockID
@@ -14,7 +13,7 @@ class LockTable:
     MAX_TIME = 3
 
     def __init__(self) -> None:
-        self.locks: Dict[BlockID, int] = {}
+        self.locks: dict[BlockID, int] = {}
         self.condition = threading.Condition()
 
     def lock_shared(self, block: BlockID) -> None:

@@ -1,10 +1,9 @@
-from typing import List
 
 from db.query.scan import Scan
 
 
 class RecordComparator:
-    def __init__(self, sort_fields: List[str]) -> None:
+    def __init__(self, sort_fields: list[str]) -> None:
         self.sort_fields = sort_fields
 
     def compare(self, scan_first: Scan, scan_second: Scan) -> int:

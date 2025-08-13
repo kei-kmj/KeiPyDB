@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Optional
 
 from db.constants import ByteSize, FieldType
 from db.file.page import Page
@@ -7,7 +7,7 @@ from db.record.schema import Schema
 
 class Layout:
     def __init__(
-        self, schema: Schema, offsets: Optional[Dict[str, int]] = None, slot_size: Optional[int] = None
+        self, schema: Schema, offsets: Optional[dict[str, int]] = None, slot_size: Optional[int] = None
     ) -> None:
 
         self.schema = schema

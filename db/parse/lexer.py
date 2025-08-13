@@ -129,6 +129,9 @@ class Lexer:
             raise BadSyntaxException(f"Expected string constant, but found {self.current_token}")
 
         value = self.current_token
+        # クォートを取り除く（最初と最後の文字を削除）
+        if value and len(value) >= 2:
+            value = value[1:-1]
         self.next_token()
         return value
 

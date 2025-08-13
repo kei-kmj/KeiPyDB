@@ -1,4 +1,3 @@
-from typing import Dict, List
 
 from db.constants import ByteSize, FieldType
 
@@ -10,8 +9,8 @@ class Schema:
             self.length = length
 
     def __init__(self) -> None:
-        self.fields: List[str] = []
-        self.info: Dict[str, Schema.FieldInfo] = {}
+        self.fields: list[str] = []
+        self.info: dict[str, Schema.FieldInfo] = {}
 
     def add_field(self, field_name: str, field_type: int, length: int = 0) -> None:
         """スキーマに名前/型/長さのフィールドを追加"""
@@ -37,7 +36,7 @@ class Schema:
         for field_name in schema.get_fields():
             self.add(field_name, schema)
 
-    def get_fields(self) -> List[str]:
+    def get_fields(self) -> list[str]:
         """スキーマに含まれるすべてのフィールド名を返す"""
         return self.fields
 

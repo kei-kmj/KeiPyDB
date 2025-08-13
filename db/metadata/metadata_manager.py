@@ -1,4 +1,3 @@
-from typing import Dict
 
 from db.metadata.index_info import IndexInfo
 from db.metadata.index_manager import IndexManager
@@ -33,7 +32,7 @@ class MetadataManager:
     def create_index(self, index_name: str, table_name: str, field_name: str, transaction: Transaction) -> None:
         self.index_manager.create_index(index_name, table_name, field_name, transaction)
 
-    def get_index_info(self, table_name: str, transaction: Transaction) -> Dict[str, IndexInfo]:
+    def get_index_info(self, table_name: str, transaction: Transaction) -> dict[str, IndexInfo]:
         return self.index_manager.get_index_info(table_name, transaction)
 
     def get_stat_info(self, table_name: str, transaction: Transaction) -> StatInfo:

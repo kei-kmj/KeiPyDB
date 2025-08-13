@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import List
 
 from db.metadata.metadata_manager import MetadataManager
 from db.parse.parser import Parser
@@ -21,7 +20,7 @@ class BetterQueryPlanner(QueryPlanner, ABC):
     def create_plan(self, query_data: QueryData, transaction: Transaction) -> Plan:
 
         # Step 1: Create a plan for each mentioned table or view.
-        plan_list: List[Plan] = []
+        plan_list: list[Plan] = []
         for table_name in query_data.tables:
             view_def = self.metadata_manager.get_view_definition(table_name, transaction)
             if view_def is not None:

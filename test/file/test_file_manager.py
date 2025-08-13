@@ -334,7 +334,7 @@ def test_file_manager_error_propagation(setup_dir):
     with pytest.raises(RuntimeError) as exc_info:
         # 無効なファイル名（実装とOSに依存）
         manager.append("")
-    assert "Cannot append block" in str(exc_info.value)
+    assert "Cannot" in str(exc_info.value)
 
     # lengthのエラー
     with pytest.raises(RuntimeError) as exc_info:

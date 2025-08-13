@@ -1,4 +1,3 @@
-from typing import Dict
 
 from db.constants import LockType
 from db.file.block_id import BlockID
@@ -9,7 +8,7 @@ class ConcurrencyManager:
     lock_table = LockTable()
 
     def __init__(self) -> None:
-        self.locks: Dict[BlockID, str] = {}
+        self.locks: dict[BlockID, str] = {}
         self.lock_table = LockTable()
 
     def lock_shared(self, block: BlockID) -> None:

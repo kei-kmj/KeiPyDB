@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import List, Optional
 
 from db.materialize.record_comparator import RecordComparator
 from db.materialize.temp_table import TempTable
@@ -11,7 +10,7 @@ from db.record.record_id import RecordID
 
 class SortScan(Scan, ABC):
 
-    def __init__(self, runs: List[TempTable], comparator: RecordComparator) -> None:
+    def __init__(self, runs: list[TempTable], comparator: RecordComparator) -> None:
         sorted_first = runs[0].open()
         sorted_second = runs[1].open() if len(runs) > 1 else None
         self.scan_first = sorted_first
@@ -21,7 +20,7 @@ class SortScan(Scan, ABC):
 
         self.has_more_first = self.scan_first.next()
         self.has_more_second = self.scan_second.next() if self.scan_second else False
-        self.saved_position: List[Optional[RecordID]] = []
+        self.saved_position: list[Optional[RecordID]] = []
 
     def before_first(self) -> None:
         self.current_scan = None
