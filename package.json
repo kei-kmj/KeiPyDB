@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "@slidev/cli": "^52.1.0"
+  },
+  "dependencies": {
+    "@slidev/theme-seriph": "^0.25.0"
+  }
+}
