@@ -1,5 +1,6 @@
 class Format:
     IntBigEndian = ">i"
+    IntLittleEndian = "<i"
 
 
 class ByteSize:

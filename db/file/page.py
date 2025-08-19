@@ -21,13 +21,13 @@ class Page:
     def get_int(self, offset: int) -> int:
         """指定されたオフセットから4バイトの整数を取得"""
 
-        result: int = struct.unpack_from(Format.IntBigEndian, self.buffer, offset)[0]
+        result: int = struct.unpack_from(Format.IntLittleEndian, self.buffer, offset)[0]
 
         return result
 
     def set_int(self, offset: int, value: int) -> None:
         """指定されたオフセットに4バイトの整数を書き込む"""
-        struct.pack_into(Format.IntBigEndian, self.buffer, offset, value)
+        struct.pack_into(Format.IntLittleEndian, self.buffer, offset, value)
 
     def get_bytes(self, offset: int) -> bytes:
         """指定されたオフセットからバイト列を取得"""

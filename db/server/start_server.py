@@ -22,7 +22,7 @@ class StartServer:
             if planner is not None:
                 tx = db.new_transaction()
 
-                create_table_sql = "CREATE TABLE users (id int, name varchar(50))"
+                create_table_sql = "CREATE TABLE users (id int, name varchar(10))"
                 print(f"Executing: {create_table_sql}")
                 planner.execute_update(create_table_sql, tx)
                 tx.commit()
@@ -36,7 +36,7 @@ class StartServer:
 
                 # INSERT
                 tx_insert = db.new_transaction()
-                insert_sql = "INSERT INTO users (id, name) VALUES (255, 'Alice')"
+                insert_sql = "INSERT INTO users (id, name) VALUES (258, 'Alice')"
                 print(f"Executing: {insert_sql}")
                 rows_affected = planner.execute_update(insert_sql, tx_insert)
                 print(f"Rows affected: {rows_affected}")
@@ -58,7 +58,7 @@ class StartServer:
 
                 # もう一つデータを挿入
                 tx_insert2 = db.new_transaction()
-                insert_sql2 = "INSERT INTO users (id, name) VALUES (256, 'Bob')"
+                insert_sql2 = "INSERT INTO users (id, name) VALUES (259, 'Bob')"
                 print(f"Executing: {insert_sql2}")
                 rows_affected2 = planner.execute_update(insert_sql2, tx_insert2)
                 print(f"Rows affected: {rows_affected2}")

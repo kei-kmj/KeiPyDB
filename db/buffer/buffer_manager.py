@@ -84,8 +84,7 @@ class BufferManager:
     def _find_existing_buffer(self, block: BlockID) -> Optional[Buffer]:
         """既存のバッファを検索"""
         for buffer in self.buffer_pool:
-            # Bufferクラスにもロックが必要
-            buffer_block = buffer.block  # スレッドセーフなgetter
+            buffer_block = buffer.block
             if buffer_block is not None and buffer_block == block:
                 return buffer
         return None
