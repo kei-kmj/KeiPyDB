@@ -1,0 +1,1006 @@
+---
+theme: seriph
+background: '#f9fafb'
+colorSchema: 'light'
+class: text-center
+css: unocss
+highlighter: shiki
+lineNumbers: false
+info: |
+  ## Python製RDBMSで理解する、データベースのピース
+  PyCon JP 2025
+drawings:
+  persist: false
+transition: slide-left
+title: Python製RDBMSで理解する、データベースのピース
+mdc: true
+hideInToc: true
+---
+
+<style>
+html {
+  --slidev-theme-primary: #454554;
+}
+.slidev-layout {
+  background-color: #f9fafb !important;
+  color: #454554 !important;
+}
+h1, h2, h3, h4, h5, h6, p, span, div, li, td, th {
+  color: #454554 !important;
+}
+.slidev-page-number {
+  position: absolute;
+  bottom: 1rem;
+  right: 2rem;
+  color: #888;
+  font-size: 0.85rem;
+}
+</style>
+
+# Python製RDBMSで理解する、<br>データベースのピース
+
+<div class="mt-12">
+
+## コードのステップ実行とヘックスビューアーで<br>内部動作を追ってみよう
+
+</div>
+
+<div class="absolute bottom-12 left-0 right-0">
+  <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
+    PyCon JP 2025 →
+  </span>
+</div>
+
+<div class="absolute bottom-6 left-0 right-0 text-gray-500">
+  @Keiko Kamijo
+</div>
+
+<div class="slidev-page-number">
+  1
+</div>
+
+<!-- スライド2: 自己紹介 -->
+---
+layout: two-cols
+---
+
+<style scoped>
+.col-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  padding-left: 2rem;
+  white-space: nowrap;
+}
+.col-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+  height: 100%;
+  padding-right: 2rem;
+  margin-top: -4rem;
+}
+.col-right img:first-child {
+  width: 20rem;
+  height: 20rem;
+  margin-bottom: 0.5rem;
+}
+.col-right img:last-child {
+  width: 14rem;
+  height: auto;
+}
+h1 { font-size: 2.5rem !important; }
+h2 { font-size: 1.75rem !important; }
+h3, p { font-size: 1.5rem !important; }
+</style>
+
+<div class="col-left">
+
+# 自己紹介
+<br>
+
+### 上條 恵子 Keiko Kamijo
+<br>
+
+### 💻 GitHub: @kei-kmj
+### 𝕏 Twitter: @kamijima
+<br>
+
+### 株式会社デルタX エンジニア
+<br>
+
+### 夫と子供をほったらかして、
+### サイゼリアで読書しながら一人飲みするのがたまの楽しみ
+
+</div>
+
+::right::
+
+<div class="col-right">
+
+![Keiko Kamijo](/avatar.png)
+
+<br>
+
+![DeltaX](/deltax-logo.png)
+
+</div>
+
+<div class="slidev-page-number">
+  2
+</div>
+
+<!-- スライド3: bestjuku.png（暗い背景） -->
+---
+layout: center
+---
+
+<style scoped>
+.slidev-layout {
+  background-color: #111827 !important;
+}
+</style>
+
+<div class="flex items-center justify-center h-full">
+  <img src="/bestjuku.png" style="max-width: 70%; max-height: 90%; object-fit: contain;" />
+</div>
+
+<div class="slidev-page-number" style="color: #ccc;">
+  3
+</div>
+
+<!---->
+
+<!-- スライド4: img.png（全画面） -->
+---
+layout: cover
+background: /img.png
+---
+
+<!---->
+
+<div class="slidev-page-number">
+  4
+</div>
+
+<!-- スライド5: 本題 -->
+---
+---
+# 本題
+<!---->
+
+<div class="slidev-page-number">
+  4
+</div>
+
+
+<!-- スライド5: 今日の内容 -->
+---
+
+# 今日の内容
+
+## 話すこと
+- **クエリ処理の流れ** - SQLがどのように解析・実行されるか
+- **ファイルI/O** - データがディスクにどう保存されるか
+- **エンディアン** - バイナリデータの扱い方
+
+## 話さないこと
+- SQL文の書き方
+- DBの使い方や最適化
+
+<div class="slidev-page-number">
+  5
+</div>
+
+<!-- ==================== -->
+<!-- スライド6: データベースとは？ -->
+<!-- ==================== -->
+---
+
+# データベースとは？
+
+## データを永続的に保存し、効率的に管理するシステム
+
+<br>
+
+### 主な特徴
+- **永続性**: プログラムが終了してもデータが残る
+- **並行性**: 複数のユーザーが同時アクセス可能
+- **整合性**: データの一貫性を保証
+- **効率性**: 大量データから高速検索
+
+<br>
+
+### 様々な種類のデータベース
+**RDBMS** (MySQL, PostgreSQL)｜**NoSQL** (MongoDB, Redis)｜**グラフDB** (Neo4j)｜**時系列DB** (InfluxDB)
+
+→ 今日はRDBMSに注目！
+
+<div class="slidev-page-number">
+  6
+</div>
+
+<!-- ==================== -->
+<!-- スライド7: RDBMSとは？ -->
+<!-- ==================== -->
+---
+
+# RDBMSとは？
+
+## Relational Database Management System
+
+<br>
+
+### 特徴
+
+- データを**表（テーブル）**で管理
+- **SQL**という共通言語で操作
+- **リレーショナルモデル**に基づく設計
+
+<br>
+
+### 代表的なRDBMS
+
+PostgreSQL, MySQL, Oracle, SQL Server, SQLite...
+
+<div class="slidev-page-number">
+  7
+</div>
+
+<!-- ==================== -->
+<!-- スライド8: RDBMSのアーキテクチャ -->
+<!-- ==================== -->
+---
+layout: two-cols
+---
+
+# RDBMSのアーキテクチャ
+
+<style scoped>
+.col-left {
+  padding-right: 1rem;
+}
+.col-right {
+  padding-left: 1rem;
+}
+table {
+  font-size: 0.85rem;
+  width: 100%;
+}
+td, th {
+  padding: 0.5rem 1rem;
+  line-height: 1.8;
+}
+</style>
+
+<div class="col-left">
+
+```
+┌─────────────────────┐
+│   SQLクエリ          │
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│    パーサー        　 │
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│   プランナー          │
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│   実行エンジン        │   
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│  トランザクション他    │
+└─────────┬───────────┘
+          ↓
+┌─────────────────────┐
+│  ファイルマネージャー   │
+└─────────────────────┘
+```
+
+</div>
+
+::right::
+
+<div class="col-right" style="display: flex; align-items: center; justify-content: center; height: 100%;">
+
+<div style="width: 100%;">
+
+| コンポーネント | 役割 |
+|:--------------|:-----|
+| **パーサー** | SQL文を解析し内部表現に変換 |
+| **プランナー** | 最適な実行計画を選択 |
+| **実行エンジン** | 実際にデータを読み書き |
+| **トランザクション管理** | ACID特性の保証 |
+| **メタデータ管理** | テーブル構造・統計情報管理 |
+| **バッファ管理** | メモリキャッシュ管理 |
+| **ファイル管理** | ディスクI/O制御 |
+
+</div>
+
+</div>
+
+<div class="slidev-page-number">
+  8
+</div>
+
+<!-- ==================== -->
+<!-- スライド9: SQLクエリの処理フロー -->
+<!-- ==================== -->
+---
+
+# SQLクエリの処理フロー
+
+## 例: `SELECT id, name FROM users WHERE id = '001'`
+
+<br>
+
+### 1. パーサー
+```
+"SELECT id, name FROM users WHERE id = '001'"
+    ↓ Lexer
+[SELECT] [id] [,] [name] [FROM] [users] [WHERE] [id] [=] ["001"]
+    ↓ Parser
+QueryData { fields: ["id", "name"], tables: ["users"], pred: "id = '001'" }
+```
+
+### 2. プランナー
+```
+TableScan("users")
+    ↓
+SelectScan(pred: "id = '001'")
+    ↓
+ProjectScan(fields: ["name"])
+```
+
+### 3. 実行
+```python
+scan.open()
+while scan.next():
+    print(scan.getString("name"))
+scan.close()
+```
+
+<div class="slidev-page-number">
+  9
+</div>
+
+<!-- ==================== -->
+<!-- スライド10: パーサーデモ - 導入 -->
+<!-- ==================== -->
+---
+
+# パーサーのステップ実行デモ
+
+## SQLがどのように解析されるか見てみよう！
+
+<br>
+
+### デモで使うSQL
+```sql
+SELECT id, name FROM users WHERE id = '001'
+```
+
+<br>
+
+### パーサーの2つのステップ
+1. **字句解析（Lexer）** - 文字列をトークンに分割
+2. **構文解析（Parser）** - トークンから構造を作る
+
+<div class="slidev-page-number">
+  10
+</div>
+
+<!-- ==================== -->
+<!-- スライド11: 字句解析のステップ実行 -->
+<!-- ==================== -->
+---
+
+# ステップ1: 字句解析（Lexer）
+
+<style scoped>
+.token-box {
+  display: inline-block;
+  background: #e5e7eb;
+  padding: 0.25rem 0.75rem;
+  margin: 0.25rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+}
+.arrow {
+  font-size: 1.5rem;
+  margin: 1rem 0;
+}
+</style>
+
+## 入力SQL
+```sql
+SELECT id, name FROM users WHERE id = '001'
+```
+
+<p class="arrow">↓</p>
+
+## トークン化の過程
+
+<div style="margin-top: 1rem;">
+  <span class="token-box">SELECT</span>
+  <span class="token-box">id</span>
+  <span class="token-box">,</span>
+  <span class="token-box">name</span>
+  <span class="token-box">FROM</span>
+  <span class="token-box">users</span>
+  <span class="token-box">WHERE</span>
+  <span class="token-box">id</span>
+  <span class="token-box">=</span>
+  <span class="token-box">'001'</span>
+</div>
+
+<br>
+
+### Pythonコードで確認
+```python
+from db.parse.lexer import Lexer
+
+lex = Lexer("SELECT id, name FROM users WHERE id = '001'")
+while not lex.is_done():
+    print(f"Token: {lex.current_token}")
+    lex.next()
+```
+
+<div class="slidev-page-number">
+  11
+</div>
+
+<!-- ==================== -->
+<!-- スライド12: 字句解析の実行結果 -->
+<!-- ==================== -->
+---
+
+# Lexerの実行結果
+
+<style scoped>
+.output-box {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-family: monospace;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.highlight {
+  color: #fbbf24;
+}
+</style>
+
+## デバッガーでステップ実行
+
+<div class="output-box">
+Token: SELECT (type: KEYWORD)<br>
+Token: name (type: ID)<br>
+Token: , (type: DELIMITER)<br>
+Token: id (type: ID)<br>
+Token: , (type: DELIMITER)<br>
+Token: name (type: ID)<br>
+Token: FROM (type: KEYWORD)<br>
+Token: users (type: ID)<br>
+Token: WHERE (type: KEYWORD)<br>
+Token: id (type: ID)<br>
+Token: = (type: DELIMITER)<br>
+Token: '001' (type: STRING_CONSTANT)<br>
+</div>
+
+<br>
+
+### トークンの種類
+- **KEYWORD**: SQL予約語（SELECT, FROM, WHERE）
+- **ID**: 識別子（テーブル名、カラム名）
+- **DELIMITER**: 区切り文字（,、>）
+- **INT_CONSTANT**: 整数定数
+
+<div class="slidev-page-number">
+  12
+</div>
+
+<!-- ==================== -->
+<!-- スライド13: パーサーの呼び出し元 -->
+<!-- ==================== -->
+---
+
+# SQLクエリ実行の全体の流れ
+
+## 1. データベースの初期化から始まる
+
+```python
+# start_server.py
+db = KeiPyDB("data")                    # データベース作成
+planner = db.get_planner()              # Plannerを取得
+```
+
+<br>
+
+## 2. アプリケーションがクエリを実行
+
+```python
+# SELECT文の実行
+plan = planner.create_query_plan("SELECT id, name FROM users WHERE id = '001'", tx)
+scan = plan.open()
+while scan.next():
+    print(scan.get_string('id'))
+```
+
+<br>
+
+## 3. Plannerがパーサーを呼び出す
+
+```python
+# planner.py:20-23
+def create_query_plan(self, query: str, transaction: Transaction) -> Plan:
+    parser = Parser(query)    # パーサーを作成
+    data = parser.query()     # ここで解析開始！
+    return self.query_planner.create_plan(data, transaction)
+```
+
+<div class="slidev-page-number">
+  13
+</div>
+
+<!-- ==================== -->
+<!-- スライド14: 構文解析の役割 -->
+<!-- ==================== -->
+---
+
+# ステップ2: 構文解析（Parser）
+
+## パーサーの役割
+
+<br>
+
+### トークンの列を意味のある構造に変換
+
+<div style="display: flex; align-items: center; justify-content: center; margin: 2rem 0;">
+  <div style="text-align: center;">
+    <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">トークン列</p>
+    <p style="font-size: 0.9rem; color: #666;">単語の羅列</p>
+  </div>
+  <span style="font-size: 2rem; margin: 0 2rem;">→</span>
+  <div style="text-align: center;">
+    <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">構造化データ</p>
+    <p style="font-size: 0.9rem; color: #666;">意味のある構造</p>
+  </div>
+</div>
+
+<br>
+
+### なぜ必要？
+
+- **文法チェック**: SQLの構文が正しいか確認
+- **意味の抽出**: どのテーブルから、どのカラムを、どんな条件で？
+- **実行準備**: 後続の処理が使いやすい形式に変換
+
+<div class="slidev-page-number">
+  13
+</div>
+
+<!-- ==================== -->
+<!-- スライド14: パーサーの処理 - SELECT句 -->
+<!-- ==================== -->
+---
+
+# パーサーの処理 (1) - SELECT句
+
+## `select_list()`メソッドの動作
+
+<br>
+
+```text
+[SELECT] [id] [,] [name] ...
+```
+
+<p class="arrow">↓</p>
+
+### 実際のコード（parser.py:79-84）
+
+```python
+def select_list(self) -> list[str]:
+    field_list = [self.field()]  # "id"を取得
+    while self.lexer.match_delimiter(","):  # カンマがある？
+        self.lexer.eat_delimiter(",")      # カンマを読み飛ばす
+        field_list.append(self.field())    # "name"を追加
+    return field_list  # ["id", "name"]
+```
+
+<br>
+
+### デバッガーで見ると
+- 1回目: `field_list = ["id"]`
+- カンマ発見！
+- 2回目: `field_list = ["id", "name"]`
+
+<div class="slidev-page-number">
+  15
+</div>
+
+<!-- ==================== -->
+<!-- スライド15: パーサーの処理 - FROM句とWHERE句 -->
+<!-- ==================== -->
+---
+
+# パーサーの処理 (2) - FROM句とWHERE句
+
+## `table_list()`と`predicate()`メソッド
+
+### FROM句の処理（parser.py:86-94）
+```python
+def table_list(self) -> Collection[str]:
+    table_name = self.lexer.eat_id()  # "users"を取得
+    tables = [table_name]
+    # カンマがあれば複数テーブル（今回は1つだけ）
+    return tables  # ["users"]
+```
+
+<br>
+
+### WHERE句の処理（parser.py:43-56）
+```python
+def term(self) -> Term:
+    # "id = '001'" を解析
+    left = Term(self.lexer.eat_id())     # "id"
+    self.lexer.eat_delimiter("=")         # "="
+    right = Term(self.lexer.eat_string()) # "001"
+    return Term(left, "=", right)
+```
+
+<div class="slidev-page-number">
+  16
+</div>
+
+<!-- ==================== -->
+<!-- スライド17: パーサーの心臓部 -->
+<!-- ==================== -->
+---
+
+# パーサーの心臓部 - query()メソッド
+
+## すべての処理を統合する場所（parser.py:66-77）
+
+```python
+def query(self) -> QueryData:
+    self.lexer.eat_keyword("select")      # SELECTを確認
+    field_list = self.select_list()       # → ["id", "name"]
+    
+    self.lexer.eat_keyword("from")        # FROMを確認  
+    tables = self.table_list()            # → ["users"]
+    
+    predicate = Predicate()               # 空の条件を用意
+    if self.lexer.match_keyword("where"): # WHEREがある？
+        self.lexer.eat_keyword("where")   
+        predicate = self.predicate()      # → id = '001'
+    
+    return QueryData(field_list, tables, predicate)  # 統合！
+```
+
+### ここがすごい！
+- SQLの構文順序を正確にチェック
+- 各部分を適切なメソッドに委譲
+- 最後に1つのオブジェクトに統合
+
+<div class="slidev-page-number">
+  17
+</div>
+
+<!-- ==================== -->
+<!-- スライド18: 最終的な構造化データ -->
+<!-- ==================== -->
+---
+
+# パーサーの最終出力
+
+## すべての情報を統合したQueryDataオブジェクト
+
+<br>
+
+```text
+QueryData {
+    fields: ["id", "name"],              # SELECT句から
+    tables: ["users"],                   # FROM句から
+    predicate: Predicate {               # WHERE句から
+        left: Term("id", type=FIELD),
+        operator: "=",
+        right: Term("001", type=CONSTANT)
+    }
+}
+```
+
+<br>
+
+### これで何ができる？
+
+✅ **どのテーブル**の → `users`  
+✅ **どのカラム**を → `id`, `name`  
+✅ **どんな条件**で → `id = '001'`  
+
+取得すればよいかが明確になった！
+
+<div class="slidev-page-number">
+  18
+</div>
+
+<!-- ==================== -->
+<!-- スライド19: プランナーのステップ実行デモ -->
+<!-- ==================== -->
+---
+
+# プランナーのステップ実行デモ
+
+## パーサーの出力を実行計画に変換
+
+<br>
+
+### QueryDataから実行計画へ
+
+```python
+# planner.py:27
+return self.query_planner.create_plan(data, transaction)
+```
+
+<br>
+
+### プランナーの役割
+- **最適化**: 効率的な実行順序を決定
+- **実行計画の構築**: Scanオブジェクトの組み合わせ
+- **メタデータの活用**: テーブル情報を使って計画を作成
+
+<div class="slidev-page-number">
+  19
+</div>
+
+<!-- ==================== -->
+<!-- スライド20: BasicQueryPlannerの処理 -->
+<!-- ==================== -->
+---
+
+# BasicQueryPlannerの処理
+
+## create_plan()メソッドの動作
+
+```python
+# basic_query_planner.py
+def create_plan(self, data: QueryData, tx: Transaction) -> Plan:
+    # 1. FROM句のテーブルから開始
+    plans = []
+    for table_name in data.tables:
+        view_def = self.metadata_manager.get_view_def(table_name, tx)
+        if view_def:
+            # ビューの場合
+            parser = Parser(view_def)
+            view_data = parser.query()
+            plans.append(self.create_plan(view_data, tx))
+        else:
+            # 通常のテーブル
+            plans.append(TablePlan(tx, table_name, self.metadata_manager))
+```
+
+### ステップ実行で見ると
+1. `data.tables = ["users"]` から開始
+2. usersはビューではないので `TablePlan` を作成
+3. `TablePlan(tx, "users", metadata_manager)`
+
+<div class="slidev-page-number">
+  20
+</div>
+
+<!-- ==================== -->
+<!-- スライド21: 実行計画の構築 -->
+<!-- ==================== -->
+---
+
+# 実行計画の構築
+
+## WHERE句とSELECT句の適用
+
+```python
+# basic_query_planner.py（続き）
+    # 2. JOIN処理（複数テーブルの場合）
+    plan = plans[0]
+    for i in range(1, len(plans)):
+        plan = ProductPlan(plan, plans[i])
+    
+    # 3. WHERE句の適用
+    plan = SelectPlan(plan, data.predicate)
+    
+    # 4. SELECT句の適用（射影）
+    plan = ProjectPlan(plan, data.fields)
+    
+    return plan
+```
+
+### 実行計画の層構造
+```
+ProjectPlan ["id", "name"]     # 必要なカラムだけ取得
+    ↓
+SelectPlan (id = '001')         # 条件でフィルタ
+    ↓  
+TablePlan ("users")             # テーブルスキャン
+```
+
+<div class="slidev-page-number">
+  21
+</div>
+
+<!-- ==================== -->
+<!-- スライド22: 実行エンジンの動作 -->
+<!-- ==================== -->
+---
+
+# 実行エンジンの動作
+
+## plan.open()で何が起きるか
+
+```python
+# start_server.py:68-74
+plan = planner.create_query_plan(select_sql, tx3)
+scan = plan.open()  # ここで実行開始！
+
+while scan.next():
+    print(f"id = {scan.get_string('id')}, name = {scan.get_string('name')}")
+```
+
+### 各Scanの連携
+
+1. **ProjectScan.open()**
+   - 内部のSelectScanをopen
+   
+2. **SelectScan.open()**  
+   - 内部のTableScanをopen
+   
+3. **TableScan.open()**
+   - ファイルを開いて準備完了
+
+<div class="slidev-page-number">
+  22
+</div>
+
+<!-- ==================== -->
+<!-- スライド23: next()メソッドの連鎖 -->
+<!-- ==================== -->
+---
+
+# next()メソッドの連鎖
+
+## データが上に伝わる仕組み
+
+<style scoped>
+.flow-diagram {
+  background: #f3f4f6;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  font-family: monospace;
+  line-height: 1.8;
+}
+</style>
+
+<div class="flow-diagram">
+1. scan.next() が呼ばれる（ProjectScan）<br>
+   ↓<br>
+2. 内部で SelectScan.next() を呼ぶ<br>
+   ↓<br>
+3. 内部で TableScan.next() を呼ぶ<br>
+   ↓<br>
+4. TableScan がファイルから1レコード読む<br>
+   - id='001', name='Alice' を取得<br>
+   ↓<br>
+5. SelectScan が条件をチェック<br>
+   - id='001' は条件に合致！ → true を返す<br>
+   ↓<br>
+6. ProjectScan が必要なカラムだけ渡す<br>
+   - ["id", "name"] のみ
+</div>
+
+<div class="slidev-page-number">
+  23
+</div>
+
+<!-- ==================== -->
+<!-- スライド24: 実装の工夫 -->
+<!-- ==================== -->
+---
+
+# 実装の工夫
+
+## KeiPyDBで学んだこと
+
+### 1. シンプルな設計の価値
+- 教育目的に特化した実装
+- 基本的な機能に絞ることで理解しやすく
+
+### 2. Pythonならではの利点
+- 型ヒントで構造が明確
+- デバッガーでステップ実行しやすい
+- コードが読みやすい
+
+### 3. 実装で苦労した点
+- スキーマ管理の複雑さ
+- 重複フィールド名の処理
+- エラーメッセージの改善
+
+### 4. 今後の拡張可能性
+- インデックスの実装
+- JOIN種類の追加（INNER, LEFT, RIGHT）
+- トランザクションの改善
+
+<div class="slidev-page-number">
+  24
+</div>
+
+<!-- ==================== -->
+<!-- スライド25: まとめ -->
+<!-- ==================== -->
+---
+
+# まとめ
+
+## データベースの「ピース」が見えましたか？
+
+<br>
+
+### 今日見てきたピース
+
+✅ **パーサー** - SQL文を内部表現に変換  
+✅ **プランナー** - 最適な実行計画を作成  
+✅ **実行エンジン** - 実際にデータを読み書き  
+✅ **複数カラム対応** - SELECT/INSERTで複数フィールド  
+✅ **デバッガー活用** - ステップ実行で動作を追跡  
+
+<br>
+
+### データベースを作ることで学べること
+
+- **内部動作の理解** → トラブルシューティング力向上
+- **最適化の視点** → より良いクエリが書ける
+- **制約の理由** → なぜその仕様なのかが分かる
+
+<div class="slidev-page-number">
+  25
+</div>
+
+<!-- ==================== -->
+<!-- スライド26: 最後に -->
+<!-- ==================== -->
+---
+layout: center
+class: text-center
+---
+
+# ご清聴ありがとうございました！
+
+<br>
+
+<br>
+
+### 🔗 リソース
+
+**GitHub**: github.com/kei-kmj/keiPyDB  
+**スライド**: 後日公開予定  
+
+<br>
+
+### 📧 連絡先
+
+**Twitter/X**: @kamijima  
+**GitHub**: @kei-kmj  
+
+<br>
+
+<div style="margin-top: 3rem; color: #888;">
+  楽しいデータベース開発を！ 🚀
+</div>
+
+<div class="slidev-page-number">
+  26
+</div>
