@@ -1,5 +1,19 @@
 
 
+<style>
+.slidev-layout h2 {
+  font-size: 1.35em !important;
+}
+.slidev-layout ul li {
+  font-size: 1.35em !important;
+  line-height: 1.4 !important;
+}
+.slidev-layout pre code {
+  font-size: 1.35em !important;
+  line-height: 1.3 !important;
+}
+</style>
+
 <div class="absolute inset-0">
   <img src="/background.png" class="w-full h-full object-cover" />
 </div>
@@ -52,6 +66,16 @@ layout: two-cols
   <img src="/tokageusagi.png" class="w-64 h-64 rounded-full object-cover" />
 </div>
 ---
+background: none
+---
+
+<style scoped>
+.slidev-layout::before {
+  display: none !important;
+}
+</style>
+
+<div style="background-color: #f5f5f5; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1;"></div>
 
 <!-- Page 2 塾選紹介-->
 
@@ -62,7 +86,16 @@ layout: two-cols
 塾選のバックエンドはPython FastAPIでできています。
 -->
 ---
+background: none
+---
 
+<style scoped>
+.slidev-layout::before {
+  display: none !important;
+}
+</style>
+
+<div style="background-color: #f5f5f5; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1;"></div>
 
 <!-- Page 3 CMスクショ-->
 
@@ -76,97 +109,127 @@ layout: two-cols
 
 ---
 
-<div class="absolute inset-0">
-  <img src="/background3.png" class="w-full h-full object-cover" />
-</div>
+<!-- Page 4 本題 -->
+
+<br>
+<br>
+
+# 話すこと
+<br>
+
+## 🐰 自作したRDBMS:KeiPyDBの紹介
+<br>
+
+## 🐰 RDBMSの一般的なアーキテクチャ
+<br>
+
+## 🐰 SELECT文がどのような流れでレコードを取得するか
+<br>
+
+## 🐰 INSERT文がどのように処理されて、ディスクに書き込まれるか
+<br>
+
+## 🐰 エンディアンの話
+
+---
+
+<!-- Page 5 本題 -->
+
+<br>
+<br>
+
+# 話さないこと
+<br>
+
+## ❌ 特定のデータベース製品の性質や使い方
+<br>
+
+## ❌ 難しいSQL文の書き方
+<br>
+
+## ❌ インデックス戦略やパフォーマンスチューニングについて
+<br>
+
+## ❌ テーブル設計や正規化の話
+
+
+---
 
 <!-- Page 4 作ってみた -->
 
-# 自作RDBMS:KeiPyDBを作ってみた
+<CustomTwoCols :leftRatio="66" imageSrc="/simpledb.jpg" imageAlt="Database Design and Implementation book cover" imageClass="w-full h-full object-contain relative translate-x-5 translate-y-5">
+  <template #left>
+
 <br>
 
-## Pythonの言語仕様とDBの内部構造を同時に学ぼうと思い立ち、RDBMS:KeiPyDBを作ってみました。
+# 自作RDBMS:KeiPyDBの紹介
 <br>
 
-## 主に参考にしたのは、
-# 「Database Design and Implementation」
-## JavaでRDBMSを実装していく内容
+## Pythonの言語仕様とDBの内部構造を同時に学びたくて作ってみました。
 <br>
 
-## それを元にPythonでミニマルなRDBMSを実装してみました。
+## [https://github.com/kei-kmj/keiPyDB](https://github.com/kei-kmj/keiPyDB)
+
+<style>
+.slidev-layout a {
+  color: #3b82f6 !important;
+}
+</style>
+
+<br>
+
+## 参考にした書籍：
+## **「Database Design and Implementation: Second Edition 」** Edward Sciore (著)
+<br>
+
+## JavaでRDBMSを実装していく教科書っぽい英書
+
+  </template>
+</CustomTwoCols>
+
 <!-- スピーカーノート：
+Database Design and Implementation という書籍を参考にして、RDBMSを実装しました。
+JavaでRDBMSを実装していく内容ですが、書籍を参考にPythonで実装しました。
 -->
 ---
 
-<div class="absolute inset-0">
-  <img src="/background3.png" class="w-full h-full object-cover" />
-</div>
-
 <!-- Page 5 KeiPyDBの機能 -->
+<br>
+<br>
 
 # KeiPyDBの機能
-- SQL文の実行
-  - CREATE TABLE
-  - INSERT
-  - SELECT
-  - UPDATE 
-  - DELETEなどの基本的なSQL文
-  - CROSS JOIN
+
+<div class="grid grid-cols-2 gap-8">
+<div class="ml-20">
+
+## SQL
+- CREATE TABLE 
+- INSERT
+- SELECT
+- UPDATE 
+- DELETE
+- WHERE
+- CROSS JOIN
+
+</div>
+<div>
+
+## その他
 - トランザクション
 - ハッシュインデックス
 - Btreeインデックス
-<br>
 
-## 今日はこのKeiPyDBを使って、RDBMSの内部動作を追っていきたいと思います。
-
----
-background: /background.png
----
-
-<!-- Page 6 Goal-->
-# GOAL
-
-### データベースの内部動作がを見て理解できる
-
-<br>
-
-#### 具体的には...
-## 1. SELECT
-```sql
-  SELECT id, name FROM users WHERE name = 'Alice';  # id = 258 name = 'Alice'
-```
-
-  → RDBMSがどうやってAliceを見つけるか分かる
-## 2. INSERT
-```sql
-  INSERT INTO users (id, name) VALUES (259, 'Bob');
-```
-  → どのようにディスクに書き込まれるか分かる
-<br>
- 
-※ idが258と259である理由は、あとで、ヘックスビュワーのところで説明します。今は特に気にしないでください。
-
----
-background: /background.png
----
-
-<!-- Page 7 NO GOAL -->
-# NO GOAL
-### ❌ 難しいSQL文が書けるようになる
-### ❌ 適切なインデックス戦略やパフォーマンスチューニングが分かるようになる  
-### ❌ PostgreSQLやMySQLなどの特定のRDBMSの使い方が分かる
-<br>
-<br>
-<br>
-
-### データベースがちょっと身近に感じられるかも
-
+</div>
+</div>
 
 ---
 background: /background.png
 ---
 
 <!-- Page 8 データベースとは -->
+<br>
+<br>
+
 # データベースとは
 ## データベースとは、データを効率的に保存・検索・更新するためのシステム
 <br>
@@ -178,8 +241,7 @@ background: /background.png
 
 <br>
 
-## RDBMS
-### Relational Database Management System
+## RDBMS(Relational Database Management System)
 
 - データをテーブルで管理
 - SQLで操作
@@ -196,15 +258,20 @@ background: /background.png
 ---
 
 <!-- Page 9 SQLの性質 -->
+
+<br>
+<br>
+
 # SQLは宣言型言語
 ```sql
 
 SELECT id, name FROM users WHERE name = 'Alice'
 ```
         
-### 何を取得したいかを指定するだけで、どうやって取得するかはRDBMSが決める
+## 何を取得したいかを指定するだけで、どうやって取得するかはRDBMSが決める
+<br>
 
-これをPythonで命令型で書くと、
+## これをPythonで命令型で書くと、
 ```python
 # ファイルを開いて
 with open('users.tbl', 'rb') as f:
@@ -216,44 +283,68 @@ with open('users.tbl', 'rb') as f:
                 return record.id, record.name
 ```
 
-### RDBMSは、宣言型のSQLを、命令型の処理に変換して実行する
-
-
+## RDBMSは、宣言型のSQLを、命令型の処理に変換して実行する
+<!-- スピーカーノート：
+RDBMSは、宣言型のSQLを、命令型の処理に変換して実行するわけですが、
+どうやっているのか。アーキテクチャを見ていきます。
+-->
 
 ---
 background: /background.png
 ---
 
 <!-- Page 10 アーキテクチャ -->
+<br>
+<br>
+
+# RDBMSのアーキテクチャ
+<img src="/architecture.png" style="width: auto; height: 78%; margin-left: 20px;">
+
+
+<!-- スピーカーノート：
 # RDBMSのアーキテクチャ
 
-### SQL Query   
-#### ↓   
-### Parser   
-###  ├─ Lexer (字句解析): 文字列を単語に分解   
-###  └─ Parser (構文解析): 単語から意味を理解   
-#### ↓   
-### Query Planner: どうやって実行するか計画を立てる    
-#### ↓   
-### Query Executor: 実際に実行する   
-#### ↓   
-### Buffer Manager: メモリを管理する   
-#### ↓   
-### File Manager: ディスクを読み書きする   
-#### ↓   
-### Disk
-
-
+## SQL Query   
+## ↓   
+## Parser   
+##  ├─ Lexer (字句解析): 文字列を単語に分解   
+##  └─ Parser (構文解析): 単語から意味を理解   
+## ↓   
+## Query Planner: 実行計画を立てる    
+## ↓   
+## Query Executor: 実行する   
+## ↓   
+## Buffer Manager: メモリを管理する   
+## ↓   
+## File Manager: ディスクを読み書きする   
+## ↓   
+## Disk
+-->
 ---
 background: /background.png
 ---
-
 <!-- Page 11 字句解析 -->
+
+<CustomTwoCols :leftRatio="30">
+<template v-slot:left>
+<img src="/Parser.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 18px; margin-left: -20px;">
+</template>
+<template v-slot:right>
+<div>
+<br>
+<br>
+
 # Lexer (字句解析)
 ## 文字列をトークン（意味のある最小単位）に分解する
-`SELECT id, name FROM users WHERE name = 'Alice'`   
-↓   
+```sql
+SELECT id, name FROM users WHERE name = 'Alice'
+```
+    ↓   
+
 `SELECT` `id` `,` `name` `FROM` `users` `WHERE` `name` `=` `'Alice'`   
+
+<br>
+<div class="compact-table">
 
 | トークン | 種類（Lexerが判定） |
 |---------|--------------|
@@ -263,19 +354,49 @@ background: /background.png
 | `=` | 演算子          |
 | `'Alice'` | 文字列リテラル      |
 
+</div>
+
+<style>
+.compact-table table {
+  line-height: 1.0 !important;
+  border: 1px solid #e2e8f0 !important;
+  border-collapse: collapse !important;
+}
+.compact-table td, .compact-table th {
+  padding: 0.3rem 0.5rem !important;
+  border: 1px solid #e2e8f0 !important;
+}
+</style>
+
+</div>
+</template>
+</CustomTwoCols>
+
 ---
 background: /background.png
 ---
 
 <!-- Page 12 構文解析-->
-# Parser (構文解析)
-## トークンを解析して、SQLの意味を理解
 
+<CustomTwoCols :leftRatio="30">
+<template v-slot:left>
+<img src="/Parser.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 18px; margin-left: -20px;">
+</template>
+<template v-slot:right>
+<div>
+<br>
+<br>
+
+# Parser (構文解析)
 ## トークン列をルールに従って構造化
 
 `SELECT` `id` `,` `name` `FROM` `users` `WHERE` `name` `=` `'Alice'`  
+<br>
+
 ↓
-## AST（抽象構文木）
+<br>
+
+- AST（抽象構文木）
 ```
   QueryData
   ├─ SELECT: [id, name]
@@ -284,7 +405,62 @@ background: /background.png
 
 ```
 
-## 複雑な条件の場合
+## SQLの構造を木構造で表現
+<br>
+
+- SELECT句、FROM句、WHERE句がそれぞれノードに
+<br>
+<br>
+- 条件や値が子ノードとして配置される
+
+<style>
+.slidev-layout li {
+  margin-top: -0.8rem !important;
+  margin-bottom: 0 !important;
+}
+.slidev-layout pre {
+  margin-top: -0.5rem !important;
+  margin-bottom: 0.2rem !important;
+}
+.slidev-layout p {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  line-height: 1.2 !important;
+}
+</style>
+
+</div>
+</template>
+</CustomTwoCols>
+
+<!-- スピーカーノート：
+構文解析では、トークンをルールに従って構造化して、抽象構文木（AST）を作成します。
+SQLの各部分が木構造のノードとして表現されます。
+-->
+
+---
+background: /background.png
+---
+
+<!-- Page 13 Parser - 複雑な条件 -->
+
+<CustomTwoCols :leftRatio="30">
+<template v-slot:left>
+<img src="/Parser.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 18px; margin-left: -20px;">
+</template>
+<template v-slot:right>
+<div>
+<br>
+<br>
+
+# Parser - 複雑な条件の解析
+## 複雑なWHERE句も木構造で表現
+
+## AND/OR条件の階層構造
+```
+WHERE age >= 20 AND (city = 'Shinjuku' OR city = 'Yokohama')
+```
+↓
 ```
 condition → AND ─┬─ (age >= 20)
                  │
@@ -293,16 +469,20 @@ condition → AND ─┬─ (age >= 20)
                         └─ (city = 'Yokohama')
 ```
 
-<!-- スピーカーノート：
-構文解析では、トークンをルールに従って構造化して、抽象構文木（AST）を作成します。
-このSQLの例では木構造になっていることが分かりにくいですが、
-複雑な条件がある場合でも、木構造で表現できます。
--->
+## 木構造の利点
+- 条件の優先順位が明確
+- 再帰的な処理が可能
+- 最適化しやすい
+
+</div>
+</template>
+</CustomTwoCols>
+
 ---
 background: /background.png
 ---
 
-<!-- Page 13 実行計画 -->
+<!-- Page 14 実行計画 -->
 # Query Planner (実行計画)
 ## ASTから「どうやってデータを取得するか」を決める
 
@@ -348,6 +528,175 @@ background: /background.png
 2. 各レコードの`name`をチェック
 3. `name`が`'Alice'`のレコードを抽出
 4. `id`と`name`を返す
+
+---
+background: /background.png
+---
+
+<!-- Page 14.5 SQLクエリ実行フロー（アニメーション） -->
+
+# SQLクエリ実行フロー
+
+<div class="walking-rabbit">
+  <div class="carrot">🥕</div>
+  <div class="rabbit">🐰</div>
+</div>
+
+<div class="process-steps">
+  <div class="step-marker step-1">📝 SQL Query</div>
+  <div class="step-marker step-2">🔍 Parser</div>
+  <div class="step-marker step-3">📋 Planner</div>
+  <div class="step-marker step-4">⚙️ Executor</div>
+  <div class="step-marker step-5">📊 Result</div>
+</div>
+
+<div class="query-example">
+  <div class="sql-text">`SELECT id, name FROM users WHERE name = 'Alice'`</div>
+</div>
+
+<style>
+.walking-rabbit {
+  position: relative;
+  height: 100px;
+  margin: 2rem 0;
+  overflow: hidden;
+}
+
+.carrot {
+  position: absolute;
+  font-size: 3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  animation: carrotRun 8s ease-in-out forwards;
+}
+
+.rabbit {
+  position: absolute;
+  font-size: 3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  animation: rabbitChase 8s ease-in-out forwards;
+}
+
+.process-steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2rem 1rem;
+  position: relative;
+}
+
+.step-marker {
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 1rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0.3;
+  transition: all 0.5s ease;
+}
+
+.step-marker.active {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.query-example {
+  text-align: center;
+  margin-top: 2rem;
+  opacity: 0;
+  animation: fadeIn 1s ease-out 6s forwards;
+}
+
+.sql-text {
+  font-size: 1.1rem;
+  background: #f0f0f0;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  display: inline-block;
+  font-family: 'Courier New', monospace;
+  color: #333;
+}
+
+@keyframes carrotRun {
+  0% {
+    left: -100px;
+    transform: translateY(-50%) rotate(0deg);
+  }
+  25% {
+    left: 25%;
+    transform: translateY(-50%) rotate(90deg);
+  }
+  50% {
+    left: 45%;
+    transform: translateY(-50%) rotate(180deg);
+  }
+  75% {
+    left: 65%;
+    transform: translateY(-50%) rotate(270deg);
+  }
+  100% {
+    left: calc(100% - 100px);
+    transform: translateY(-50%) rotate(360deg);
+  }
+}
+
+@keyframes rabbitChase {
+  0% {
+    left: -200px;
+    transform: translateY(-50%) scaleX(1);
+  }
+  12.5% {
+    transform: translateY(-50%) scaleX(1) translateY(-10px);
+  }
+  25% {
+    left: 15%;
+    transform: translateY(-50%) scaleX(1) translateY(0px);
+  }
+  37.5% {
+    transform: translateY(-50%) scaleX(1) translateY(-10px);
+  }
+  50% {
+    left: 35%;
+    transform: translateY(-50%) scaleX(1) translateY(0px);
+  }
+  62.5% {
+    transform: translateY(-50%) scaleX(1) translateY(-10px);
+  }
+  75% {
+    left: 55%;
+    transform: translateY(-50%) scaleX(1) translateY(0px);
+  }
+  87.5% {
+    transform: translateY(-50%) scaleX(1) translateY(-10px);
+  }
+  100% {
+    left: calc(100% - 200px);
+    transform: translateY(-50%) scaleX(1) translateY(0px);
+  }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* ステップハイライト用のアニメーション */
+.step-1 { animation: highlight 1s ease-out 1s forwards; }
+.step-2 { animation: highlight 1s ease-out 2.5s forwards; }
+.step-3 { animation: highlight 1s ease-out 4s forwards; }
+.step-4 { animation: highlight 1s ease-out 5.5s forwards; }
+.step-5 { animation: highlight 1s ease-out 7s forwards; }
+
+@keyframes highlight {
+  0% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0.8; transform: scale(1.05); }
+}
+</style>
+
 ---
 background: /background.png
 ---
@@ -383,19 +732,19 @@ background: /background.png
 SELECT id, name FROM users WHERE name = 'Alice';
 ```
 
-### これでレコードを取得できることが分かりました。
+## これでレコードを取得できることが分かりました。
 <br>
 
-### しかし、レコードをファイルに保存しないと、後から欲しいレコードを取り出せません。
+## しかし、レコードをファイルに保存しないと、後から欲しいレコードを取り出せません。
 
 <br>
 
-### 次は、
+## 次は、
 ```sql
 INSERT INTO users (id, name) VALUES (259, 'Bob');
 ```
 
-### を使って、ディスクに書き込むところを見ていきます。
+## を使って、ディスクに書き込むところを見ていきます。
 <!-- スピーカーノート：
 SELECTの処理は理解できました。でも、そもそもデータはどこから来るのでしょうか？
 ディスクに保存して、データを永続化しないといけません。次はディスクへの書き込みの話です。
@@ -410,10 +759,10 @@ background: /background.png
 # よし！ディスクに書き込もう！
 ## でも、、、あれ？🤔
 
-### ・毎回ディスクに書き込む？でもそれって遅いよね
-### ・どこに書けばいいんだろう？
-### ・他の人も同時に書き込んでいるかも？
-### ・途中で電源が落ちてしまったら？
+## ・毎回ディスクに書き込む？でもそれって遅いよね
+## ・どこに書けばいいんだろう？
+## ・他の人も同時に書き込んでいるかも？
+## ・途中で電源が落ちてしまったら？
 
 ---
 background: /background.png
@@ -424,8 +773,8 @@ background: /background.png
 # 毎回ディスクに書く？遅いよね。
 
 ## その通りです
-### そこで、メモリを使う
-### バッファを使って、メモリ上で作業して、後からディスクに書き込みます
+## そこで、メモリを使う
+## バッファを使って、メモリ上で作業して、後からディスクに書き込みます
 
 ---
 background: /background.png
@@ -448,7 +797,7 @@ users.tbl
 │  Block 1    │ （未使用）
 └─────────────┘
 
-### 📝 Bobを追加すると...
+## 📝 Bobを追加すると...
 Block 0の空きスペースに `id=259, Bob` が入る
 
 <!-- スピーカーノート：
@@ -474,12 +823,12 @@ background: /background.png
 
 ## トランザクションで同時書き込みを制御する
 
-### 問題：同時に編集
+## 問題：同時に編集
 ユーザーA：Block 0にBob追加
 ユーザーB：Block 0にCarol追加
 → データが壊れる！😱
 
-### 解決：順番に処理
+## 解決：順番に処理
 ユーザーA：Block 0をロック → 編集 → 解除
 ユーザーB：（待機） → 編集
 
@@ -499,10 +848,10 @@ background: /background.png
 ## WAL（Write-Ahead Log）で障害から復旧
 ## データより先にログを書き込む
 
-### ログ：「Bob追加予定」→ ディスクへ
-### メモリ：Bob追加
-### 💥 停電！
-### 再起動：ログを見る → Bobを復元！😊
+## ログ：「Bob追加予定」→ ディスクへ
+## メモリ：Bob追加
+## 💥 停電！
+## 再起動：ログを見る → Bobを復元！😊
 
 - ログあり → 復元
 - ログなし → なかったことに
@@ -524,19 +873,19 @@ background: /background.png
 # 最終的にディスクへ
 ## メモリ上で作業 → COMMITで永続化
 
-### 1. メモリ上で編集
+## 1. メモリ上で編集
 **Bob追加（まだメモリだけ）**
 
-### 2. 変更時にWALログ記録
+## 2. 変更時にWALログ記録
 **「Bob追加する」→ ログに記録**
 
-### 3. COMMIT実行
+## 3. COMMIT実行
 **変更されたバッファをディスクへ**
 
-### 4. コミットログ記録
+## 4. コミットログ記録
 **「Commit完了」→ ログに記録**
 
-### 5. バッファをクリーンな状態に
+## 5. バッファをクリーンな状態に
 **次の処理の準備完了**
 
 <!-- スピーカーノート：
