@@ -44,7 +44,7 @@ class StartServer:
 
                 # SELECT
                 tx_select = db.new_transaction()
-                select_sql = "SELECT id, name FROM users WHERE name = 'Alice'"
+                select_sql = "SELECT id, name FROM users WHERE name = 'Alice';"
                 print(f"Executing: {select_sql}")
                 plan = planner.create_query_plan(select_sql, tx_select)
                 scan = plan.open()
@@ -56,9 +56,9 @@ class StartServer:
                 tx_select.commit()
 
 
-                # もう一つデータを挿入
+                # INSERT
                 tx_insert2 = db.new_transaction()
-                insert_sql2 = "INSERT INTO users (id, name) VALUES (259, 'Bob')"
+                insert_sql2 = "INSERT INTO users (id, name) VALUES (259, 'Bob');"
                 print(f"Executing: {insert_sql2}")
                 rows_affected2 = planner.execute_update(insert_sql2, tx_insert2)
                 print(f"Rows affected: {rows_affected2}")

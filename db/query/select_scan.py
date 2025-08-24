@@ -16,7 +16,6 @@ class SelectScan(UpdateScan, ABC):
     def before_first(self) -> None:
         self.scan.before_first()
 
-    # TODO:is_satisfiedメソッドの実装
     def next(self) -> bool:
         while self.scan.next():
             if self.predicate.is_satisfied(self):

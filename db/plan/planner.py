@@ -48,7 +48,9 @@ class Planner:
             return 0
 
     def verify_query(self) -> None:
+        """Plannerに委譲する"""
         pass
 
     def verify_update(self) -> None:
+        """実行時にメタデータで確認"""
         pass

@@ -1,16 +1,44 @@
 
 
 <style>
-.slidev-layout h2 {
-  font-size: 1.35em !important;
+/* グローバルフォントサイズの統一設定 */
+.slidev-layout {
+  font-size: 1.1rem !important;
 }
-.slidev-layout ul li {
-  font-size: 1.35em !important;
-  line-height: 1.4 !important;
+.slidev-layout h1 {
+  font-size: 2.0em !important;
+  line-height: 1.2 !important;
+}
+.slidev-layout h2 {
+  font-size: 1.2em !important;
+  line-height: 1.25 !important;
+}
+.slidev-layout h3 {
+  font-size: 1.0em !important;
+  line-height: 1.1 !important;
+}
+.slidev-layout p {
+  font-size: 1.1em !important;
+  line-height: 1.5 !important;
+}
+.slidev-layout ul li, .slidev-layout ol li {
+  font-size: 1.1em !important;
+  line-height: 1.5 !important;
 }
 .slidev-layout pre code {
-  font-size: 1.35em !important;
-  line-height: 1.3 !important;
+  font-size: 0.95em !important;
+  line-height: 1.4 !important;
+}
+.slidev-layout table {
+  font-size: 1em !important;
+}
+.slidev-layout td, .slidev-layout th {
+  font-size: 0.95em !important;
+  line-height: 1.4 !important;
+}
+/* コード内のインラインコード */
+.slidev-layout code:not(pre code) {
+  font-size: 0.9em !important;
 }
 </style>
 
@@ -102,9 +130,9 @@ background: none
 <img src="/cm.png" style="position: absolute; top: 0; left: 0; right: 0; bottom: 30px; width: 100%; height: calc(100% - 30px); object-fit: contain;" />
 <!--
 スピーカーノート：
-関東圏にお住まいの方であれば、お笑い芸人のかが屋さんのCMを見たことがあるかもしれません。
-このCMの会社です。
-手前味噌ですが、このCMはYou Tubeで公開されているので、ぜひ見てみてください。
+関東圏にお住まいの方であれば、お笑い芸人のかが屋さんのCMを見たことがある方がいらっしゃるかもしれません。
+このCMのサービスの会社です。
+手前味噌ですが、このCMはYou Tubeで公開されていて、塾に関心がなくても面白いCMになっているので、ぜひ見てみてください。
 -->
 
 ---
@@ -115,22 +143,28 @@ background: none
 <br>
 
 # 話すこと
+ 
+## 🐰SELECT文から欲しいレコードを取得するしくみ
 <br>
 
-## 🐰 自作したRDBMS:KeiPyDBの紹介
+```sql
+SELECT id, name FROM users WHERE name = 'Alice'   # id = 258, name = 'Alice'
+``` 
 <br>
 
-## 🐰 RDBMSの一般的なアーキテクチャ
+## 🐰INSERT文でレコードをディスクに書き込むしくみ
 <br>
 
-## 🐰 SELECT文がどのような流れでレコードを取得するか
+```sql
+INSERT INTO users (id, name) VALUES (259, 'Bob')
+```
 <br>
 
-## 🐰 INSERT文がどのように処理されて、ディスクに書き込まれるか
-<br>
 
 ## 🐰 エンディアンの話
+<br>
 
+### ※ なぜidが258と259なのかは、エンディアンのところで説明します。
 ---
 
 <!-- Page 5 本題 -->
@@ -153,6 +187,10 @@ background: none
 ## ❌ テーブル設計や正規化の話
 
 
+<!-- スピーカーノート：
+RDBMSのしくみを見ていくことで、DB君は裏側でこんな感じで頑張っているんだな、
+と愛着を持ってもらえたらいいかな、と思っています。
+-->
 ---
 
 <!-- Page 4 作ってみた -->
@@ -160,6 +198,7 @@ background: none
 <CustomTwoCols :leftRatio="66" imageSrc="/simpledb.jpg" imageAlt="Database Design and Implementation book cover" imageClass="w-full h-full object-contain relative translate-x-5 translate-y-5">
   <template #left>
 
+<br>
 <br>
 
 # 自作RDBMS:KeiPyDBの紹介
@@ -188,7 +227,8 @@ background: none
 </CustomTwoCols>
 
 <!-- スピーカーノート：
-Database Design and Implementation という書籍を参考にして、RDBMSを実装しました。
+仕組みを見ていくための、Python製RDBMSですが、これは自作しました。
+Database Design and Implementation という一般にSimpleDB本と呼ばれる書籍を参考にしてます。
 JavaでRDBMSを実装していく内容ですが、書籍を参考にPythonで実装しました。
 -->
 ---
@@ -339,11 +379,10 @@ background: /background.png
 ```sql
 SELECT id, name FROM users WHERE name = 'Alice'
 ```
-    ↓   
+    ↓
 
 `SELECT` `id` `,` `name` `FROM` `users` `WHERE` `name` `=` `'Alice'`   
 
-<br>
 <div class="compact-table">
 
 | トークン | 種類（Lexerが判定） |
@@ -390,12 +429,9 @@ background: /background.png
 # Parser (構文解析)
 ## トークン列をルールに従って構造化
 
-`SELECT` `id` `,` `name` `FROM` `users` `WHERE` `name` `=` `'Alice'`  
-<br>
+`SELECT` `id` `,` `name` `FROM` `users` `WHERE` `name` `=` `'Alice'`
 
 ↓
-<br>
-
 - AST（抽象構文木）
 ```
   QueryData
@@ -406,28 +442,9 @@ background: /background.png
 ```
 
 ## SQLの構造を木構造で表現
-<br>
+## SELECT句、FROM句、WHERE句がそれぞれノードに
+## 条件や値が子ノードとして配置される
 
-- SELECT句、FROM句、WHERE句がそれぞれノードに
-<br>
-<br>
-- 条件や値が子ノードとして配置される
-
-<style>
-.slidev-layout li {
-  margin-top: -0.8rem !important;
-  margin-bottom: 0 !important;
-}
-.slidev-layout pre {
-  margin-top: -0.5rem !important;
-  margin-bottom: 0.2rem !important;
-}
-.slidev-layout p {
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  line-height: 1.2 !important;
-}
-</style>
 
 </div>
 </template>
@@ -453,10 +470,7 @@ background: /background.png
 <br>
 <br>
 
-# Parser - 複雑な条件の解析
-## 複雑なWHERE句も木構造で表現
-
-## AND/OR条件の階層構造
+# Parser - 複雑な条件
 ```
 WHERE age >= 20 AND (city = 'Shinjuku' OR city = 'Yokohama')
 ```
@@ -469,22 +483,33 @@ condition → AND ─┬─ (age >= 20)
                         └─ (city = 'Yokohama')
 ```
 
-## 木構造の利点
-- 条件の優先順位が明確
-- 再帰的な処理が可能
-- 最適化しやすい
+<br>
+
 
 </div>
 </template>
 </CustomTwoCols>
 
+<!-- スピーカーノート：
+パーサにも色々なアルゴリズムがありますが、
+再帰的に処理できるように、このKeiPyDBでは再帰下降パーサという、一番シンプルなアルゴリズムを使っています。
+-->
 ---
 background: /background.png
 ---
 
 <!-- Page 14 実行計画 -->
+
+<CustomTwoCols :leftRatio="30">
+<template v-slot:left>
+<img src="/planner.png" alt="Query Planner diagram" style="width: 100%; height: auto; margin-top: 18px; margin-left: -20px;">
+</template>
+<template v-slot:right>
+<div>
+<br>
+<br>
+
 # Query Planner (実行計画)
-## ASTから「どうやってデータを取得するか」を決める
 
 ## ASTを受け取って、実行方法を選択
 
@@ -495,13 +520,10 @@ SELECT
 └─ condition: name = 'Alice'
 ```
 
-↓
-## 実行計画
 
-1. テーブル`users`をフルスキャン
-2. 各レコードの`name`をチェック
-3. `name`が`'Alice'`のレコードを抽出
-4. `id`と`name`を返す
+</div>
+</template>
+</CustomTwoCols>
 
 <!-- スピーカーノート：
 ASTを受け取って、どうやってレコードを取得するかの実行計画を立てます。
@@ -520,6 +542,15 @@ background: /background.png
 
 <!-- Page 14 実行エンジン -->
 
+<CustomTwoCols :leftRatio="30">
+<template v-slot:left>
+<img src="/executor.png" alt="Query Executor diagram" style="width: 100%; height: auto; margin-top: 18px; margin-left: -20px;">
+</template>
+<template v-slot:right>
+<div>
+<br>
+<br>
+
 # Query Executor (実行エンジン)
 ## 実行計画に従って、実際にデータを取得する
 
@@ -528,6 +559,10 @@ background: /background.png
 2. 各レコードの`name`をチェック
 3. `name`が`'Alice'`のレコードを抽出
 4. `id`と`name`を返す
+
+</div>
+</template>
+</CustomTwoCols>
 
 ---
 background: /background.png
@@ -564,7 +599,7 @@ background: /background.png
 
 .carrot {
   position: absolute;
-  font-size: 3rem;
+  font-size: 2.5rem;
   top: 50%;
   transform: translateY(-50%);
   animation: carrotRun 8s ease-in-out forwards;
@@ -572,7 +607,7 @@ background: /background.png
 
 .rabbit {
   position: absolute;
-  font-size: 3rem;
+  font-size: 2.5rem;
   top: 50%;
   transform: translateY(-50%);
   animation: rabbitChase 8s ease-in-out forwards;
@@ -587,7 +622,7 @@ background: /background.png
 }
 
 .step-marker {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 600;
   text-align: center;
   padding: 1rem;
@@ -611,7 +646,7 @@ background: /background.png
 }
 
 .sql-text {
-  font-size: 1.1rem;
+  font-size: 1rem;
   background: #f0f0f0;
   padding: 0.8rem 1.5rem;
   border-radius: 8px;
@@ -705,18 +740,10 @@ background: /background.png
 
 # デモ: SELECT文の実行
 
-1. **Lexer**: 文字列 → トークン列
-   - `"SELECT id, name..."` → `['SELECT', 'id', ',', ...]`
+<!-- スピーカーノート：
 
-2. **Parser**: トークン → AST
-   - トークン列 → ASTの構築
 
-3. **Planner**: AST → 実行計画
-   - AST → フルスキャンの計画
-
-4. **Executor**: 実行計画 → 結果
-  - データにアクセスして結果を返す
-  - （メモリorファイル、詳細は後ほど）
+-->
 
 ---
 background: /background.png
