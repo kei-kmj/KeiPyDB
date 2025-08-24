@@ -303,6 +303,11 @@ background: /background.png
 <br>
 
 # SQLは宣言型言語
+<style>
+.slidev-code {
+  font-size: 1.5em !important;
+}
+</style>
 ```sql
 
 SELECT id, name FROM users WHERE name = 'Alice'
@@ -311,19 +316,29 @@ SELECT id, name FROM users WHERE name = 'Alice'
 ## 何を取得したいかを指定するだけで、どうやって取得するかはRDBMSが決める
 <br>
 
-## これをPythonで命令型で書くと、
-```python
-# ファイルを開いて
-with open('users.tbl', 'rb') as f:
-    # 全レコードを読んで
-    for record in read_records(f):
-            # 条件に合うレコードを見つけて
-            if record.name == 'Alice':
-                # 見つかったら返す
-                return record.id, record.name
-```
+[//]: # (## これをPythonで命令型で書くと、)
 
-## RDBMSは、宣言型のSQLを、命令型の処理に変換して実行する
+[//]: # (```python)
+
+[//]: # (# ファイルを開いて)
+
+[//]: # (with open&#40;'users.tbl', 'rb'&#41; as f:)
+
+[//]: # (    # 全レコードを読んで)
+
+[//]: # (    for record in read_records&#40;f&#41;:)
+
+[//]: # (            # 条件に合うレコードを見つけて)
+
+[//]: # (            if record.name == 'Alice':)
+
+[//]: # (                # 見つかったら返す)
+
+[//]: # (                return record.id, record.name)
+
+[//]: # (```)
+
+[//]: # (## RDBMSは、宣言型のSQLを、命令型の処理に変換して実行する)
 <!-- スピーカーノート：
 RDBMSは、宣言型のSQLを、命令型の処理に変換して実行するわけですが、
 どうやっているのか。アーキテクチャを見ていきます。
@@ -376,6 +391,11 @@ background: /background.png
 
 # Lexer (字句解析)
 ## 文字列をトークン（意味のある最小単位）に分解する
+<style>
+.slidev-code {
+  font-size: 1.2em !important;
+}
+</style>
 ```sql
 SELECT id, name FROM users WHERE name = 'Alice'
 ```
@@ -471,7 +491,13 @@ background: /background.png
 <br>
 
 # Parser - 複雑な条件
-```
+
+<style>
+.slidev-code {
+  font-size: 0.9em !important;
+}
+</style>
+```sql
 WHERE age >= 20 AND (city = 'Shinjuku' OR city = 'Yokohama')
 ```
 ↓
@@ -751,45 +777,61 @@ background: /background.png
 
 <!-- Page 16 ファイルI/O -->
 
-# ディスク I/O（データの永続化）
-## データの永続化と読み書き
-
-```sql
-
-SELECT id, name FROM users WHERE name = 'Alice';
-```
-
-## これでレコードを取得できることが分かりました。
+<br>
 <br>
 
-## しかし、レコードをファイルに保存しないと、後から欲しいレコードを取り出せません。
 
-<br>
+# データの永続化
+
+
 
 ## 次は、
-```sql
+<br>
+<br>
+
+<style>
+.slidev-code {
+  font-size: 1.5em !important;
+}
+</style>
+
+```sql 
 INSERT INTO users (id, name) VALUES (259, 'Bob');
 ```
 
-## を使って、ディスクに書き込むところを見ていきます。
+
+<br>
+
+## で、ディスクに書き込むしくみを見ていきます。
+
 <!-- スピーカーノート：
-SELECTの処理は理解できました。でも、そもそもデータはどこから来るのでしょうか？
+SELECTの処理を見てきました。でも、そもそもデータはどこから来るのでしょうか？
 ディスクに保存して、データを永続化しないといけません。次はディスクへの書き込みの話です。
 -->
+
 ---
 background: /background.png
 ---
 
 <!-- Page 17 ディスク書き込みの手順 -->
+<br>
+<br>
 
 
-# よし！ディスクに書き込もう！
+# そうだ、ディスクに書き込もう！
 ## でも、、、あれ？🤔
+<br>
 
-## ・毎回ディスクに書き込む？でもそれって遅いよね
-## ・どこに書けばいいんだろう？
+## ・毎回ディスクに書き込む？それって遅いよね
+<br>
+
+## ・書き込み位置はどこ？
+<br>
+
 ## ・他の人も同時に書き込んでいるかも？
-## ・途中で電源が落ちてしまったら？
+<br>
+
+## ・途中で電源が落ちてしまったらどうなるの？
 
 ---
 background: /background.png
@@ -797,11 +839,22 @@ background: /background.png
 
 <!-- Page 18 毎回ディスクに書く -->
 
+<CustomTwoCols :leftRatio="30">
+<template v-slot:left>
+<img src="/buffer.png" alt="Buffer diagram" style="width: 100%; height: auto; margin-top: 18px; margin-left: -20px;">
+</template>
+<template v-slot:right>
+<div>
+<br>
+<br>
+
 # 毎回ディスクに書く？遅いよね。
 
-## その通りです
-## そこで、メモリを使う
-## バッファを使って、メモリ上で作業して、後からディスクに書き込みます
+## そこで、メモリ上で作業して、後からディスクに書き込みます
+
+</div>
+</template>
+</CustomTwoCols>
 
 ---
 background: /background.png
@@ -809,23 +862,51 @@ background: /background.png
 
 <!-- Page 19 ブロック管理 -->
 
-# どこに書けばいいんだろう？
-## 書き込めるブロックを探して(メモリに読み込んで)、そこに書き込みの指定をする(メモリ上)
-
-users.tbl
-┌─────────────┐
-│  Block 0    │ 256バイト
-│  ・id=255   │
-│  ・Alice    │ ← 既存レコード
-│             │
-│  （空き）    │ ← ここにかける
-│  （空き）    │ 
-├─────────────┤
-│  Block 1    │ （未使用）
+<CustomTwoCols :leftRatio="40">
+<template v-slot:left>
+<div style="font-family: monospace; font-size: 0.9rem; line-height: 1.2; margin-top: 50px;">
+users.tbl<br>
+┌─────────────┐<br>
+│  Block 0    │ 256バイト<br>
+│  ・id=255   │<br>
+│  ・Alice    │ ← 既存レコード<br>
+│             │<br>
+│  （空き）    │ ← ここに書ける<br>
+│  （空き）    │<br>
+├─────────────┤<br>
+│  Block 1    │ （未使用）<br>
 └─────────────┘
+</div>
+</template>
+<template v-slot:right>
+<div>
+<br>
+<br>
 
-## 📝 Bobを追加すると...
+# 書き込み位置はどこ？
+- ディスク上のデータは、ブロックという単位で管理
+- ブロックは、一定のサイズ（例えば256バイト）で区切られたデータの単位
+-  空きブロックを探して(メモリに読み込んで)、そこに書き込みの指定をする(メモリ上)
+
+<br>
+<br>
+
+<style>
+.slidev-code {
+  font-size: 1.0em !important;
+}
+</style>
+
+```sql 
+INSERT INTO users (id, name) VALUES (259, 'Bob');
+```
+
+## 📝 でBobを追加すると
 Block 0の空きスペースに `id=259, Bob` が入る
+
+</div>
+</template>
+</CustomTwoCols>
 
 <!-- スピーカーノート：
 ディスク上のデータは、ブロックという単位で管理します。
@@ -845,19 +926,27 @@ background: /background.png
 ---
 
 <!-- Page 20 トランザクション -->
+<br>
+<br>
+
 
 # 他の人も同時に書き込んでたらどうしよう？
 
 ## トランザクションで同時書き込みを制御する
 
 ## 問題：同時に編集
-ユーザーA：Block 0にBob追加
-ユーザーB：Block 0にCarol追加
-→ データが壊れる！😱
+<br>
 
-## 解決：順番に処理
-ユーザーA：Block 0をロック → 編集 → 解除
-ユーザーB：（待機） → 編集
+## ユーザーA：Block 0にBob追加
+## ユーザーB：Block 0にCarol追加
+## → データが壊れる！😱
+
+<br>
+<br>
+
+## 順番に処理
+## ユーザーA：Block 0をロック → 編集 → 解除
+## ユーザーB：（待機） → 編集
 
 
 <!-- スピーカーノート：
@@ -870,6 +959,9 @@ background: /background.png
 ---
 
 <!-- Page 21 途中で電源が落ちてしまったら？ -->
+<br>
+<br>
+
 
 # 途中で電源が落ちてしまったら？
 ## WAL（Write-Ahead Log）で障害から復旧
@@ -896,24 +988,25 @@ background: /background.png
 ---
 
 <!-- Page 22 最終的にディスクへ -->
+<br>
+<br>
 
-# 最終的にディスクへ
-## メモリ上で作業 → COMMITで永続化
 
-## 1. メモリ上で編集
-**Bob追加（まだメモリだけ）**
+# ディスクへ
 
-## 2. 変更時にWALログ記録
-**「Bob追加する」→ ログに記録**
+## 1. メモリ上で編集 **Bob追加（まだメモリだけ）**
+<br>
 
-## 3. COMMIT実行
-**変更されたバッファをディスクへ**
+## 2. 変更時にWALログ記録 **「Bob追加する」→ ログに記録**
+<br>
 
-## 4. コミットログ記録
-**「Commit完了」→ ログに記録**
+## 3. COMMIT実行 **変更されたバッファをディスクへ**
+<br>
+
+## 4. コミットログ記録 **「Commit完了」→ ログに記録**
+<br>
 
 ## 5. バッファをクリーンな状態に
-**次の処理の準備完了**
 
 <!-- スピーカーノート：
 最終的なディスク書き込みの流れです。
@@ -931,6 +1024,9 @@ background: /background.png
 background: /background.png
 ---
 <!-- Page 23 デモ -->
+<br>
+<br>
+
 # デモ: INSERT文の実行
 
 
@@ -1021,21 +1117,31 @@ background: /background.png
 background: /background.png
 ---
 <!-- Page 27 we are hiring -->
-## 株式会社DeltaXでは、Webエンジニアを募集中です！
+<br>
+<br>
 
-・言語：Python／TypeScript
-・フレームワーク：FastAPI／Astro／React／Remix
-・インフラ環境：AWS／OpenSearch／PostgreSQL／DynamoDB／Docker／Google Cloud
+# 株式会社DeltaXでは、Webエンジニアを募集中です！
 
-## フルリモート可
+## 言語：Python／TypeScript
+## フレームワーク：FastAPI／Astro／React／Remix
+## インフラ環境：AWS／OpenSearch／PostgreSQL／DynamoDB／Docker／Google Cloud
+
+## フルリモート
 ## 生成AIを積極的に活用してます
 
 ---
 background: /background.png
 ---
 <!-- Page 28 挨拶 -->
+<br>
+<br>
+<br>
+<br>
+<br>
 
 # ご清聴ありがとうございました！
+
+<img src="/thankyou.png" style="position: absolute; bottom: 30px; right: 0px; width: 240px; height: auto;" />
 
 
 ---

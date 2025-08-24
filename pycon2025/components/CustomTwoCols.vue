@@ -35,6 +35,7 @@ const gridClass = computed(() => {
   const ratio = props.leftRatio
   if (ratio === 20) return 'grid-cols-5'
   if (ratio === 30) return 'grid-cols-10'
+  if (ratio === 40) return 'grid-cols-5'
   if (ratio === 75) return 'grid-cols-4'
   if (ratio === 80) return 'grid-cols-5'
   if (ratio === 70) return 'grid-cols-10'
@@ -47,6 +48,7 @@ const leftColClass = computed(() => {
   const ratio = props.leftRatio
   if (ratio === 20) return 'col-span-1'
   if (ratio === 30) return 'col-span-3'
+  if (ratio === 40) return 'col-span-2'
   if (ratio === 75) return 'col-span-3'
   if (ratio === 80) return 'col-span-4'
   if (ratio === 70) return 'col-span-7'
@@ -59,6 +61,7 @@ const rightColClass = computed(() => {
   const ratio = props.leftRatio
   if (ratio === 20) return 'col-span-4'
   if (ratio === 30) return 'col-span-7'
+  if (ratio === 40) return 'col-span-3'
   if (ratio === 75) return 'col-span-1'
   if (ratio === 80) return 'col-span-1'
   if (ratio === 70) return 'col-span-3'
