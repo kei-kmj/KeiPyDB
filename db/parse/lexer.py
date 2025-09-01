@@ -68,9 +68,20 @@ class Lexer:
     def _tokenize(self, sql: str) -> list[str]:
         """SQL文をトークンに分割"""
         token_pattern = r"[a-zA-Z_][a-zA-Z_0-9]*|'(?:[^']|'')*'|\d+(?:\.\d+)?|[=,()<>*+-/;]|\s+|."
-        tokens = re.findall(token_pattern, sql.lower())
-
-        return [token for token in tokens if not token.isspace()]
+        tokens = re.findall(token_pattern, sql)
+        
+        # 文字列リテラル以外のトークンのみ小文字化
+        processed_tokens = []
+        for token in tokens:
+            if not token.isspace():
+                if token.startswith("'") and token.endswith("'"):
+                    # 文字列リテラルは大文字小文字を保持
+                    processed_tokens.append(token)
+                else:
+                    # その他のトークンは小文字化
+                    processed_tokens.append(token.lower())
+        
+        return processed_tokens
 
     def match_delimiter(self, delimiter: str) -> bool:
         """指定されたデリミタと現在のトークンが一致するかどうかを返す"""

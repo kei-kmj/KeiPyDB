@@ -45,6 +45,7 @@ withDefaults(defineProps<Props>(), {
 table {
   border-collapse: collapse !important;
   width: 100%;
+  margin: 0;
   border: none !important;
 }
 
@@ -87,5 +88,11 @@ table.with-row-lines tbody tr {
 
 table.with-row-lines tbody tr:last-child {
   border-bottom: none !important;
+}
+
+/* 枠線ありの場合、セルにも縦線を追加 */
+table.with-outer-border td,
+table.with-outer-border th {
+  border: 1px solid #ddd !important;
 }
 </style>

@@ -1,55 +1,13 @@
----
-theme: seriph
-background: '#f9fafb'
-colorSchema: 'light'
-class: text-center
-css: unocss
-highlighter: shiki
-lineNumbers: false
-info: |
-  ## Python製RDBMSで理解する、データベースのピース
-  PyCon JP 2025
-drawings:
-  persist: false
-transition: slide-left
-title: Python製RDBMSで理解する、データベースのピース
-mdc: true
-hideInToc: true
----
 
-<style>
-html {
-  --slidev-theme-primary: #454554;
-}
-.slidev-layout {
-  background-color: #f9fafb !important;
-  color: #454554 !important;
-}
-h1, h2, h3, h4, h5, h6, p, span, div, li, td, th {
-  color: #454554 !important;
-}
-.slidev-page-number {
-  position: absolute;
-  bottom: 1rem;
-  right: 2rem;
-  color: #888;
-  font-size: 0.85rem;
-}
-</style>
 
 # Python製RDBMSで理解する、<br>データベースのピース
 
-<div class="mt-12">
 
 ## コードのステップ実行とヘックスビューアーで<br>内部動作を追ってみよう
 
-</div>
 
-<div class="absolute bottom-12 left-0 right-0">
-  <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
-    PyCon JP 2025 →
-  </span>
-</div>
+PyCon JP 2025 →
+
 
 <div class="absolute bottom-6 left-0 right-0 text-gray-500">
   @Keiko Kamijo

@@ -10,19 +10,19 @@
   line-height: 1.2 !important;
 }
 .slidev-layout h2 {
-  font-size: 1.2em !important;
+  font-size: 1.4em !important;
   line-height: 1.25 !important;
 }
 .slidev-layout h3 {
-  font-size: 1.0em !important;
+  font-size: 1.2em !important;
   line-height: 1.1 !important;
 }
 .slidev-layout p {
-  font-size: 1.1em !important;
+  font-size: 1.3em !important;
   line-height: 1.5 !important;
 }
 .slidev-layout ul li, .slidev-layout ol li {
-  font-size: 1.1em !important;
+  font-size: 1.3em !important;
   line-height: 1.5 !important;
 }
 .slidev-layout pre code {
@@ -61,14 +61,14 @@
 
 PyCon JP 2025
 <br>
-上條 恵子@k-kamijo
+k-kamijo
 
 ---
-layout: two-cols
----
 
-<div class="pl-8">
 <!-- Page 1 自己紹介-->
+
+<CustomTwoCols :leftRatio="60">
+<template v-slot:left>
 <br>
 <br>
 <br>
@@ -80,19 +80,22 @@ layout: two-cols
 </div>
 <br>
 
+<div style="width: 100%;">
 <TransparentTable :items="[
-  { label: '名　前：', value: '上條 恵子@ k-kamijo' },
+  { label: '名　前：', value: 'k-kamijo' },
   { label: 'Github：', value: '@kei-kmj' },
   { label: '所　属：', value: '株式会社DeltaX' },
   { label: '趣　味：', value: '輪行<br>(電車旅 & サイクリング)' }
 ]" />
-
 </div>
-::right::
-
+</template>
+<template v-slot:right>
 <div class="flex justify-center items-center h-full">
   <img src="/tokageusagi.png" class="w-64 h-64 rounded-full object-cover" />
 </div>
+</template>
+</CustomTwoCols>
+
 ---
 background: none
 ---
@@ -107,7 +110,7 @@ background: none
 
 <!-- Page 2 塾選紹介-->
 
-<img src="/bestjuku.png" style="position: absolute; top: 0; left: 0; right: 0; bottom: 30px; width: 100%; height: calc(100% - 30px); object-fit: contain;" />
+<img src="/bestjuku.png" style="position: absolute; top: 20px; left: 0; right: 0; bottom: 30px; width: 100%; height: calc(100% - 30px); object-fit: contain;" />
 
 <!--
 スピーカーノート：
@@ -136,66 +139,42 @@ background: none
 -->
 
 ---
-
-<!-- Page 4 本題 -->
-
-<br>
-<br>
-
-# 話すこと
- 
-## 🐰SELECT文から欲しいレコードを取得するしくみ
-<br>
-
-```sql
-SELECT id, name FROM users WHERE name = 'Alice'   # id = 258, name = 'Alice'
-``` 
-<br>
-
-## 🐰INSERT文でレコードをディスクに書き込むしくみ
-<br>
-
-```sql
-INSERT INTO users (id, name) VALUES (259, 'Bob')
-```
-<br>
-
-
-## 🐰 エンディアンの話
-<br>
-
-### ※ なぜidが258と259なのかは、エンディアンのところで説明します。
+background: /background.png
 ---
 
-<!-- Page 5 本題 -->
-
+<!-- Page 8 データベースとは -->
 <br>
 <br>
 
-# 話さないこと
+# データベースとは
+## データを効率的に保存・検索・更新するためのシステム
 <br>
 
-## ❌ 特定のデータベース製品の性質や使い方
+##   **データベースの種類**
+- RDBMS → PostgreSQL, MySQL
+- NoSQL → MongoDB, Redis
+- グラフDB → Neo4j
+
 <br>
 
-## ❌ 難しいSQL文の書き方
-<br>
+## **RDBMS(Relational Database Management System)**
 
-## ❌ インデックス戦略やパフォーマンスチューニングについて
-<br>
-
-## ❌ テーブル設計や正規化の話
+- データをテーブルで管理
+- SQLで操作
+- ACID特性を保証（原子性・一貫性・隔離性・永続性）
 
 
 <!-- スピーカーノート：
-RDBMSのしくみを見ていくことで、DB君は裏側でこんな感じで頑張っているんだな、
-と愛着を持ってもらえたらいいかな、と思っています。
--->
----
+ビギナー向けの発表なので、基本的なところから始めます。
 
+-->
+
+---
+background: /background.png
+---
 <!-- Page 4 作ってみた -->
 
-<CustomTwoCols :leftRatio="66" imageSrc="/simpledb.jpg" imageAlt="Database Design and Implementation book cover" imageClass="w-full h-full object-contain relative translate-x-5 translate-y-5">
+<CustomTwoCols :leftRatio="66" imageSrc="/simpledb.jpg" imageAlt="Database Design and Implementation book cover" imageClass="w-90% h-90% object-contain relative translate-x-2 translate-y-8">
   <template #left>
 
 <br>
@@ -204,7 +183,7 @@ RDBMSのしくみを見ていくことで、DB君は裏側でこんな感じで�
 # 自作RDBMS:KeiPyDBの紹介
 <br>
 
-## Pythonの言語仕様とDBの内部構造を同時に学びたくて作ってみました。
+## Pythonの言語仕様とDBの内部構造を学びたくて作ってみました。
 <br>
 
 ## [https://github.com/kei-kmj/keiPyDB](https://github.com/kei-kmj/keiPyDB)
@@ -221,7 +200,7 @@ RDBMSのしくみを見ていくことで、DB君は裏側でこんな感じで�
 ## **「Database Design and Implementation: Second Edition 」** Edward Sciore (著)
 <br>
 
-## JavaでRDBMSを実装していく教科書っぽい英書
+## JavaでRDBMSを実装していく教科書っぽい洋書
 
   </template>
 </CustomTwoCols>
@@ -231,6 +210,9 @@ RDBMSのしくみを見ていくことで、DB君は裏側でこんな感じで�
 Database Design and Implementation という一般にSimpleDB本と呼ばれる書籍を参考にしてます。
 JavaでRDBMSを実装していく内容ですが、書籍を参考にPythonで実装しました。
 -->
+
+---
+background: /background.png
 ---
 
 <!-- Page 5 KeiPyDBの機能 -->
@@ -262,35 +244,82 @@ JavaでRDBMSを実装していく内容ですが、書籍を参考にPythonで�
 </div>
 </div>
 
+
+
+<!-- Page 4 本題 -->
+
+<br>
+<br>
+
+---
+background: /background.png
+---
+<br>
+<br>
+
+
+# 話すこと
+ 
+<br>
+
+## 🐰SELECT文で欲しいレコードを取得するしくみ
+<br>
+
+<style>
+.slidev-code {
+  font-size: 1.2rem !important;
+  margin-top: -24px !important;
+}
+</style>
+
+```sql
+SELECT id, name FROM users WHERE name = 'Alice'   # id = 258, name = 'Alice'
+``` 
+<br>
+
+## 🐰INSERT文でレコードをディスクに書き込むしくみ
+<br>
+
+```sql
+INSERT INTO users (id, name) VALUES (259, 'Bob')
+```
+<br>
+<br>
+<br>
+<br>
+
+
+## ※ なぜidが258と259なのかは、あとで説明します
+
+
 ---
 background: /background.png
 ---
 
-<!-- Page 8 データベースとは -->
-<br>
-<br>
 
-# データベースとは
-## データベースとは、データを効率的に保存・検索・更新するためのシステム
-<br>
-
-##  データベースの種類
-- RDBMS → PostgreSQL, MySQL
-- NoSQL → MongoDB, Redis
-- グラフDB → Neo4j
+<!-- Page 5 本題 -->
 
 <br>
+<br>
 
-## RDBMS(Relational Database Management System)
+# 話さないこと
+<br>
 
-- データをテーブルで管理
-- SQLで操作
-- ACID特性を保証（原子性・一貫性・隔離性・永続性）
+## ❌ 特定のデータベース製品の性質や使い方
+<br>
+
+## ❌ 難しいSQL文の書き方
+<br>
+
+## ❌ インデックス戦略やパフォーマンスチューニングについて
+<br>
+
+## ❌ テーブル設計や正規化の話
 
 
 <!-- スピーカーノート：
-ビギナー向けの発表なので、基本的なところから始めます。
-
+RDBMSのしくみを見ていくことで、DB君は裏側でこんな感じで頑張っているんだな、
+と愛着を持ってもらえたらいいかな、と思っています。
 -->
 
 ---
@@ -308,37 +337,21 @@ background: /background.png
   font-size: 1.5em !important;
 }
 </style>
+<br>
+<br>
+
 ```sql
 
 SELECT id, name FROM users WHERE name = 'Alice'
 ```
+<br>
+<br>
+<br>
         
-## 何を取得したいかを指定するだけで、どうやって取得するかはRDBMSが決める
+## 何を取得したいかを指定する。どうやって取得するかはRDBMSが決める
 <br>
 
-[//]: # (## これをPythonで命令型で書くと、)
 
-[//]: # (```python)
-
-[//]: # (# ファイルを開いて)
-
-[//]: # (with open&#40;'users.tbl', 'rb'&#41; as f:)
-
-[//]: # (    # 全レコードを読んで)
-
-[//]: # (    for record in read_records&#40;f&#41;:)
-
-[//]: # (            # 条件に合うレコードを見つけて)
-
-[//]: # (            if record.name == 'Alice':)
-
-[//]: # (                # 見つかったら返す)
-
-[//]: # (                return record.id, record.name)
-
-[//]: # (```)
-
-[//]: # (## RDBMSは、宣言型のSQLを、命令型の処理に変換して実行する)
 <!-- スピーカーノート：
 RDBMSは、宣言型のSQLを、命令型の処理に変換して実行するわけですが、
 どうやっているのか。アーキテクチャを見ていきます。
@@ -353,7 +366,7 @@ background: /background.png
 <br>
 
 # RDBMSのアーキテクチャ
-<img src="/architecture.png" style="width: auto; height: 78%; margin-left: 20px;">
+<img src="/architecture.png" style="width: 76%; height: 84%; margin-left: 160px; margin-top: -22px">
 
 
 <!-- スピーカーノート：
@@ -382,7 +395,7 @@ background: /background.png
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
-<img src="/Parser.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 18px; margin-left: -20px;">
+<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 80%; margin-top: 24px; margin-left: -10px;">
 </template>
 <template v-slot:right>
 <div>
@@ -399,9 +412,12 @@ background: /background.png
 ```sql
 SELECT id, name FROM users WHERE name = 'Alice'
 ```
-    ↓
 
-`SELECT` `id` `,` `name` `FROM` `users` `WHERE` `name` `=` `'Alice'`   
+<div style="text-align: center; font-size: 1.2em;">⬇︎</div>
+
+### `SELECT` `id` `,` `name` `FROM` `users` `WHERE` `name` `=` `'Alice'`   
+
+<br>
 
 <div class="compact-table">
 
@@ -439,7 +455,7 @@ background: /background.png
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
-<img src="/Parser.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 18px; margin-left: -20px;">
+<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 80%; margin-top: 24px; margin-left: -10px;">
 </template>
 <template v-slot:right>
 <div>
@@ -448,12 +464,25 @@ background: /background.png
 
 # Parser (構文解析)
 ## トークン列をルールに従って構造化
+<br>
 
-`SELECT` `id` `,` `name` `FROM` `users` `WHERE` `name` `=` `'Alice'`
+### `SELECT` `id` `,` `name` `FROM` `users` `WHERE` `name` `=` `'Alice'`
 
-↓
-- AST（抽象構文木）
-```
+<div style="text-align: center; font-size: 1.2em;">⬇︎</div>
+
+
+## **AST（抽象構文木: Abstract Syntax Tree）**
+<br>
+
+## SQL文の構造を木構造にする
+
+<style>
+.slidev-code {
+  font-size: 1.2rem !important;
+}
+</style>
+
+```sql
   QueryData
   ├─ SELECT: [id, name]
   ├─ FROM: users
@@ -461,9 +490,6 @@ background: /background.png
 
 ```
 
-## SQLの構造を木構造で表現
-## SELECT句、FROM句、WHERE句がそれぞれノードに
-## 条件や値が子ノードとして配置される
 
 
 </div>
@@ -483,7 +509,7 @@ background: /background.png
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
-<img src="/Parser.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 18px; margin-left: -20px;">
+<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 80%; margin-top: 24px; margin-left: -10px;">
 </template>
 <template v-slot:right>
 <div>
@@ -494,19 +520,19 @@ background: /background.png
 
 <style>
 .slidev-code {
-  font-size: 0.9em !important;
+  font-size: 1.1rem !important;
 }
 </style>
 ```sql
-WHERE age >= 20 AND (city = 'Shinjuku' OR city = 'Yokohama')
+WHERE age >= 20 AND (city = 'Hiroshima' OR city = 'Kure')
 ```
-↓
+<div style="text-align: center; font-size: 1.2em;">⬇︎</div>
 ```
 condition → AND ─┬─ (age >= 20)
                  │
-                 └─ OR ─┬─ (city = 'Shinjuku')
+                 └─ OR ─┬─ (city = 'Hiroshima')
                         │
-                        └─ (city = 'Yokohama')
+                        └─ (city = 'Kure')
 ```
 
 <br>
@@ -517,8 +543,7 @@ condition → AND ─┬─ (age >= 20)
 </CustomTwoCols>
 
 <!-- スピーカーノート：
-パーサにも色々なアルゴリズムがありますが、
-再帰的に処理できるように、このKeiPyDBでは再帰下降パーサという、一番シンプルなアルゴリズムを使っています。
+
 -->
 ---
 background: /background.png
@@ -528,7 +553,7 @@ background: /background.png
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
-<img src="/planner.png" alt="Query Planner diagram" style="width: 100%; height: auto; margin-top: 18px; margin-left: -20px;">
+<img src="/planner.png" alt="Parser diagram" style="width: auto; height: 80%; margin-top: 24px; margin-left: -10px;">
 </template>
 <template v-slot:right>
 <div>
@@ -538,12 +563,22 @@ background: /background.png
 # Query Planner (実行計画)
 
 ## ASTを受け取って、実行方法を選択
+<br>
 
-```
-SELECT
-├─ columns: [id, name]
-├─ table: users
-└─ condition: name = 'Alice'
+<style>
+.slidev-code {
+  font-size: 1.2rem !important;
+}
+</style>
+
+```python
+ProjectPlan(
+    fields=['id', 'name'],
+    SelectPlan(
+        predicate="name='Alice'",
+        TablePlan('users')
+    )
+)
 ```
 
 
@@ -570,7 +605,7 @@ background: /background.png
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
-<img src="/executor.png" alt="Query Executor diagram" style="width: 100%; height: auto; margin-top: 18px; margin-left: -20px;">
+<img src="/executor.png" alt="Parser diagram" style="width: auto; height: 80%; margin-top: 24px; margin-left: -10px;">
 </template>
 <template v-slot:right>
 <div>
@@ -578,13 +613,29 @@ background: /background.png
 <br>
 
 # Query Executor (実行エンジン)
-## 実行計画に従って、実際にデータを取得する
 
-実行計画（前スライドから）：
-1. テーブル`users`をフルスキャン
-2. 各レコードの`name`をチェック
-3. `name`が`'Alice'`のレコードを抽出
-4. `id`と`name`を返す
+<style>
+.slidev-code {
+  font-size: 1.0rem !important;
+}
+</style>
+
+## 1️⃣ Plan（実行計画）を受け取る
+<br>
+
+## 2️⃣ Scan（実行オブジェクト）を作って、
+```python
+TableScan('users')        # テーブルから1行読む
+SelectScan("name='Alice'") # 条件に合うか確認
+ProjectScan(['id','name']) # 必要な列だけ取り出す
+```
+<br>
+
+## 3️⃣ レコードを1行ずつ処理して、結果を返す
+
+<br>
+
+### {id: 258, name: 'Alice'} 
 
 </div>
 </template>
@@ -594,180 +645,39 @@ background: /background.png
 background: /background.png
 ---
 
-<!-- Page 14.5 SQLクエリ実行フロー（アニメーション） -->
-
-# SQLクエリ実行フロー
-
-<div class="walking-rabbit">
-  <div class="carrot">🥕</div>
-  <div class="rabbit">🐰</div>
-</div>
-
-<div class="process-steps">
-  <div class="step-marker step-1">📝 SQL Query</div>
-  <div class="step-marker step-2">🔍 Parser</div>
-  <div class="step-marker step-3">📋 Planner</div>
-  <div class="step-marker step-4">⚙️ Executor</div>
-  <div class="step-marker step-5">📊 Result</div>
-</div>
-
-<div class="query-example">
-  <div class="sql-text">`SELECT id, name FROM users WHERE name = 'Alice'`</div>
-</div>
-
-<style>
-.walking-rabbit {
-  position: relative;
-  height: 100px;
-  margin: 2rem 0;
-  overflow: hidden;
-}
-
-.carrot {
-  position: absolute;
-  font-size: 2.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  animation: carrotRun 8s ease-in-out forwards;
-}
-
-.rabbit {
-  position: absolute;
-  font-size: 2.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  animation: rabbitChase 8s ease-in-out forwards;
-}
-
-.process-steps {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 2rem 1rem;
-  position: relative;
-}
-
-.step-marker {
-  font-size: 1.1rem;
-  font-weight: 600;
-  text-align: center;
-  padding: 1rem;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  opacity: 0.3;
-  transition: all 0.5s ease;
-}
-
-.step-marker.active {
-  opacity: 1;
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.1);
-}
-
-.query-example {
-  text-align: center;
-  margin-top: 2rem;
-  opacity: 0;
-  animation: fadeIn 1s ease-out 6s forwards;
-}
-
-.sql-text {
-  font-size: 1rem;
-  background: #f0f0f0;
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
-  display: inline-block;
-  font-family: 'Courier New', monospace;
-  color: #333;
-}
-
-@keyframes carrotRun {
-  0% {
-    left: -100px;
-    transform: translateY(-50%) rotate(0deg);
-  }
-  25% {
-    left: 25%;
-    transform: translateY(-50%) rotate(90deg);
-  }
-  50% {
-    left: 45%;
-    transform: translateY(-50%) rotate(180deg);
-  }
-  75% {
-    left: 65%;
-    transform: translateY(-50%) rotate(270deg);
-  }
-  100% {
-    left: calc(100% - 100px);
-    transform: translateY(-50%) rotate(360deg);
-  }
-}
-
-@keyframes rabbitChase {
-  0% {
-    left: -200px;
-    transform: translateY(-50%) scaleX(1);
-  }
-  12.5% {
-    transform: translateY(-50%) scaleX(1) translateY(-10px);
-  }
-  25% {
-    left: 15%;
-    transform: translateY(-50%) scaleX(1) translateY(0px);
-  }
-  37.5% {
-    transform: translateY(-50%) scaleX(1) translateY(-10px);
-  }
-  50% {
-    left: 35%;
-    transform: translateY(-50%) scaleX(1) translateY(0px);
-  }
-  62.5% {
-    transform: translateY(-50%) scaleX(1) translateY(-10px);
-  }
-  75% {
-    left: 55%;
-    transform: translateY(-50%) scaleX(1) translateY(0px);
-  }
-  87.5% {
-    transform: translateY(-50%) scaleX(1) translateY(-10px);
-  }
-  100% {
-    left: calc(100% - 200px);
-    transform: translateY(-50%) scaleX(1) translateY(0px);
-  }
-}
-
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-/* ステップハイライト用のアニメーション */
-.step-1 { animation: highlight 1s ease-out 1s forwards; }
-.step-2 { animation: highlight 1s ease-out 2.5s forwards; }
-.step-3 { animation: highlight 1s ease-out 4s forwards; }
-.step-4 { animation: highlight 1s ease-out 5.5s forwards; }
-.step-5 { animation: highlight 1s ease-out 7s forwards; }
-
-@keyframes highlight {
-  0% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.1); }
-  100% { opacity: 0.8; transform: scale(1.05); }
-}
-</style>
-
----
-background: /background.png
----
-
 <!-- Page 15 デモ -->
+<br>
+<br>
 
 # デモ: SELECT文の実行
 
 <!-- スピーカーノート：
 
+
+-->
+---
+background: /background.png
+---
+
+<!-- Page 15 デモ -->
+<br>
+<br>
+
+# SELECT文の処理のまとめ
+## 1️⃣ SQL文をトークンに分解（Lexer）
+## 2️⃣ トークンからASTを作る（Parser）
+## 3️⃣ ASTから実行計画を立てる（Planner）
+## 4️⃣ テーブルを1行ずつ読んで条件チェック（Executor）
+## 5️⃣ 必要なカラムだけ取り出して結果を返す
+<br>
+✅ Aliceのレコードを取得できました！
+<br>
+<br>
+🤔 でも、ちょっと待って...
+そもそもAliceのデータはどこから来たの？
+
+<!-- スピーカーノート：
+→ データが永続化されていないと、取り出せません。
 
 -->
 
@@ -780,12 +690,7 @@ background: /background.png
 <br>
 <br>
 
-
 # データの永続化
-
-
-
-## 次は、
 <br>
 <br>
 
@@ -802,11 +707,8 @@ INSERT INTO users (id, name) VALUES (259, 'Bob');
 
 <br>
 
-## で、ディスクに書き込むしくみを見ていきます。
-
 <!-- スピーカーノート：
-SELECTの処理を見てきました。でも、そもそもデータはどこから来るのでしょうか？
-ディスクに保存して、データを永続化しないといけません。次はディスクへの書き込みの話です。
+INSERT 文で、データをディスクに書き込むところを見ていきます。
 -->
 
 ---
@@ -818,20 +720,22 @@ background: /background.png
 <br>
 
 
-# そうだ、ディスクに書き込もう！
+# ディスクに書き込もう！
 ## でも、、、あれ？🤔
 <br>
 
-## ・毎回ディスクに書き込む？それって遅いよね
+
+## ・どこに書き込むか？
 <br>
 
-## ・書き込み位置はどこ？
+## ・いつ書き込むか？
 <br>
+
 
 ## ・他の人も同時に書き込んでいるかも？
 <br>
 
-## ・途中で電源が落ちてしまったらどうなるの？
+## ・途中で電源が落ちてしまったら？
 
 ---
 background: /background.png
@@ -841,16 +745,59 @@ background: /background.png
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
-<img src="/buffer.png" alt="Buffer diagram" style="width: 100%; height: auto; margin-top: 18px; margin-left: -20px;">
+<img src="/buffer.png" alt="Parser diagram" style="width: auto; height: 80%; margin-top: 24px; margin-left: -10px;">
 </template>
 <template v-slot:right>
 <div>
 <br>
 <br>
 
-# 毎回ディスクに書く？遅いよね。
+# Buffer Manager (バッファマネージャー)
+<br>
 
-## そこで、メモリ上で作業して、後からディスクに書き込みます
+## ディスクアクセスは、メモリアクセスに比べて遅い。
+## DBは大量のデータを扱いたい。でも高速に処理したい
+<br>
+<div style="text-align: center; font-size: 1.2em;">⬇︎</div>
+
+## OSにまかせず、RDBMS側でメモリ管理する
+<br>
+
+## 編集は、メモリ上のバッファで行う
+## 都度書き込まず、最後にまとめてディスクに書き込む
+
+
+</div>
+</template>
+</CustomTwoCols>
+
+---
+background: /background.png
+---
+<!-- Page 19 ファイルマネジャー -->
+
+<CustomTwoCols :leftRatio="30">
+<template v-slot:left>
+<img src="/file_manager.png" alt="Parser diagram" style="width: auto; height: 80%; margin-top: 24px; margin-left: -10px;">
+</template>
+<template v-slot:right>
+<div>
+<br>
+<br>
+
+# File Manager (ファイルマネージャー)
+
+## OSのファイルシステムとやりとり
+<br>
+
+## ファイル情報の取得
+<br>
+
+## ブロック単位での読み書き
+<br>
+
+## ブロックの追加
+<br>
 
 </div>
 </template>
@@ -862,33 +809,21 @@ background: /background.png
 
 <!-- Page 19 ブロック管理 -->
 
-<CustomTwoCols :leftRatio="40">
+<CustomTwoCols :leftRatio="35">
 <template v-slot:left>
-<div style="font-family: monospace; font-size: 0.9rem; line-height: 1.2; margin-top: 50px;">
-users.tbl<br>
-┌─────────────┐<br>
-│  Block 0    │ 256バイト<br>
-│  ・id=255   │<br>
-│  ・Alice    │ ← 既存レコード<br>
-│             │<br>
-│  （空き）    │ ← ここに書ける<br>
-│  （空き）    │<br>
-├─────────────┤<br>
-│  Block 1    │ （未使用）<br>
-└─────────────┘
-</div>
+<img src="/block.png" alt="Block diagram" style="width: auto; height: 89%; margin-top: 15px;">
 </template>
 <template v-slot:right>
 <div>
 <br>
 <br>
 
-# 書き込み位置はどこ？
-- ディスク上のデータは、ブロックという単位で管理
-- ブロックは、一定のサイズ（例えば256バイト）で区切られたデータの単位
--  空きブロックを探して(メモリに読み込んで)、そこに書き込みの指定をする(メモリ上)
+# どこに書き込むか？
 
-<br>
+- ディスク上のデータは、ブロックという単位で管理
+- ブロックは、ディスクを固定長に区切った領域
+- 読み書きはブロック単位で行う
+
 <br>
 
 <style>
@@ -900,8 +835,9 @@ users.tbl<br>
 ```sql 
 INSERT INTO users (id, name) VALUES (259, 'Bob');
 ```
+<br>
 
-## 📝 でBobを追加すると
+## Bobを追加すると...
 Block 0の空きスペースに `id=259, Bob` が入る
 
 </div>
@@ -912,8 +848,6 @@ Block 0の空きスペースに `id=259, Bob` が入る
 ディスク上のデータは、ブロックという単位で管理します。
 ブロックは、一定のサイズ（例えば256バイト）で区切られたデータの単位です。
 
-今日は時間がないので、詳しい話はできませんが、実は、このブロック単位の管理があるからこそ、
-インデックスが効果的に働きます。
 ブロック0には、Aliceのレコードがあり、
 今からBobのレコードも同じBlock 0に書き込まれます。
 今回は1ブロック256バイトとしていますが、実際のRDBMSではもっと大きくて、
@@ -921,32 +855,43 @@ Block 0の空きスペースに `id=259, Bob` が入る
 これは、OSやファイルシステムのブロックサイズに合わせることで、
 I/O効率を最適化するためです。
 -->
+
+
+
 ---
 background: /background.png
 ---
 
 <!-- Page 20 トランザクション -->
+
+<CustomTwoCols :leftRatio="35">
+<template v-slot:left>
+<img src="/transaction.png" alt="Transaction diagram" style="width: auto; height: 84%; margin-top: 14px;">
+</template>
+<template v-slot:right>
+<div>
 <br>
 <br>
 
 
-# 他の人も同時に書き込んでたらどうしよう？
-
-## トランザクションで同時書き込みを制御する
-
-## 問題：同時に編集
-<br>
-
-## ユーザーA：Block 0にBob追加
-## ユーザーB：Block 0にCarol追加
-## → データが壊れる！😱
+# 誰かが同時に書き込んでいるかも？
 
 <br>
+
+## ⚠️ 同時書き込み
+ユーザーA：Block 0にBob追加  
+ユーザーB：Block 0にCarol追加  
+→ データが壊れる！😱
+
 <br>
 
-## 順番に処理
-## ユーザーA：Block 0をロック → 編集 → 解除
-## ユーザーB：（待機） → 編集
+## **トランザクションで制御**
+ユーザーA：Block 0をロック → 編集 → 解除  
+ユーザーB：（待機） → 編集
+
+</div>
+</template>
+</CustomTwoCols>
 
 
 <!-- スピーカーノート：
@@ -964,49 +909,86 @@ background: /background.png
 
 
 # 途中で電源が落ちてしまったら？
-## WAL（Write-Ahead Log）で障害から復旧
-## データより先にログを書き込む
+<br>
 
-## ログ：「Bob追加予定」→ ディスクへ
-## メモリ：Bob追加
-## 💥 停電！
-## 再起動：ログを見る → Bobを復元！😊
+## WAL（Write-Ahead Log）
+**データより先にログを書き込む**
 
-- ログあり → 復元
-- ログなし → なかったことに
+"Bobのレコード追加"という更新ログを先にディスクに書き込む   
+変更されたバッファをディスクに書き込む(実際にBobのレコードが追加される)   
+ログにcommitログが書き込まれる(追加完了)   
+<div style="text-align: center; font-size: 1.2em;">⬇︎</div>
+クラッシュした時に、ログがあるけどコミットされていなければ、ロールバックする   
+コミットログがある場合は、ディスクへの保存が保証されている
+
 
 <!-- スピーカーノート：
-メモリは高速ですが、電源が切れると内容が消えます。
+データベースの永続性を保証するために、途中で電源が落ちてしまった場合の対策が必要です。
 そこで、WAL（Write-Ahead Log）という仕組みを使います。
+WALでは、データの変更をディスクに書き込む前に、まずログに記録します。
 
-データを書く前に、必ず「何をするか」をログに記録。
-ログはすぐにディスクに書きます。
-これで、ログから復旧できます。
 -->
 ---
 background: /background.png
 ---
 
 <!-- Page 22 最終的にディスクへ -->
+
+<CustomTwoCols :leftRatio="50">
+<template v-slot:left>
+<div>
 <br>
 <br>
 
 
-# ディスクへ
+# ディスクに書き込み
 
-## 1. メモリ上で編集 **Bob追加（まだメモリだけ）**
+## ブロックをスロットに分割する
+## スロットのサイズは
+## テーブルのスキーマ情報から計算する
 <br>
 
-## 2. 変更時にWALログ記録 **「Bob追加する」→ ログに記録**
+<div class="large-sql">
+
+```sql
+CREATE TABLE users (id int, name varchar(10))
+```
+
+</div>
+
+<style scoped>
+.large-sql pre code {
+  font-size: 1.1rem !important;
+}
+</style>
+<br>
 <br>
 
-## 3. COMMIT実行 **変更されたバッファをディスクへ**
+## スロットの最初の領域は状態フラグ
+## 01:使用中なので、次の空きスロットに書き込む
+
+</div>
+</template>
+<template v-slot:right>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 <br>
 
-## 4. コミットログ記録 **「Commit完了」→ ログに記録**
-<br>
 
-## 5. バッファをクリーンな状態に
+<div style="text-align: center;">
+
+## スロット内のレコードレイアウト
+
+</div>
+<img src="/slot.png" alt="Slot layout diagram" style="width: auto; height: 35%;">
+</template>
+</CustomTwoCols>
 
 <!-- スピーカーノート：
 最終的なディスク書き込みの流れです。
@@ -1030,12 +1012,38 @@ background: /background.png
 # デモ: INSERT文の実行
 
 
+---
+background: /background.png
+---
+<!-- Page 23 ヘックスビュワー -->
+<br>
+<br>
+
+# デモ: ヘックスビュワーでの確認
+
+---
+background: /background.png
+---
+<!-- Page 23 スクショで確認 -->
+<br>
+<br>
+ 
+
+<img src="/endian.png" style="width: auto; height: 45%;" />
+
+<img src="/slot2.png" style="width: 70%; height: auto; margin-left: 40px;" />
+
+<!-- スピーカーノート：
+
+-->
 
 ---
 background: /background.png
 ---
 
 <!-- Page 24 ディスク書き込みのまとめ -->
+<br>
+<br>
 
 # ディスク書き込みのまとめ
 1. **メモリ上で編集**: データをバッファに書き込む
@@ -1052,19 +1060,21 @@ background: /background.png
 ---
 
 <!-- Page 25 エンディアン -->
-# エンディアンについて
-## エンディアンとは、バイトの並び順のこと
-## 258と259を使った理由がエンディアン
-## 258と259は、16進数で0x0102と0x0103
-## でも、ディスクには02 01と03 01と書かれる
-## これはリトルエンディアンで書き込んでいるから
+<br>
+<br>
 
-## これはPythonのstructモジュールを使って、意図的に逆に書き込んでいます
-```python
-# 例: 16進数で0x0102をバイト列に変換
-import struct
-data = struct.pack('<i', 258)  
-```
+# Int型の並び順が逆になってる
+
+<div style="width: 40%; margin: 0;">
+<TransparentTable :items="[
+  { label: '10進数', value: '16進数' },
+  { label: '258', value: '0x0102' },
+  { label: '259', value: '0x0103' }
+]" :showOuterBorder="true" :showRowLines="true" />
+</div>
+<br>
+
+<img src="/endian.png" style="width: auto; height: 30%;" />
 
 
 <!-- スピーカーノート：
@@ -1077,31 +1087,82 @@ data = struct.pack('<i', 258)
 これはPythonのstructモジュールを使って、意図的に逆に書き込んでいます。
 -->
 
+
 ---
 background: /background.png
 ---
-<-!-- Page 26 エンディアン2 -->
 
-# Pythonのstructモジュール
-## Pythonでは、structモジュールを使ってバイト列の変換ができます
+<!-- Page 26 エンディアン1 -->
+<br>
+<br>
+
+
+# エンディアン
+
+## バイト列の並び順の違い
+<br>
+
+## **リトルエンディアン（Intel, AMD, Apple Silicon）**
+### 数値の最下位バイトがバイト列の先頭 (アドレスの低い方) → 258 (0x0102) は `02 01` として保存
+<br>
+
+## **ビッグエンディアン（ネットワーク標準）**
+### 数値の最上位バイトがバイト列の先頭 (アドレスの低い方) → 258 (0x0102) は `01 02` として保存
+<br>
+
+## なぜ重要？
+<br>
+
+### - 異なるシステム間でバイナリデータをやり取りする時
+### - ネットワーク通信（ビッグエンディアン）
+### - バイナリファイルをデバッグする時
+
+---
+background: /background.png
+---
+<!-- Page 26 エンディアン2 -->
+<br>
+<br>
+
+# Pythonのstructモジュールを使う
+
+<style>
+.slidev-code {
+  font-size: 1.2rem !important;
+}
+</style>
+
 ```python
 import struct
 # 例: 16進数で0x0102をバイト列に変換
 data = struct.pack('<i', 258)  # リトルエンディアンで書き込む
 ```
+<br>
 
-## `<i`はリトルエンディアン
-## `>i`はビッグエンディアン
-## `!i`はネットワークバイトオーダー（ビッグエンディアン）
-
+<div style="width: 60%; margin: 0;">
+<TransparentTable :items="[
+  { label: '<i', value: 'リトルエンディアン' },
+  { label: '>i', value: 'ビッグエンディアン' },
+  { label: '!i', value: 'ネットワークバイトオーダー' }
+]" :showOuterBorder="true" :showRowLines="true" />
+</div>
 
 
 ---
 background: /background.png
 ---
 
-<!-- Page27 デモ -->
-# デモ: エンディアンの確認
+<!-- Page 26 INSERTのまとめ -->
+<br>
+<br>
+
+# INSERTのまとめ
+1. メモリ上で編集
+2. Write Ahead Log ログ記録
+3. COMMIT実行
+4. コミットログ記録
+5. エンディアンも気にしつつ、
+6. 空きブロックの空きスロットにレコードを書き込む
 
 
 ---
@@ -1109,9 +1170,23 @@ background: /background.png
 ---
 
 <!-- Page 26 まとめ -->
+<br>
+<br>
 
 # まとめ
-## KeiPyDBを使って、RDBMSの内部動作を追ってきました
+
+## SQLの1行の裏側で、たくさんの仕組みが動いてる！
+
+<br>
+
+### まだまだ話したいことが...
+- トランザクションの詳細
+- インデックスの仕組み
+
+<br>
+
+## 次は
+#### ブラウザを自作して、KeiPyDBと繋げてみたい！
 
 ---
 background: /background.png

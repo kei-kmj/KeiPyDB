@@ -1,5 +1,5 @@
 <template>
-  <div class="grid gap-4 h-full" :class="gridClass">
+  <div class="grid gap-4 h-full" :class="gridClass" :style="marginStyle">
     <div :class="leftColClass" class="flex flex-col justify-start items-start">
       <slot name="left" />
     </div>
@@ -24,10 +24,14 @@ interface Props {
   imageSrc?: string
   imageAlt?: string
   imageClass?: string
+  leftMargin?: number // 左側のマージン調整（-16 ~ 16）
+  rightMargin?: number // 右側のマージン調整（-16 ~ 16）
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  leftRatio: 75
+  leftRatio: 75,
+  leftMargin: -20,
+  rightMargin: -50
 })
 
 // グリッドのカラム数を計算（最小公倍数的なアプローチ）
@@ -35,7 +39,9 @@ const gridClass = computed(() => {
   const ratio = props.leftRatio
   if (ratio === 20) return 'grid-cols-5'
   if (ratio === 30) return 'grid-cols-10'
+  if (ratio === 35) return 'grid-cols-20'
   if (ratio === 40) return 'grid-cols-5'
+  if (ratio === 50) return 'grid-cols-2'
   if (ratio === 75) return 'grid-cols-4'
   if (ratio === 80) return 'grid-cols-5'
   if (ratio === 70) return 'grid-cols-10'
@@ -48,7 +54,9 @@ const leftColClass = computed(() => {
   const ratio = props.leftRatio
   if (ratio === 20) return 'col-span-1'
   if (ratio === 30) return 'col-span-3'
+  if (ratio === 35) return 'col-span-7'
   if (ratio === 40) return 'col-span-2'
+  if (ratio === 50) return 'col-span-1'
   if (ratio === 75) return 'col-span-3'
   if (ratio === 80) return 'col-span-4'
   if (ratio === 70) return 'col-span-7'
@@ -61,7 +69,9 @@ const rightColClass = computed(() => {
   const ratio = props.leftRatio
   if (ratio === 20) return 'col-span-4'
   if (ratio === 30) return 'col-span-7'
+  if (ratio === 35) return 'col-span-13'
   if (ratio === 40) return 'col-span-3'
+  if (ratio === 50) return 'col-span-1'
   if (ratio === 75) return 'col-span-1'
   if (ratio === 80) return 'col-span-1'
   if (ratio === 70) return 'col-span-3'
@@ -69,6 +79,14 @@ const rightColClass = computed(() => {
   if (ratio === 66) return 'col-span-1'
   return 'col-span-1' // デフォルト
 })
+
+const marginStyle = computed(() => {
+  return {
+    marginLeft: `${props.leftMargin}px`,
+    marginRight: `${props.rightMargin}px`
+  }
+})
+
 </script>
 
 <style scoped>
