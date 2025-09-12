@@ -1,4 +1,3 @@
-
 from db.record.layout import Layout
 from db.record.schema import Schema
 from db.record.table_scan import TableScan

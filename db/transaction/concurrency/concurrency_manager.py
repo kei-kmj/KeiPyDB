@@ -1,4 +1,3 @@
-
 from db.constants import LockType
 from db.file.block_id import BlockID
 from db.transaction.concurrency.lock_table import LockTable

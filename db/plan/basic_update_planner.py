@@ -18,6 +18,7 @@ from db.transaction.transaction import Transaction
 
 
 class BasicUpdatePlanner(UpdatePlanner, ABC):
+    AFFECTED = 1
 
     def __init__(self, metadata_manager: MetadataManager):
         self.metadata_manager = metadata_manager
@@ -81,7 +82,7 @@ class BasicUpdatePlanner(UpdatePlanner, ABC):
             scan.set_value(field_name, value)
 
         scan.close()
-        return 1
+        return self.AFFECTED
 
     def execute_create_table(self, data: CreateTable, transaction: Transaction) -> int:
         """テーブルを作成する"""

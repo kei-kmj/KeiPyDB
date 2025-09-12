@@ -49,11 +49,11 @@ class TablePlanner:
         return MultiBufferProductPlan(self.transaction, current, plan)
 
     def _make_index_select(self) -> Optional[Plan]:
-        for filed_name, index_info in self.indexes.items():
-            value = self.predicate.equates_with_constant(filed_name)
+        for field_name, index_info in self.indexes.items():
+            constant = self.predicate.equates_with_constant(field_name)
 
-            if value is not None:
-                return IndexSelectPlan(self.my_plan, index_info, value)
+            if constant:
+                return IndexSelectPlan(self.my_plan, index_info, constant)
 
         return None
 

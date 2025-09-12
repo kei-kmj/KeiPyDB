@@ -46,12 +46,12 @@ class ProductPlan(Plan, ABC):
         # スキーマを一度だけ計算して保持
         if self._schema is None:
             self._schema = Schema()
-            
+
             # 左スキーマのフィールドを最初に追加
             for field_name in self.plan_left.schema().fields:
                 field_info = self.plan_left.schema().info[field_name]
                 self._schema.add_field(field_name, field_info.field_type, field_info.length)
-            
+
             # 右スキーマのフィールドを衝突検出と共に追加
             for field_name in self.plan_right.schema().fields:
                 if field_name not in self._schema.fields:
@@ -62,5 +62,5 @@ class ProductPlan(Plan, ABC):
                     prefixed_name = f"right_{field_name}"
                     field_info = self.plan_right.schema().info[field_name]
                     self._schema.add_field(prefixed_name, field_info.field_type, field_info.length)
-        
+
         return self._schema

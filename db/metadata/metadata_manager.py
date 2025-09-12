@@ -1,4 +1,3 @@
-
 from db.metadata.index_info import IndexInfo
 from db.metadata.index_manager import IndexManager
 from db.metadata.stat_info import StatInfo

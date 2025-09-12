@@ -1,4 +1,3 @@
-
 from db.query.scan import Scan
 
 

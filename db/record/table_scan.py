@@ -1,6 +1,6 @@
 from abc import ABC
 
-from typing_extensions import Optional
+from typing import Optional
 
 from db.constants import FieldType
 from db.file.block_id import BlockID

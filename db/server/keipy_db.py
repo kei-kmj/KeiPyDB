@@ -1,4 +1,4 @@
-from typing_extensions import Optional
+from typing import Optional
 
 from db.buffer.buffer_manager import BufferManager
 from db.file.file_manager import FileManager

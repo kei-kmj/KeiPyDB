@@ -28,9 +28,9 @@ class ProductScan(Scan, ABC):
             return self.scan_right.get_int(field_name[6:])
         else:
             available_fields = []
-            if hasattr(self.scan_left, 'get_fields'):
+            if hasattr(self.scan_left, "get_fields"):
                 available_fields.extend(self.scan_left.get_fields())
-            if hasattr(self.scan_right, 'get_fields'):
+            if hasattr(self.scan_right, "get_fields"):
                 available_fields.extend([f"right_{f}" for f in self.scan_right.get_fields()])
             raise ValueError(f"Field '{field_name}' not found. Available fields: {available_fields}")
 
@@ -45,9 +45,9 @@ class ProductScan(Scan, ABC):
             return self.scan_right.get_string(field_name[6:])
         else:
             available_fields = []
-            if hasattr(self.scan_left, 'get_fields'):
+            if hasattr(self.scan_left, "get_fields"):
                 available_fields.extend(self.scan_left.get_fields())
-            if hasattr(self.scan_right, 'get_fields'):
+            if hasattr(self.scan_right, "get_fields"):
                 available_fields.extend([f"right_{f}" for f in self.scan_right.get_fields()])
             raise ValueError(f"Field '{field_name}' not found. Available fields: {available_fields}")
 
@@ -62,9 +62,9 @@ class ProductScan(Scan, ABC):
             return self.scan_right.get_value(field_name[6:])
         else:
             available_fields = []
-            if hasattr(self.scan_left, 'get_fields'):
+            if hasattr(self.scan_left, "get_fields"):
                 available_fields.extend(self.scan_left.get_fields())
-            if hasattr(self.scan_right, 'get_fields'):
+            if hasattr(self.scan_right, "get_fields"):
                 available_fields.extend([f"right_{f}" for f in self.scan_right.get_fields()])
             raise ValueError(f"Field '{field_name}' not found. Available fields: {available_fields}")
 

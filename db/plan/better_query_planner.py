@@ -23,7 +23,7 @@ class BetterQueryPlanner(QueryPlanner, ABC):
         plan_list: list[Plan] = []
         for table_name in query_data.tables:
             view_def = self.metadata_manager.get_view_definition(table_name, transaction)
-            if view_def is not None:
+            if view_def:
                 parser = Parser(view_def)
 
                 view_query = parser.query()

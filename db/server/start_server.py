@@ -14,7 +14,6 @@ class StartServer:
         db = KeiPyDB(dir_name)
 
         print("Database server ready")
-        # シグナルハンドラの登録
 
         try:
             planner = db.get_planner()
@@ -45,7 +44,6 @@ class StartServer:
                 # SELECT
                 tx_select = db.new_transaction()
                 select_sql = "SELECT id, name FROM users WHERE name = 'Alice';"
-                print(f"Executing: {select_sql}")
                 plan = planner.create_query_plan(select_sql, tx_select)
                 scan = plan.open()
 
@@ -55,7 +53,6 @@ class StartServer:
                 scan.close()
                 tx_select.commit()
 
-
                 # INSERT
                 tx_insert2 = db.new_transaction()
                 insert_sql2 = "INSERT INTO users (id, name) VALUES (259, 'Bob');"
@@ -63,6 +60,14 @@ class StartServer:
                 rows_affected2 = planner.execute_update(insert_sql2, tx_insert2)
                 print(f"Rows affected: {rows_affected2}")
                 tx_insert2.commit()
+
+                # DELETE
+                tx_delete = db.new_transaction()
+                delete_sql = "DELETE FROM users WHERE id = 259;"
+                print(f"Executing: {delete_sql}")
+                rows_deleted = planner.execute_update(delete_sql, tx_delete)
+                print(f"Rows deleted: {rows_deleted}")
+                tx_delete.commit()
 
                 # tx_insert2 = db.new_transaction()
                 # insert_sql2 = "INSERT INTO test (id) VALUES ('002')"
@@ -87,7 +92,7 @@ class StartServer:
                 # 結果を表示
                 while scan.next():
                     print(f"id = {scan.get_int('id')}, name = {scan.get_string('name')}")
-                
+
                 scan.close()
                 tx3.commit()
 
@@ -131,7 +136,7 @@ class StartServer:
                 # scan_join.close()
                 # tx_join.commit()
                 # print(f"Total records: {record_count}")
-                
+
                 # select_sql_s = "SELECT id FROM sample"
                 # print(f"Executing: {select_sql_s}")
                 # plan_s = planner.create_query_plan(select_sql_s, tx3)

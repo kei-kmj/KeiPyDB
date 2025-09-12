@@ -69,7 +69,7 @@ class Lexer:
         """SQL文をトークンに分割"""
         token_pattern = r"[a-zA-Z_][a-zA-Z_0-9]*|'(?:[^']|'')*'|\d+(?:\.\d+)?|[=,()<>*+-/;]|\s+|."
         tokens = re.findall(token_pattern, sql)
-        
+
         # 文字列リテラル以外のトークンのみ小文字化
         processed_tokens = []
         for token in tokens:
@@ -80,7 +80,7 @@ class Lexer:
                 else:
                     # その他のトークンは小文字化
                     processed_tokens.append(token.lower())
-        
+
         return processed_tokens
 
     def match_delimiter(self, delimiter: str) -> bool:

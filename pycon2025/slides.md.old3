@@ -1,0 +1,1244 @@
+<style>
+/* グローバルフォントサイズの統一設定 */
+.slidev-layout {
+  font-size: 1.1rem !important;
+}
+.slidev-layout h1 {
+  font-size: 2.0em !important;
+  line-height: 1.2 !important;
+  margin: 2.5rem 0 1rem 0 !important;
+}
+.slidev-layout h2 {
+  font-size: 1.4em !important;
+  line-height: 1.2 !important;
+  margin: 1.2rem 0 0.8rem 0 !important;
+}
+.slidev-layout h3 {
+  font-size: 1.3em !important;
+  line-height: 1.1 !important;
+  margin: 1rem 0 0.6rem 0 !important;
+}
+.slidev-layout p {
+  font-size: 1.3em !important;
+  line-height: 1.5 !important;
+}
+.slidev-layout ul li, .slidev-layout ol li {
+  font-size: 1.3em !important;
+  line-height: 1.5 !important;
+}
+.slidev-layout pre code {
+  font-size: 0.95em !important;
+  line-height: 1.4 !important;
+}
+.slidev-layout table {
+  font-size: 1em !important;
+}
+.slidev-layout td, .slidev-layout th {
+  font-size: 0.95em !important;
+  line-height: 1.4 !important;
+}
+/* コード内のインラインコード */
+.slidev-layout code:not(pre code) {
+  font-size: 0.9em !important;
+}
+
+/* 赤文字スタイル */
+.red-uppercase {
+  color: #DC143C !important;
+  font-weight: bold !important;
+}
+
+/* オレンジ文字スタイル */
+.orange-uppercase {
+  color: #FF6600 !important;
+  font-weight: bold !important;
+}
+</style>
+
+<div class="absolute inset-0">
+  <img src="/background.png" class="w-full h-full object-cover" />
+</div>
+<!-- タイトル -->
+
+# Python製RDBMSで理解する、データベースのピース
+
+## 〜 コードのステップ実行とヘックスビュアーで内部動作を追ってみよう 〜
+
+
+<br>
+
+## PyCon JP 2025
+
+## k-kamijo
+
+<!-- スピーカーノート：
+〜の発表をしたいと思います。よろしくお願いします
+-->
+---
+
+<!-- Page 1 自己紹介-->
+
+<CustomTwoCols :leftRatio="60">
+<template v-slot:left>
+
+
+# 自己紹介
+
+<br>
+
+<div style="width: 100%;">
+<TransparentTable :items="[
+  { label: '名　前：', value: 'k-kamijo' },
+  { label: 'Github：', value: '@kei-kmj' },
+  { label: '所　属：', value: '株式会社DeltaX' },
+  { label: '趣　味：', value: '輪行<br>(電車旅 & サイクリング)' }
+]" />
+</div>
+</template>
+<template v-slot:right>
+<div class="flex justify-center items-center h-full">
+  <img src="/tokageusagi.png" class="w-64 h-64 rounded-full object-cover" />
+</div>
+</template>
+</CustomTwoCols>
+
+---
+background: none
+---
+
+<style scoped>
+.slidev-layout::before {
+  display: none !important;
+}
+</style>
+
+<div style="background-color: #f5f5f5; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1;"></div>
+
+<!-- Page 2 塾選紹介-->
+
+<img src="/bestjuku.png" style="position: absolute; top: 20px; left: 0; right: 0; bottom: 30px; width: 100%; height: calc(100% - 30px); object-fit: contain;" />
+
+<!--
+スピーカーノート：
+デルタxという会社名は、あまり聞きなれないと思いますが、
+塾選という学習塾検索サイトを運営している会社です。
+-->
+---
+background: none
+---
+
+<style scoped>
+.slidev-layout::before {
+  display: none !important;
+}
+</style>
+
+<div style="background-color: #f5f5f5; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1;"></div>
+
+<!-- Page 3 CMスクショ-->
+
+<img src="/cm.png" style="position: absolute; top: 0; left: 0; right: 0; bottom: 30px; width: 100%; height: calc(100% - 30px); object-fit: contain;" />
+<!--
+スピーカーノート：
+関東圏にお住まいの方であれば、お笑い芸人のかが屋さんのCMを見たことがある方がいらっしゃるかもしれません。
+このCMのサービスの会社です。
+手前味噌ですが、このCMはYou Tubeで公開されていて、塾に関心がなくても面白いCMになっているので、ぜひ見てみてほしいです。
+-->
+
+---
+background: /background.png
+---
+
+<!-- Page 8 データベースとは -->
+
+# データベースとは
+## データを効率的に保存・検索・更新するためのシステム
+
+##   **データベースの種類**
+### 🍋 RDBMS → PostgreSQL, MySQL
+### 🍋 NoSQL → MongoDB, Redis
+### 🍋 グラフDB → Neo4j
+
+## **RDBMS(Relational Database Management System)**
+### 🍋データをリレーショナルなテーブルで管理
+### 🍋SQLで操作
+### 🍋ACID特性を保証（原子性・一貫性・隔離性・永続性）
+
+
+<!-- スピーカーノート：
+今日のテーマはRDBMSで、聴衆レベルをビギナーに設定しているので、
+データベースとは、の説明からさせてください。
+データベースとは〜
+データベースにもいろいろ種類があって、〜などがあります。
+
+その中で今日取り上げるRDBMSは、〜という特徴があります。
+-->
+
+---
+background: /background.png
+---
+<!-- Page 4 作ってみた -->
+
+<CustomTwoCols :leftRatio="66" imageSrc="/simpledb.jpg" imageAlt="Database Design and Implementation book cover" imageClass="w-92% h-92% object-contain relative translate-x-2 translate-y-8">
+  <template #left>
+
+
+# 自作RDBMS:KeiPyDBの紹介
+## [https://github.com/kei-kmj/KeiPyDB](https://github.com/kei-kmj/KeiPyDB)
+
+<style>
+.slidev-layout a {
+  color: #3b82f6 !important;
+}
+</style>
+
+## **「Database Design and Implementation: Second Edition 」** Edward Sciore (著)
+## JavaでRDBMSを実装していく教科書っぽい洋書
+
+<div style="margin-left: 15rem; font-size: 1.2rem;">⬇︎</div>
+
+<div style="margin-left: 10rem; font-size: 1.5rem;">
+Pythonで実装
+</div>
+  </template>
+</CustomTwoCols>
+
+<!-- スピーカーノート：
+今日使う、Python製RDBMSですが、これは自作しました。
+Database Design and Implementation という一般にSimpleDB本と呼ばれる書籍を参考にしてます。
+JavaでRDBMSを実装していく内容ですが、書籍を参考にPythonで実装しました。
+-->
+
+---
+background: /background.png
+---
+
+<!-- Page 5 KeiPyDBの機能 -->
+
+# KeiPyDBの機能
+
+<style scoped>
+.feature-list li {
+  font-size: 1.5rem !important;
+  line-height: 1.6 !important;
+}
+.feature-list h2 {
+  font-size: 1.8rem !important;
+}
+</style>
+
+<div class="grid grid-cols-2 gap-8 feature-list">
+<div class="ml-20">
+
+## SQL
+### 🍋 CREATE TABLE 
+### 🍋 INSERT
+### 🍋 SELECT
+### 🍋 UPDATE 
+### 🍋 DELETE
+### 🍋 WHERE
+### 🍋 CROSS JOIN
+
+</div>
+<div>
+
+## 機能
+### 🍋 トランザクション
+### 🍋 ハッシュインデックス
+### 🍋 Btreeインデックス
+
+</div>
+</div>
+
+
+
+<!-- スピーカーノート
+このRDBMSを使って話すことは、
+
+-->
+
+
+---
+background: /background.png
+---
+
+
+# 話すこと
+ 
+<br>
+
+## 🍋 SELECT文で欲しいレコードを取得するしくみ
+<br>
+
+<style>
+.slidev-code {
+  font-size: 1.2rem !important;
+  margin-top: -24px !important;
+}
+</style>
+
+```sql
+SELECT id, name FROM users WHERE name = 'Alice'   # id = 258, name = 'Alice'
+``` 
+<br>
+
+## 🍋 INSERT文でレコードをディスクに書き込むしくみ
+<br>
+
+```sql
+INSERT INTO users (id, name) VALUES (259, 'Bob')
+```
+
+<br>
+<br>
+
+### ※ なぜidが258と259なのかは、あとで説明します
+
+
+<!-- スピーカーノート：
+idは今は気にしなくてOK
+-->
+---
+background: /background.png
+---
+
+
+<!-- Page 5 本題 -->
+
+
+# 話さないこと
+<br>
+
+## ❌ 特定のデータベース製品の性質や使い方
+## ❌ 難しいSQL文の書き方
+## ❌ インデックス戦略
+## ❌ パフォーマンスチューニング
+## ❌ テーブル設計や正規化の話
+
+
+<!-- スピーカーノート：
+RDBMSのしくみを見ていくことで、DB君は裏側でこんな感じで頑張っているんだな、
+とイメージが湧いて、トラブルシューティングの時などに、仕組みがこうだから、ここを疑ってみよう、
+みたいな感じで役に立つといいかなと思います。
+-->
+
+---
+background: /background.png
+---
+
+<!-- Page 9 SQLの性質 -->
+
+
+# SQLは宣言型言語
+<br>
+
+<style>
+.slidev-code {
+  font-size: 1.5em !important;
+}
+</style>
+
+```sql
+
+SELECT id, name FROM users WHERE name = 'Alice'
+```
+<br>
+        
+## 何を取得したいかを指定するだけで、
+## どうやって取得するかはRDBMSが決める
+<br>
+
+
+<!-- スピーカーノート：
+さて、RDBMSの特徴の一つはSQLを使うことです。
+RDBMSは、宣言型のSQLを、命令型の処理に変換して実行するわけですが、
+どうやっているのか。アーキテクチャを見ていきます。
+-->
+
+---
+background: /background.png
+---
+
+<!-- Page 10 アーキテクチャ -->
+
+# RDBMSのアーキテクチャ
+<img src="/architecture.png" style="width: 73%; height: 84%; margin-left: 160px; margin-top: -22px">
+
+
+<!-- スピーカーノート：
+クライアントからSQLがくると、まずParserがSQLを解析します。
+Parserはさらに、LexerとParserに分かれています。
+Lexerが文字列を単語に分解して、Parserが単語から意味を理解します。
+Plannerが実行計画を立てて
+Executorが実行します。
+もう少し低レイヤーなところで、
+Buffer Managerがメモリを管理して、
+File Manager:がディスクの読み書きをする
+-->
+---
+background: /background.png
+---
+<!-- Page 11 字句解析 -->
+
+<CustomTwoCols :leftRatio="30">
+<template v-slot:left>
+<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 80%; margin-top: 24px; margin-left: -10px;">
+</template>
+<template v-slot:right>
+<div>
+
+# Lexer (字句解析)
+## 文字列をトークン（意味のある最小単位）に分解する
+<style>
+.slidev-code {
+  font-size: 1.2em !important;
+}
+</style>
+```sql
+SELECT id, name FROM users WHERE name = 'Alice'
+```
+
+<div style="text-align: center; font-size: 1.2em;">⬇︎</div>
+
+<div style="text-align: center; font-size: 1.0em; margin-left: -8rem; margin-right: -8rem;">
+
+### `SELECT` `id` `,` `name` `FROM` `users` `WHERE` `name` `=` `'Alice'`   
+</div>
+
+<div class="compact-table">
+
+| トークン | 種類（Lexerが判定） |
+|---------|--------------|
+| `SELECT`, `FROM`, `WHERE` | キーワード（予約語）   |
+| `id`, `name`, `users` | 識別子          |
+| `,` | デリミタ = 区切り文字 |
+| `=` | 演算子          |
+| `'Alice'` | 文字列リテラル      |
+
+</div>
+
+<style>
+.compact-table table {
+  line-height: 1.0 !important;
+  border: 1px solid #e2e8f0 !important;
+  border-collapse: collapse !important;
+}
+.compact-table td, .compact-table th {
+  padding: 0.3rem 0.5rem !important;
+  border: 1px solid #e2e8f0 !important;
+}
+</style>
+
+</div>
+</template>
+</CustomTwoCols>
+
+<!-- スピーカーノート：
+一つ一つ見ていくと、まずLexerで、〜
+
+-->
+---
+background: /background.png
+---
+
+<!-- Page 12 構文解析-->
+
+<CustomTwoCols :leftRatio="30">
+<template v-slot:left>
+<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 80%; margin-top: 24px; margin-left: -10px;">
+</template>
+<template v-slot:right>
+<div>
+
+# Parser (構文解析)
+## トークン列をルールに従って構造化
+
+<div style="text-align: center; font-size: 1.0em; margin-left: -8rem; margin-right: -8rem;">
+
+### `SELECT` `id` `,` `name` `FROM` `users` `WHERE` `name` `=` `'Alice'`   
+</div>
+
+<div style="text-align: center; font-size: 1.2em;">⬇︎</div>
+
+
+## **AST（抽象構文木: Abstract Syntax Tree）**
+
+## SQL文の構造を木構造にする
+
+<style>
+.slidev-code {
+  font-size: 1.5rem !important;
+}
+</style>
+
+```sql
+  QueryData
+  ├─ SELECT: [id, name]
+  ├─ FROM: users
+  └─ WHERE: (name = 'Alice')
+
+```
+
+
+
+</div>
+</template>
+</CustomTwoCols>
+
+<!-- スピーカーノート：
+構文解析では、トークンをルールに従って構造化して、抽象構文木（AST）を作成します。
+SQLの各部分が木構造のノードとして表現されます。
+-->
+
+---
+background: /background.png
+---
+
+<!-- Page 13 Parser - 複雑な条件 -->
+
+<CustomTwoCols :leftRatio="30">
+<template v-slot:left>
+<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 80%; margin-top: 24px; margin-left: -10px;">
+</template>
+<template v-slot:right>
+<div>
+
+# Parser - 複雑な条件
+
+<style>
+.slidev-code {
+  font-size: 1.2rem !important;
+}
+</style>
+```sql
+WHERE price =< 1000 
+    AND (sweets = '牡蠣せんべい' OR sweets = 'もみじ饅頭')
+```
+<div style="text-align: center; font-size: 1.6em;">⬇︎</div>
+
+```
+condition → AND ─┬─ (price =< 1000)
+                 │
+                 └─ OR ─┬─ (sweets = '牡蠣せんべい')
+                        │
+                        └─  (sweets = 'もみじ饅頭')
+          
+```
+
+<br>
+
+
+</div>
+</template>
+</CustomTwoCols>
+
+<!-- スピーカーノート：
+今回のSQLでは単純すぎて、木構造があまり伝わらないと思いますが、
+複雑な条件式になると、木構造がわかりやすいかなと思います。
+-->
+---
+background: /background.png
+---
+
+<!-- Page 14 実行計画 -->
+
+<CustomTwoCols :leftRatio="30">
+<template v-slot:left>
+<img src="/planner.png" alt="Parser diagram" style="width: auto; height: 80%; margin-top: 24px; margin-left: -10px;">
+</template>
+<template v-slot:right>
+<div>
+
+# Planner (実行計画)
+
+## ASTを受け取って、実行方法を選択
+<br>
+
+<style>
+.slidev-code {
+  font-size: 1.5rem !important;
+}
+</style>
+
+```python
+ProjectPlan(
+    fields=['id', 'name'],
+    SelectPlan(
+        predicate="name='Alice'",
+        TablePlan('users')
+    )
+)
+```
+
+
+</div>
+</template>
+</CustomTwoCols>
+
+<!-- スピーカーノート：
+ASTを受け取って、どうやってレコードを取得するかの実行計画を立てます。
+
+SQLのパフォーマンスが出ない時に、先輩などに「実行計画見てみて」と言われることがあると思いますが、
+それがこのQuery Plannerの部分です。
+
+本格的なRDBMSは統計情報を使って最適な実行計画を選んだり、
+インデックスを使ったりします。
+今回は単純なフルスキャン計画をしています。
+-->
+---
+background: /background.png
+---
+
+<!-- Page 14 実行エンジン -->
+
+<CustomTwoCols :leftRatio="30">
+<template v-slot:left>
+<img src="/executor.png" alt="Parser diagram" style="width: auto; height: 80%; margin-top: 24px; margin-left: -10px;">
+</template>
+<template v-slot:right>
+<div>
+
+# Executor (実行エンジン)
+
+<style>
+.slidev-code {
+  font-size: 1.4rem !important;
+}
+</style>
+
+## 1️⃣ Plan（実行計画）を受け取る
+
+## 2️⃣ Scan（実行オブジェクト）を作って、
+```python
+TableScan('users')        # テーブルから1行ずつ読む
+SelectScan("name='Alice'") # 条件に合うか確認
+ProjectScan(['id','name']) # 必要な列だけ取り出す
+```
+
+## 3️⃣ レコードを1行ずつ処理して、結果を返す
+
+## {id: 258, name: 'Alice'} 
+
+</div>
+</template>
+</CustomTwoCols>
+
+---
+background: /background.png
+---
+
+<!-- Page 15 デモ -->
+
+# デモ: SELECT文の実行
+
+<!-- スピーカーノート：
+それでは、ステップ実行でSELECT文を実行してみます。失敗すると時間が足りなくなってしまうので、
+今回は録画してあります。
+- SELECT文を実行します。
+- まず、Lexerの字句解析です。SELECT, WHEREなどの予約語が定義されています。
+- で、正規表現を使って、トークンに分解し、SQLから、パターンに合致するものを全部抽出します。
+- 次に、Parserの構文解析です。トークン列をルールに従って構造化して、ASTを作成するところです。
+- まず、予約後のSELECTを解析して、消費します。
+- で、SELECTの後に続く識別子はカラム=フィールド名です。
+- デリミタ、つまり区切り文字があれば、消費して、次の識別子もフィールドリストに追加します。
+- 次に、FROM句の解析です。
+- 予約語のFROMを消費して、その後の識別子をテーブル名として取得します。
+- 次に、WHERE区の解析です。
+- predicateは述語、つまりA = Bの条件式です。
+- 予約語のWHEREを消費して、=イコールの前の識別子を左辺、=イコールを消費して、次のトークンを右辺として取得します。
+- and, or, notなどの複雑な条件式であれば、再帰的に解析して、結合してAST:木構造を作成します。
+- これで、ASTが完成しました。
+- 次に、Plannerの実行計画です。
+- 引数でASTを受け取って、実行計画を立てます。
+
+- 最初はプランは空です。
+- まずは、FROM区のテーブル名を使って、テーブルプランを作成します。
+- 次に、WHERE区の条件式を使って、セレクトプランを作成します。
+- 最後に、SELECT区のフィールドリストを使って、プロジェクトプランを作成します。
+- これで実行計画が完成しました。
+- 最後に、Executorの実行エンジンです。
+- プランが作成された後、そのプランのopen()メソッドが呼び出されることで、実際のデータアクセスを管理するScanオブジェクトが生成されます
+- プランとは逆順で処理が進みます。
+- まず、フィールドリストを使って、プロジェクトスキャンを作成します。
+- 次に、条件式を使って、セレクトスキャンを作成します。
+- 述語(name = 'Alice')に合うかどうか、1行ずつチェックします。
+- 最後に、テーブル名を使って、テーブルスキャンを作成して、
+- 該当するレコードを出力します
+- プランとスキャンが逆の順番になるのは、意味があって、
+- パイプライン処理と言って、データ処理のパフォーマンスを高められます。
+- 終わったら、executorをcloseします。
+
+
+-->
+
+---
+background: /background.png
+---
+
+<!-- Page 15 デモ -->
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+## ✅ Aliceのレコードを取得できました！
+## 🤔 でも、ちょっと待って...そもそもAliceのデータはどこから来たの？
+
+<!-- スピーカーノート：
+→ データが永続化されていないと、取り出せません。
+
+-->
+
+---
+background: /background.png
+---
+
+<!-- Page 16 ファイルI/O -->
+
+
+# データの永続化
+<br>
+<br>
+
+<style>
+.slidev-code {
+  font-size: 1.5em !important;
+}
+</style>
+
+```sql 
+INSERT INTO users (id, name) VALUES (259, 'Bob');
+```
+<br>
+
+## 永続化のためにはディスクに書き込みたい
+## でも、ディスクアクセスは、メモリアクセスに比べて遅い
+## 大量のデータを扱いたい ↔️ 高速に処理したい
+
+
+<br>
+
+<!-- スピーカーノート：
+INSERT 文で、データをディスクに書き込むところを見ていきます。
+Aliceはもう永続化されているので、Bobを追加してみます。
+
+大量のデータを扱いたい ↔️ でも高速に処理したい, という相反する要求を両立させないといけません。
+そこでバッファマネジャーの登場です。
+-->
+
+
+---
+background: /background.png
+---
+
+<!-- Page 18 毎回ディスクに書く -->
+
+<CustomTwoCols :leftRatio="30">
+<template v-slot:left>
+<img src="/buffer.png" alt="Parser diagram" style="width: auto; height: 80%; margin-top: 24px; margin-left: -10px;">
+</template>
+<template v-slot:right>
+<div>
+
+# Buffer Manager
+<br>
+
+## OSにまかせず、RDBMS側でメモリ管理する
+<br>
+
+## データの編集は、メモリ上のバッファで行う
+## 都度ディスクに書き込まず、最後にまとめて書き込む
+
+
+</div>
+</template>
+</CustomTwoCols>
+
+---
+background: /background.png
+---
+<!-- Page 19 ファイルマネジャー -->
+
+<CustomTwoCols :leftRatio="30">
+<template v-slot:left>
+<img src="/file_manager.png" alt="Parser diagram" style="width: auto; height: 80%; margin-top: 24px; margin-left: -10px;">
+</template>
+<template v-slot:right>
+<div>
+
+# File Manager
+<br>
+
+## OSのファイルシステムとやりとり
+
+## ディスク上のデータの読み書き
+
+</div>
+</template>
+</CustomTwoCols>
+
+<!-- スピーカーノート：
+とは言っても、ディスクにどのように書き込むのか、という話が出てきます。
+-->
+
+---
+background: /background.png
+---
+
+<!-- Page 19 ブロック管理 -->
+
+<CustomTwoCols :leftRatio="35">
+<template v-slot:left>
+<img src="/block.png" alt="Block diagram" style="width: auto; height: 90%; margin-top: 15px;">
+</template>
+<template v-slot:right>
+<div>
+
+# どのようにデータを読み書きするか
+
+## 🍋 ディスク上のデータは、ブロック単位で管理
+## 🍋 ブロックは、ディスクを固定長に区切った領域
+## 🍋 バッファ → (なければ) → ディスクから読み込み
+## 🍋 読み込んだブロックをバッファ上でデータ更新
+
+<style>
+.slidev-code {
+  font-size: 1.3rem !important;
+  margin-top: 2rem !important;
+  margin-bottom: 2rem !important;
+}
+</style>
+
+```sql 
+INSERT INTO users (id, name) VALUES (259, 'Bob');
+```
+
+## Bobを追加すると...
+Block 0の空きスペースに `id=259, Bob` が入る
+
+</div>
+</template>
+</CustomTwoCols>
+
+<!-- スピーカーノート：
+ディスク上のデータは、ブロックという単位で管理します。
+ブロックは、一定のサイズ（例えば256バイト）で区切られたデータの単位です。
+
+ブロック0には、Aliceのレコードがあり、
+今からBobのレコードも同じBlock 0に書き込まれます。
+今回は1ブロック256バイトとしていますが、実際のRDBMSではもっと大きくて、
+4KiBや8KiBなどのサイズが一般的です。
+これは、OSやファイルシステムのブロックサイズに合わせることで、効率を最適化するためです。
+
+まだ疑問が残ります。空きスペースはどうやって見つけるのでしょう？
+-->
+
+---
+background: /background.png
+---
+
+<!-- Page 22 最終的にディスクへ -->
+
+<CustomTwoCols :leftRatio="50">
+<template v-slot:left>
+<div>
+
+
+# 空きスペースはどう探すか
+
+## ブロックをスロットに分割する
+## スロットのサイズは
+## テーブルのスキーマ情報から計算する
+<br>
+
+<div class="large-sql">
+
+```sql
+CREATE TABLE users (id int, name varchar(10))
+```
+
+</div>
+
+<style scoped>
+.large-sql pre code {
+  font-size: 1.1rem !important;
+}
+</style>
+
+## スロットの最初の領域は状態フラグ
+## 01:使用中なので、次の空きスロットに書き込む
+
+</div>
+</template>
+<template v-slot:right>
+<br>
+
+
+<div style="text-align: center;">
+
+<br>
+<br>
+<br>
+<br>
+
+## スロット内のレコードレイアウト
+
+</div>
+<img src="/slot.png" alt="Slot layout diagram" style="width: 98%; height: 44%; margin-left: 2rem;">
+</template>
+</CustomTwoCols>
+
+<!-- スピーカーノート：
+で、Aliceの次のスロットの状態フラグが00なので、ここにBobのレコードを書き込める、という風に探します
+-->
+
+---
+background: /background.png
+---
+
+<!-- Page 19 Appendix -->
+
+<br>
+<br>
+<br>
+
+
+# Appendix
+<br>
+
+## 🍋誰かが同時に書き込んでいるかも？
+<br>
+
+## 🍋途中で電源が落ちてしまったら？
+
+
+<!-- スピーカーノート：  
+ここからはAppendixです。
+メモリとファイルで、どこに、どのようにデータを書き込むか、という話をしましたが、
+まだ安全にデータを保存するためには、論点が残っています。
+- 誰かが同時に書き込んでいるかも？
+- 途中で電源が落ちてしまったら？
+という問題です
+この問題に対処しないと、ACID特性を満たせません。
+-->
+
+
+---
+background: /background.png
+---
+
+<!-- Page 20 トランザクション -->
+
+<CustomTwoCols :leftRatio="35">
+<template v-slot:left>
+<img src="/transaction.png" alt="Transaction diagram" style="width: auto; height: 87%; margin-top: 40px;">
+</template>
+<template v-slot:right>
+<div>
+
+
+# 誰かが同時に書き込んでいるかも？
+
+<br>
+
+## ⚠️ 同時書き込み
+<span class="red-uppercase">C</span> カープ坊や：Block 0にBob追加  
+<span class="orange-uppercase">G</span> ジャビット：Block 0にCarol追加  
+→ データが壊れる！😱
+
+<br>
+
+## **トランザクションで制御**
+<span class="red-uppercase">C</span> カープ坊や：Block 0をロック → 編集 → 解除  
+<span class="orange-uppercase">G</span> ジャビット：（待機） → 編集
+
+</div>
+</template>
+</CustomTwoCols>
+
+
+<!-- スピーカーノート：
+カープ坊やとジャビットくんが、同時にBlock 0に書き込もうとするかもしれません。
+それを防ぐのがトランザクションです。
+カープ坊やがBlock 0をロックしている間、ジャビットくんは待機しないといけません。
+カープ坊やが編集を終えてロックを解除した後に、ジャビットくんが編集できます。
+これで、トランザクションで同時実行制御ができます。
+-->
+---
+background: /background.png
+---
+
+<!-- Page 21 途中で電源が落ちてしまったら？ -->
+
+
+# 途中で電源が落ちてしまったら？
+<br>
+
+## データより先にログを書き込む **WAL（Write-Ahead Log）**
+<br>
+
+### 🍋 "Bobのレコード追加"という更新ログを先にディスクに書き込む
+### 🍋 変更されたバッファをディスクに書き込む(実際にBobのレコードが追加される)
+### 🍋 ログにレコード追加されたというコミットログを書き込む
+<div style="text-align: center; font-size: 1.2em;">⬇︎</div>
+
+### 🍋 クラッシュした時に、ログがあるけどコミットされていなければ、ロールバック
+### 🍋 コミットログがある場合は、ディスクへの保存が保証されている
+
+
+<!-- スピーカーノート：
+データベースの永続性を保証するために、途中で電源が落ちてしまった場合の対策が必要です。
+そこで、WAL（Write-Ahead Log）という仕組みを使います。
+WALでは、データの変更をディスクに書き込む前に、まずログに記録します。
+
+-->
+
+---
+background: /background.png
+---
+<!-- Page 23 デモ -->
+
+# デモ: INSERT文の実行
+
+
+<!--　スピーカーノート：
+レコードが追加されたことが確認できました。
+本当？ただプリント文を出しているだけじゃないの？
+本当です。
+ヘックスビュワーで確認してみましょう。
+-->
+---
+background: /background.png
+---
+<!-- Page 23 ヘックスビュワー -->
+
+# デモ: ヘックスビュワーでの確認
+
+---
+background: /background.png
+---
+<!-- Page 23 スクショで確認 -->
+ 
+<br>
+<br>
+<br>
+
+<img src="/endian.png" style="width: auto; height: 55%;  margin-top: -3rem; margin-left: -2rem; margin-right: -6rem;" />
+
+<img src="/slot2.png" style="width: 75%; height: auto; margin-left: 7px;" />
+
+<!-- スピーカーノート：
+拡大したスクショで確認してみましょう。
+
+
+あれ？int型のデータがおかしくないですか？
+-->
+
+---
+background: /background.png
+---
+
+<!-- Page 25 エンディアン -->
+
+# int型の並び順が逆になってる
+
+<div style="width: 40%; margin: 0;">
+<TransparentTable :items="[
+  { label: '10進数', value: '16進数' },
+  { label: '258', value: '0x0102' },
+  { label: '259', value: '0x0103' }
+]" :showOuterBorder="true" :showRowLines="true" />
+</div>
+<br>
+
+<img src="/endian.png" style="width: auto; height: 38%;" />
+
+
+<!-- スピーカーノート：
+
+-->
+
+
+---
+background: /background.png
+---
+
+<!-- Page 26 エンディアン1 -->
+
+
+# エンディアン
+
+## バイト列の並び順の違い
+
+## **リトルエンディアン（Intel, AMD, Apple Silicon）**
+### 🍋 数値の最下位バイトがアドレスの低い方 → 258 (0x0102) は `02 01` 
+
+## **ビッグエンディアン（ネットワーク標準）**
+### 🍋 数値の最上位バイトがアドレスの低い方 → 258 (0x0102) は `01 02` 
+
+## **なぜ重要？**
+### 🍋異なるシステム間でバイナリデータをやり取りする時
+### 🍋ネットワーク通信（ビッグエンディアン）
+
+
+<!--　スピーカーノート：
+リトルエンディアンとビッグエンディアンは、必ずしもどちらが優れている、というわけではなく、
+歴史的経緯などもあって、2種類の方式が存在しています。
+なので、、異なるシステム間でバイナリデータをやり取りする時やネットワーク通信の実装では、エンディアンに注意する必要があります。
+-->
+---
+background: /background.png
+---
+<!-- Page 26 エンディアン2 -->
+
+# Pythonのstructモジュール
+
+<style>
+.slidev-code {
+  font-size: 1.2rem !important;
+}
+</style>
+
+```python
+import struct
+# 例: 16進数で0x0102をバイト列に変換
+data = struct.pack('<i', 258)  # リトルエンディアンで書き込む
+```
+<br>
+
+<div style="width: 60%; margin: 0;">
+<TransparentTable :items="[
+  { label: '<', value: 'リトルエンディアン' },
+  { label: '>', value: 'ビッグエンディアン' },
+  { label: '!', value: 'ネットワークバイトオーダー' }
+]" :showOuterBorder="true" :showRowLines="true" />
+</div>
+
+<!-- スピーカーノート：
+Pythonでは、structモジュールを使うと、エンディアンを指定してバイト列に変換できます。
+ネットワークバイトオーダーは実質ビッグエンディアンと同じです。
+iはint型のiです
+-->
+
+---
+background: /background.png
+---
+
+<!-- Page 26 まとめ -->
+
+# まとめ
+
+<div class="summary-content">
+<CustomTwoCols :leftRatio="50">
+<template v-slot:left>
+
+1. **Lexer** - 字句解析でトークンに分解
+2. **Parser** - 構文解析でASTを構築  
+3. **Planner** - 実行計画を作成
+### 🍋 TablePlan / SelectPlan / ProjectPlan
+4. **Executor** - 実行エンジン
+### 🍋 ProjectScan: カラム抽出
+### 🍋 SelectScan: WHERE条件フィルタ
+### 🍋 TableScan: ファイルアクセス
+
+</template>
+<template v-slot:right>
+<div style="padding-left: 4rem;">
+
+5. **Transaction**
+### 🍋  ロック制御、ロールバック
+6. **Buffer Manager**
+### 🍋 メモリキャッシュ管理
+### 🍋 ディスクI/O最小化
+   7. **File Manager**
+### 🍋 物理的なディスク読み書き
+### 🍋 ブロック単位のデータ管理
+
+</div>
+</template>
+</CustomTwoCols>
+</div>
+
+<style>
+.summary-content h2 {
+  font-size: 1.8rem !important;
+  margin: 0.2rem 0 0.5rem 0 !important;
+}
+.summary-content li {
+  font-size: 1.7rem !important;
+  margin: 0.1rem 0 !important;
+}
+.summary-content ul {
+  margin: 0.1rem 0 !important;
+}
+</style>
+
+<!-- スピーカーノート：
+これで、SQLの1行の裏側で、たくさんの仕組みが動いていることがわかってもらえたと思います。
+-->
+
+---
+background: /background.png
+---
+
+<!-- Page 26 まとめ -->
+
+<br>
+<br>
+<br>
+<br>
+
+## インデックスの話、トランザクションの詳細
+## ...まだまだ話したいことが...
+<br>
+
+### 🍋 KeiPyDBのソースコードは、すでにGitHubに公開しています。
+### <a href="https://github.com/kei-kmj/keiPyDB" style="color: blue;">https://github.com/kei-kmj/keiPyDB</a>
+
+<br>
+
+## 次は
+### 🍋 ブラウザを自作して、KeiPyDBと繋げてみたい！
+
+<!--　スピーカーノート：
+さて、ここまでで、SQLの1行の裏側で、たくさんの仕組みが動いていることがわかってもらえたと思います。
+トランザクションの詳細やインデックスの仕組みなど、まだまだ話したいことがありますが、
+時間が足りないので、何かの機会に話せたらと思います。
+で、次は、ブラウザを自作して、KeiPyDBと繋げてみたいと思っています。
+
+-->
+
+---
+background: /background.png
+---
+<!-- Page 27 we are hiring -->
+
+# 株式会社DeltaXでは、Webエンジニアを募集中です！
+<br>
+<br>
+
+### 🍋 言語：Python／TypeScript
+### 🍋 フレームワーク：FastAPI／Astro／React／Remix
+### 🍋 インフラ：AWS／OpenSearch／PostgreSQL／DynamoDB他
+
+<br>
+
+### 🍋 フルリモート
+### 🍋 生成AIを積極的に活用してます
+
+---
+background: /background.png
+---
+<!-- Page 28 挨拶 -->
+<br>
+
+# ご清聴ありがとうございました！
+
+<img src="/thankyou.png" style="position: absolute; bottom: 30px; right: 0px; width: 240px; height: auto;" />
+
+
+---
