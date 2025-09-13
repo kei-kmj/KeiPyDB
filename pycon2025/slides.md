@@ -55,8 +55,8 @@
 }
 </style>
 
-<div class="absolute inset-0">
-  <img src="/background.png" class="w-full h-full object-cover" />
+<div class="absolute inset-0" style="z-index: -1;">
+  <img src="/back_top.png" class="w-full h-full object-contain" style="filter: brightness(1.3);" />
 </div>
 <!-- タイトル -->
 
@@ -145,11 +145,33 @@ background: none
 手前味噌ですが、このCMはYou Tubeで公開されていて、塾に関心がなくても面白いCMになっているので、ぜひ見てみてほしいです。
 -->
 
+
+---
+
+<!-- Page 4 本題への区切り -->
+
+<div class="absolute inset-0" style="z-index: -1;">
+  <img src="/back_top.png" class="w-full h-full object-contain" style="filter: brightness(1.1);" />
+</div>
+
+<div style="margin-left: 24rem; margin-top: 15rem">
+
+# 本 題
+</div>
+
+
+
+<!--
+スピーカーノート：
+本題
+-->
+
+
 ---
 background: /background.png
 ---
 
-<!-- Page 8 データベースとは -->
+<!-- Page 5 データベースとは -->
 
 # データベースとは
 ## データを効率的に保存・検索・更新するためのシステム
@@ -162,7 +184,6 @@ background: /background.png
 ## **RDBMS(Relational Database Management System)**
 ### 🍋 データをリレーショナルなテーブルで管理
 ### 🍋 SQLで操作
-### 🍋 ACID特性を保証（原子性・一貫性・隔離性・永続性）
 
 
 <!-- スピーカーノート：
@@ -177,7 +198,7 @@ background: /background.png
 ---
 background: /background.png
 ---
-<!-- Page 4 作ってみた -->
+<!-- Page 6 作ってみた -->
 
 <CustomTwoCols :leftRatio="66" imageSrc="/simpledb.jpg" imageAlt="Database Design and Implementation book cover" imageClass="w-92% h-92% object-contain relative translate-x-2 translate-y-8">
   <template #left>
@@ -197,7 +218,7 @@ background: /background.png
 
 <div style="margin-left: 15rem; font-size: 1.2rem;">⬇︎</div>
 
-<div style="margin-left: 10rem; font-size: 1.5rem;">
+<div style="margin-left: 10rem; font-size: 1.5rem; font-weight: bold;">
 Pythonで実装
 </div>
   </template>
@@ -213,7 +234,7 @@ JavaでRDBMSを実装していく内容ですが、書籍を参考にPythonで�
 background: /background.png
 ---
 
-<!-- Page 5 KeiPyDBの機能 -->
+<!-- Page 7 KeiPyDBの機能 -->
 
 # KeiPyDBの機能
 
@@ -245,7 +266,7 @@ background: /background.png
 ## 機能
 ### 🍋 トランザクション
 ### 🍋 ハッシュインデックス
-### 🍋 Btreeインデックス
+### 🍋 B-treeインデックス
 
 </div>
 </div>
@@ -262,6 +283,7 @@ background: /background.png
 background: /background.png
 ---
 
+<!-- Page 8.5 話すこと -->
 
 # 話すこと
  
@@ -300,7 +322,7 @@ background: /background.png
 ---
 
 
-<!-- Page 5 本題 -->
+<!-- Page 8 話さないこと -->
 
 
 # 話さないこと
@@ -310,7 +332,7 @@ background: /background.png
 ## ❌ 難しいSQL文の書き方
 ## ❌ インデックス戦略
 ## ❌ パフォーマンスチューニング
-## ❌ テーブル設計や正規化の話
+## ❌ テーブル設計や正規化
 
 
 <!-- スピーカーノート：
@@ -341,7 +363,7 @@ SELECT id, name FROM users WHERE name = 'Alice'
 ```
 <br>
         
-## 何を取得したいかを指定するだけで、
+## 何を取得したいかを伝えるだけで、
 ## どうやって取得するかはRDBMSが決める
 <br>
 
@@ -419,7 +441,7 @@ SELECT id, name FROM users WHERE name = 'Alice'
 ---
 background: /background.png
 ---
-<!-- Page 11 字句解析 -->
+<!-- Page 12 字句解析（分類） -->
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
@@ -475,48 +497,48 @@ background: /background.png
 background: /background.png
 ---
 
-<img src="/lexer/select.png" alt="Parser diagram" style="width: auto; height: 50%; margin-top: 24px; margin-left: -10px;">
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/lexer/select.png" alt="Parser diagram" style="width: auto; height: auto; margin-top: 24px;">
+</div>
 
 ---
 background: /background.png
 ---
 
-<img src="/lexer/keyword.png" alt="Parser diagram" style="width: auto; height: auto; margin-top: 24px; margin-left: -10px;">
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/lexer/keyword.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px;">
+</div>
+---
+background: /background.png
+---
+
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/lexer/tokenize.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px;">
+</div>
 
 ---
 background: /background.png
 ---
 
-<img src="/lexer/tokenize.png" alt="Parser diagram" style="width: auto; height: auto; margin-top: 24px; margin-left: -30px;">
-
-
----
-background: /background.png
----
-
-<img src="/lexer/match_keyword.png" alt="Parser diagram" style="width: auto; height: auto; margin-top: 24px; margin-left: -30px;">
-<img src="/lexer/eat_keyword.png" alt="Parser diagram" style="width: auto; height: auto; margin-top: 24px; margin-left: -30px;">
-
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/lexer/match_keyword.png" alt="Parser diagram" style="width: auto; height: auto; margin-top: 24px; ">
+<img src="/lexer/eat_keyword.png" alt="Parser diagram" style="width: auto; height: auto; margin-top: 24px; ">
+</div>
 
 ---
 background: /background.png
 ---
 
-<img src="/lexer/match_id.png" alt="Parser diagram" style="width: auto; height: auto; margin-top: 24px; margin-left: -30px;">
-<img src="/lexer/eat_id.png" alt="Parser diagram" style="width: auto; height: auto; margin-top: 20px; margin-left: -30px;">
-
-
----
-background: /background.png
----
-
-<img src="/lexer/match_delimiter.png" alt="Parser diagram" style="width: auto; height: auto; margin-top: 24px; margin-left: -30px;">
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/lexer/match_id.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
+<img src="/lexer/eat_id.png" alt="Parser diagram" style="width: auto; height: auto; margin-top: 20px; ">
+</div>
 
 ---
 background: /background.png
 ---
 
-<!-- Page 12 構文解析-->
+<!-- Page 16 構文解析-->
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
@@ -538,7 +560,7 @@ background: /background.png
 
 ## **AST（抽象構文木: Abstract Syntax Tree）**
 
-## SQL文の構造を木構造にする
+## SQL文をコンピュタが理解しやすい木構造に変換したもの
 
 <style>
 .slidev-code {
@@ -586,13 +608,13 @@ background: /background.png
 }
 </style>
 ```sql
-WHERE price =< 1000 
+WHERE price < 1000 
     AND (sweets = '牡蠣せんべい' OR sweets = 'もみじ饅頭')
 ```
 <div style="text-align: center; font-size: 1.6em;">⬇︎</div>
 
 ```
-condition → AND ─┬─ (price =< 1000)
+condition → AND ─┬─ (price < 1000)
                  │
                  └─ OR ─┬─ (sweets = '牡蠣せんべい')
                         │
@@ -611,6 +633,91 @@ condition → AND ─┬─ (price =< 1000)
 今回のSQLでは単純すぎて、木構造があまり伝わらないと思いますが、
 複雑な条件式になると、木構造がわかりやすいかなと思います。
 -->
+
+---
+background: /background.png
+---
+
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/parser/query.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
+</div>
+
+---
+background: /background.png
+---
+
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/parser/parser.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
+</div>
+
+
+---
+background: /background.png
+---
+
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/parser/select_list.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
+</div>
+
+---
+background: /background.png
+---
+
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/parser/table_list.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
+</div>
+
+
+---
+background: /background.png
+---
+
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/parser/return_table.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
+</div>
+
+
+---
+background: /background.png
+---
+
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/parser/predicate.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
+</div>
+---
+background: /background.png
+---
+
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/parser/term.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
+</div>
+
+---
+background: /background.png
+---
+
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/parser/return_predicate.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
+</div>
+
+---
+background: /background.png
+---
+
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/parser/query_data.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
+</div>
+
+
+---
+background: /background.png
+---
+
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/plan/query_data.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
+</div>
+
+
 ---
 background: /background.png
 ---
@@ -658,13 +765,57 @@ SQLのパフォーマンスが出ない時に、先輩などに「実行計画�
 
 本格的なRDBMSは統計情報を使って最適な実行計画を選んだり、
 インデックスを使ったりします。
-今回は単純なフルスキャン計画をしています。
 -->
+
 ---
 background: /background.png
 ---
 
-<!-- Page 14 実行エンジン -->
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/plan/create_plan.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
+</div>
+
+
+---
+background: /background.png
+---
+
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/plan/table_plan.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
+</div>
+
+
+---
+background: /background.png
+---
+
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/plan/select_plan.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
+</div>
+
+
+---
+background: /background.png
+---
+
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/plan/project_plan.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
+</div>
+
+---
+background: /background.png
+---
+
+<div style="margin-left: -50px; margin-right: -50px;">
+<img src="/plan/plan.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
+</div>
+
+
+---
+background: /background.png
+---
+
+<!-- Page 15 実行エンジン -->
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
@@ -687,11 +838,17 @@ background: /background.png
 ```python
 TableScan('users')        # テーブルから1行ずつ読む
 SelectScan("name='Alice'") # 条件に合うか確認
-ProjectScan(['id','name']) # 必要な列だけ取り出す
+ProjectScan(['id','name']) # 必要なカラムだけ取り出す
 ```
 
-## 3️⃣ レコードを1行ずつ返す
-## 🍋 実行エンジンのしくみは、ストレージ層の理解が必要
+## 3️⃣ レコードを返す
+## 🍋 実行エンジンのしくみを理解するには
+
+<div style="margin-left: 30px;">
+
+## ストレージ層の理解が必要
+
+</div>
 
 
 </div>
@@ -701,7 +858,7 @@ ProjectScan(['id','name']) # 必要な列だけ取り出す
 
 <!-- スピーカーノート：
 それぞれのスキャンオブジェクトが
-協働して、レコードを1行ずつ返します。
+協働して、1レコードずつ返します。
 
 -->
 
@@ -710,7 +867,7 @@ background: /background.png
 ---
 
 
-<!-- Page 15 ファイルI/O -->
+<!-- Page 16 ストレージ層の概要 -->
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
 <img src="/buffer_file.png" alt="Parser diagram" style="width: auto; height: 94%; margin-top: 18px; margin-left: -10px;">
@@ -719,14 +876,17 @@ background: /background.png
 
 # ストレージ層の概要
 
-## 🍋 いつでもAliceのレコードを取得できるようにしたい
-## 🍋 ディスクへの書き込みと読み取りが必要
-## 🍋 ディスクアクセスは、メモリアクセスに比べ非常に遅い
-## 🍋 RDBMSは、
-## 大量のデータを扱いたい ↔️ でも高速に処理したい
-## 🍋 OSのキャッシュシステムに任せず、
-## RDBMS自身でメモリ管理する
-## 🍋 Buffer ManagerとFile Managerが担当
+## **担当コンポーネント**
+## 🍋 Buffer ManagerとFile Manager
+## **役割**
+## 🍋 RDBMS自身でメモリ管理(OSにまかせない)
+## 🍋 データの永続化
+
+## **解決したい課題**
+## 🍋 ディスクアクセスはメモリアクセスに比べて非常に遅い
+## 🍋 大量のデータを扱いたい ↔️ でも高速に処理したい
+
+
 
 
 </template>
@@ -737,22 +897,23 @@ background: /background.png
 ---
 
 
-<!-- Page 15 ファイルI/O -->
+<!-- Page 17 用語 -->
 
-<CustomTwoCols :leftRatio="70">
+<CustomTwoCols :leftRatio="80">
 <template v-slot:left>
-<img src="/disk.png" style="width: auto; height: 100%; margin-top: 30px; margin-left: -30px;">
+<img src="/disk.png" style="width: auto; height: 90%; margin-top: 30px; margin-left: -30px;">
 </template>
 <template v-slot:right>
 <div style="margin-left: -2rem;">
 
-# 用語の整理
+# 用語
 
 <br>
 
-### 🍋 ファイル : OSのファイルシステムで内部的に定義されるブロックの論理的な集まり
-### 🍋 ブロック : ディスクを固定長に区切った領域。4KiB, 8KiBなどのサイズが主流
-### 🍋 OSやファイルシステムのブロックサイズに合わせることで、効率を最適化
+### 🍋 ファイル : 
+## OSのファイルシステムで内部的に定義される、ブロックの論理的な集まり
+### 🍋 ブロック : 
+## ディスクを固定長に区切った領域
 
 </div>
 </template>
@@ -767,40 +928,7 @@ background: /background.png
 background: /background.png
 ---
 
-
-
-<!-- Page 19 ファイルマネジャー -->
-
-<CustomTwoCols :leftRatio="30">
-<template v-slot:left>
-<img src="/file_manager.png" alt="Parser diagram" style="width: auto; height: 100%; margin-top: 24px; margin-left: -10px;">
-</template>
-<template v-slot:right>
-<div>
-
-# File Manager
-<br>
-
-## 🍋 OSのファイルシステムとやりとり
-## 🍋 ファイルへのブロックレベルのアクセスを提供
-
-## 🍋 ディスク上のデータをブロックを指定して読み書き
-
-</div>
-</template>
-</CustomTwoCols>
-
-<!-- スピーカーノート：
-とは言っても、ディスクにどのように書き込むのか、という話が出てきます。
--->
-
-
-
----
-background: /background.png
----
-
-<!-- Page 16 バッファマネジャ-->
+<!-- Page 18 バッファマネジャ-->
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
@@ -812,24 +940,69 @@ background: /background.png
 # Buffer Manager
 <br>
 
-## 🍋 OSにまかせず、RDBMS側でメモリ管理する
-<br>
+## OSにまかせず、RDBMS側でメモリ管理する
 
-## 🍋 File Managerを使ってブロックをメモリに読み込む
+## 🍋 ブロックをメモリに読み込む
 ## 🍋 頻繁にアクセスされるブロックをメモリに保持
-## 🍋 メモリが足りなくなったら、アルゴリズムで置換
+## 🍋 使用頻度が低いブロックをメモリから追い出す
+
 
 
 </div>
 </template>
 </CustomTwoCols>
 
+---
+background: /background.png
+---
+
+
+
+<!-- Page 19 ファイルマネジャー -->
+
+<CustomTwoCols :leftRatio="30">
+<template v-slot:left>
+<img src="/file_manager.png" alt="Parser diagram" style="width: auto; height: 93%; margin-top: 21px; margin-left: -10px;">
+</template>
+<template v-slot:right>
+<div>
+
+# File Manager
+<br>
+
+## データを永続化するため、
+## 🍋 OSのファイルシステムとのやりとり
+## 🍋 ブロックへのアクセスを提供
+## 🍋 ディスク上のデータをブロックを指定して読み書き
+
+</div>
+</template>
+</CustomTwoCols>
+
+<!-- スピーカーノート：
+とは言っても、ディスクにどのように書き込むのか、という話が出てきます。
+-->
+
+---
+
+<div class="absolute inset-0" style="z-index: -1;">
+  <img src="/back_top.png" class="w-full h-full object-contain" style="filter: brightness(1.1);" />
+</div>
+
+<div style="font-size: 12rem; text-align: center; margin-top: 200px; margin-left: 400px;">
+🍹
+</div>
+<!--
+スピーカーノート：
+-->
+
+
 
 ---
 background: /background.png
 ---
 
-<!-- Page 22  -->
+<!-- Page 20 レコードを探すしくみ -->
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
@@ -839,8 +1012,21 @@ background: /background.png
 
 # name = 'Alice' のレコードを探すしくみ
 
-## 🍋 (トランザクションを介して) usersテーブルのブロックを1つずつ読む
-## 🍋 ブロックの中はスロットという単位でレコードが保存されている
+## 🍋 usersテーブルのブロックを
+
+<div style="margin-left: 30px;">
+
+## （トランザクションを介して）1つずつ読む
+</div>
+
+## 🍋 ブロックの中は
+<div style="margin-left: 30px;">
+
+## スロットという単位でレコードが保存されている
+</div>
+
+<div style="margin-left: 10rem; font-size: 1.2rem;">⬇︎</div>
+
 ## 🍋 スロットの単位で探す
 
 </template>
@@ -856,7 +1042,7 @@ background: /background.png
 ---
 
 
-<!-- Page 15 ファイルI/O -->
+<!-- Page 21 スロットとは何か -->
 
 
 <CustomTwoCols :leftRatio="50">
@@ -865,7 +1051,12 @@ background: /background.png
 
 # スロットとは何か
 
-## 🍋 テーブルのメタデータによって定義される、固定長の領域
+## 🍋 テーブル情報から定義される
+
+<div style="margin-left: 30px;">
+
+## 固定長の領域
+</div>
 <br>
 
 <div class="large-sql">
@@ -878,9 +1069,12 @@ CREATE TABLE users (id int, name varchar(10))
 
 <style scoped>
 .large-sql pre code {
-  font-size: 1.1rem !important;
+  font-size: 1.2rem !important;
 }
 </style>
+
+<br>
+<br>
 
 ## スロットの最初の領域は状態フラグ
 ## 01:使用中、00:空き
@@ -912,15 +1106,15 @@ idはint型なので、今回は4バイト分確保しています。nameはvarc
 background: /background.png
 ---
 
-<!-- Page 19 Appendix -->
+<!-- Page 22 Appendix -->
 
 # レコードの読み取り
-## 🍋 スロットのレイアウトがわかるので、レコードにアクセスできる
-## 🍋 nameフィールドのname部分は、スロットの13バイト目から10バイト分
-## 🍋 name部分が、Aliceかどうか比較する
-## 🍋 Aliceのレコードを見つけたら出力  { id: 258, name: 'Alice' }
+## 🍋 スロットのレイアウトがわかれば、レコードにアクセスできる
+## 🍋 スロット毎に、13バイト目から10バイト分を見て、
+## 🍋 nameがAliceかどうかを確認
+## 🍋 レコードを取得して指定されたカラムを出力する { id: 258, name: 'Alice' }
 
-<img src="/slot7.png" alt="Slot layout diagram" style="width: auto; height: 35%; margin-left: 18rem; margin-top: 24px;">
+<img src="/slot7.png" alt="Slot layout diagram" style="width: auto; height: 35%; margin-left: 18rem; margin-top: 40px;">
 
 <!-- スピーカーノート：
 -->
@@ -932,7 +1126,7 @@ background: /background.png
 ---
 
 
-<!-- Page 20 データのインサート -->
+<!-- Page 23 データのインサート -->
 
 <CustomTwoCols :leftRatio="50">
 <template v-slot:left>
@@ -951,22 +1145,26 @@ INSERT INTO users (id, name) VALUES (259, 'Bob')
 
 <style scoped>
 .large-sql pre code {
-  font-size: 1.1rem !important;
+  font-size: 1.5rem !important;
 }
 </style>
 
 
 ## 🍋 状態フラグが00のスロットを探す
 ## 🍋 トランザクションを介して
-## 🍋 Write-Ahead Logging/ログ先行
-## 書き込みで障害対策をして
-## 🍋 空きスロットにレコードのデータを書き込む
+## 🍋 Write-Ahead Logging/
+<div style="margin-left: 30px;">
+
+## ログ先行書き込みで障害対策をして
+</div>
+
+## 🍋 空きスロットに書き込む
 
 </template>
 <template v-slot:right>
 
 
-<img src="/slot_adding.png" alt="Parser diagram" style="width: auto; height: 52%; margin-top: 228px; margin-left: -30px;">
+<img src="/slot_adding.png" alt="Parser diagram" style="width: auto; height: 45%; margin-top: 228px; margin-left: -30px;">
 </template>
 </CustomTwoCols>
 
@@ -974,7 +1172,7 @@ INSERT INTO users (id, name) VALUES (259, 'Bob')
 background: /background.png
 ---
 
-<!-- Page 20 削除 -->
+<!-- Page 24 削除 -->
 
 <CustomTwoCols :leftRatio="50">
 <template v-slot:left>
@@ -992,44 +1190,55 @@ DELETE FROM users WHERE id = 259
 
 <style scoped>
 .large-sql pre code {
-  font-size: 1.1rem !important;
+  font-size: 1.5rem !important;
 }
 </style>
 
 ## 🍋 レコードはすぐには削除しない
-## 🍋 スロットの状態フラグを00に更新して、スロットを空きにする
+## 🍋 (トランザクションを介して)
+
+<div style="margin-left: 30px; margin-top: -20px;">
+
+## スロットの状態フラグを00に更新
+</div>
+
 ## 🍋 データはそのまま残る
-## 🍋 後で新しいレコードを追加する時に、空きスロットとして再利用される
+## 🍋 後で新しいレコードを追加する時に
+
+<div style="margin-left: 30px; margin-top: -20px;">
+
+## 空きスロットとして再利用される
+</div>
+
 </template>
 <template v-slot:right>
 <div>
 
-<img src="/slot_delete.png" alt="Transaction diagram" style="width: auto; height: 87%; margin-top: 40px;">
+<img src="/slot_delete.png" alt="Transaction diagram" style="width: auto; height: 87%; margin-top: 300px;">
 </div></template>
 </CustomTwoCols>
 
 <!-- スピーカーノート：
 -->
 
+---
+background: /background.png
+---
+<!-- Page 25 ヘックスビュワー -->
+
+# 動画
 
 ---
 background: /background.png
 ---
-<!-- Page 23 ヘックスビュワー -->
-
-# ヘックスビュワーでの確認
-
----
-background: /background.png
----
-<!-- Page 23 スクショで確認 -->
+<!-- Page 26 スクショで確認 -->
 
 # ヘックスビュアーで確認
 <br>
 
 <img src="/hex.png" style="width: auto; height: 48%;  margin-top: -3rem; margin-left: -2rem; margin-right: -6rem;" />
 
-<img src="/slot_delete.png" style="width: 65%; height: auto; margin-left: 17px;" />
+<img src="/slot_delete.png" style="width: 61%; height: auto; margin-left: 17px;" />
 
 <!-- スピーカーノート：
 拡大したスクショで確認してみましょう。
@@ -1042,7 +1251,7 @@ background: /background.png
 background: /background.png
 ---
 
-<!-- Page 25 エンディアン -->
+<!-- Page 27 エンディアン -->
 
 # int型の並び順が逆になってる
 
@@ -1067,7 +1276,7 @@ background: /background.png
 background: /background.png
 ---
 
-<!-- Page 26 エンディアン1 -->
+<!-- Page 28 エンディアン1 -->
 
 
 # エンディアン
@@ -1093,7 +1302,7 @@ background: /background.png
 ---
 background: /background.png
 ---
-<!-- Page 26 エンディアン2 -->
+<!-- Page 29 エンディアン2 -->
 
 # Pythonのstructモジュール
 
@@ -1128,7 +1337,7 @@ iはint型のiです
 background: /background.png
 ---
 
-<!-- Page 26 まとめ -->
+<!-- Page 30 まとめ -->
 
 # まとめ
 
@@ -1182,40 +1391,24 @@ background: /background.png
 -->
 
 ---
-background: /background.png
----
 
-<!-- Page 26 まとめ -->
+<div class="absolute inset-0" style="z-index: -1;">
+  <img src="/back_top.png" class="w-full h-full object-contain" style="filter: brightness(1.1);" />
+</div>
 
-<br>
-<br>
-<br>
-<br>
-
-## インデックスの話、トランザクションの詳細
-## ...まだまだ話したいことが...
-<br>
-
-### 🍋 KeiPyDBのソースコードは、すでにGitHubに公開しています。
-### <a href="https://github.com/kei-kmj/keiPyDB" style="color: blue;">https://github.com/kei-kmj/keiPyDB</a>
-
-<br>
-
-## 次は
-### 🍋 ブラウザを自作して、KeiPyDBと繋げてみたい！
-
-<!--　スピーカーノート：
-さて、ここまでで、SQLの1行の裏側で、たくさんの仕組みが動いていることがわかってもらえたと思います。
-トランザクションの詳細やインデックスの仕組みなど、まだまだ話したいことがありますが、
-時間が足りないので、何かの機会に話せたらと思います。
-で、次は、ブラウザを自作して、KeiPyDBと繋げてみたいと思っています。
-
+<div style="font-size: 12rem; text-align: center; margin-top: 200px; margin-left: 400px;">
+☕️
+</div>
+<!--
+スピーカーノート：
 -->
 
+
+
 ---
 background: /background.png
 ---
-<!-- Page 27 we are hiring -->
+<!-- Page 31 we are hiring -->
 
 # 株式会社DeltaXでは、Webエンジニアを募集中です！
 <br>
@@ -1233,21 +1426,25 @@ background: /background.png
 ---
 background: /background.png
 ---
-<!-- Page 28 挨拶 -->
+<!-- Page 32 挨拶 -->
 
 # 最後に
 
 ## インデックス、ログ、トランザクション ...まだまだ話したいことが...
 <br>
 
-### 🍋 KeiPyDBのソースコードは、すでにGitHubに公開しています。
-### <a href="https://github.com/kei-kmj/KeiPyDB" style="color: blue;">https://github.com/kei-kmj/KeiPyDB</a>
+## KeiPyDBのソースコードは、GitHubに公開済みです
+## <a href="https://github.com/kei-kmj/KeiPyDB" style="color: blue;">https://github.com/kei-kmj/KeiPyDB</a>
 
 <br>
 
-## 次は、ブラウザを自作して、KeiPyDBをそこに入れてみたい！
+## **次にやりたいこと**
+## 🍋ブラウザを自作して、KeiPyDBを組み込みたい‼️
+
+<div style="margin-left: 180px;">
 
 # ご清聴ありがとうございました
+</div>
 
 <img src="/thankyou.png" style="position: absolute; bottom: 30px; right: 0px; width: 240px; height: auto;" />
 

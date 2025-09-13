@@ -51,7 +51,7 @@ table {
 
 table th, table td {
   background: transparent !important;
-  font-size: 1.4rem !important;
+  font-size: 1.6rem !important;
   padding: 0.5rem 1rem !important;
   border: none !important;
 }
