@@ -1,5 +1,9 @@
 <style>
 /* グローバルフォントサイズの統一設定 */
+.slidev-code {
+  font-size: 1.5rem !important;
+  margin-top: 20px !important;
+}
 .slidev-layout {
   font-size: 1.1rem !important;
 }
@@ -497,17 +501,33 @@ background: /background.png
 background: /background.png
 ---
 
-<div style="margin-left: -50px; margin-right: -50px;">
-<img src="/lexer/select.png" alt="Parser diagram" style="width: auto; height: auto; margin-top: 24px;">
-</div>
+
+```python
+
+    select_sql = "SELECT id, name FROM users WHERE name = 'Alice';"
+
+```
 
 ---
 background: /background.png
 ---
 
-<div style="margin-left: -50px; margin-right: -50px;">
-<img src="/lexer/keyword.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px;">
-</div>
+```python
+class Lexer:
+    def __init__(self, sql: str) -> None:
+        """SQL文を解析するための字句解析器"""
+        self.keywords = {
+            "select",
+            "from",
+            "where",
+            "and",
+            "insert",
+            "into",
+            "values",
+            "delete"
+        }
+
+```
 ---
 background: /background.png
 ---
@@ -1434,7 +1454,8 @@ background: /background.png
 <br>
 
 ## KeiPyDBのソースコードは、GitHubに公開済みです
-## <a href="https://github.com/kei-kmj/KeiPyDB" style="color: blue;">https://github.com/kei-kmj/KeiPyDB</a>
+## [https://github.com/kei-kmj/KeiPyDB](https://github.com/kei-kmj/KeiPyDB)
+
 
 <br>
 
@@ -1447,6 +1468,3 @@ background: /background.png
 </div>
 
 <img src="/thankyou.png" style="position: absolute; bottom: 30px; right: 0px; width: 240px; height: auto;" />
-
-
----
