@@ -1,7 +1,7 @@
 <style>
 /* グローバルフォントサイズの統一設定 */
 .slidev-code {
-  font-size: 1.5rem !important;
+  font-size: 1.44rem !important;
   margin-top: 20px !important;
 }
 .slidev-layout {
@@ -46,17 +46,6 @@
   font-size: 0.9em !important;
 }
 
-/* 赤文字スタイル */
-.red-uppercase {
-  color: #DC143C !important;
-  font-weight: bold !important;
-}
-
-/* オレンジ文字スタイル */
-.orange-uppercase {
-  color: #FF6600 !important;
-  font-weight: bold !important;
-}
 </style>
 
 <div class="absolute inset-0" style="z-index: -1;">
@@ -105,6 +94,10 @@
 </div>
 </template>
 </CustomTwoCols>
+
+<!--　スピーカーノート：
+最初に自己紹介させてください
+-->
 
 ---
 background: none
@@ -155,24 +148,22 @@ background: none
 <!-- Page 4 本題への区切り -->
 
 <div class="absolute inset-0" style="z-index: -1;">
-  <img src="/back_top.png" class="w-full h-full object-contain" style="filter: brightness(1.1);" />
+  <img src="/back_top.png" class="w-full h-full object-contain" style="filter: brightness(1.2);" />
 </div>
 
 <div style="margin-left: 24rem; margin-top: 15rem">
 
-# 本 題
+# はじめに
 </div>
 
 
 
 <!--
 スピーカーノート：
-本題
+データベースとは、から説明させてください。
 -->
 
 
----
-background: /background.png
 ---
 
 <!-- Page 5 データベースとは -->
@@ -191,8 +182,6 @@ background: /background.png
 
 
 <!-- スピーカーノート：
-今日のテーマはRDBMSで、聴衆レベルをビギナーに設定しているので、
-データベースとは、の説明からさせてください。
 データベースとは〜
 データベースにもいろいろ種類があって、〜などがあります。
 
@@ -200,8 +189,7 @@ background: /background.png
 -->
 
 ---
-background: /background.png
----
+
 <!-- Page 6 作ってみた -->
 
 <CustomTwoCols :leftRatio="66" imageSrc="/simpledb.jpg" imageAlt="Database Design and Implementation book cover" imageClass="w-92% h-92% object-contain relative translate-x-2 translate-y-8">
@@ -222,8 +210,8 @@ background: /background.png
 
 <div style="margin-left: 15rem; font-size: 1.2rem;">⬇︎</div>
 
-<div style="margin-left: 10rem; font-size: 1.5rem; font-weight: bold;">
-Pythonで実装
+<div style="margin-left: 2rem; font-size: 1.5rem; font-weight: bold;">
+Pythonで、標準ライブラリのみを使って実装
 </div>
   </template>
 </CustomTwoCols>
@@ -231,11 +219,9 @@ Pythonで実装
 <!-- スピーカーノート：
 今日使う、Python製RDBMSですが、これは自作しました。
 Database Design and Implementation という一般にSimpleDB本と呼ばれる書籍を参考にしてます。
-JavaでRDBMSを実装していく内容ですが、書籍を参考にPythonで実装しました。
+JavaでRDBMSを実装していく内容ですが、書籍を参考に、Pythonで標準ライブラリのみ使って実装しています。
 -->
 
----
-background: /background.png
 ---
 
 <!-- Page 7 KeiPyDBの機能 -->
@@ -278,51 +264,41 @@ background: /background.png
 
 
 <!-- スピーカーノート
+SQLは、〜〜があって、機能としては〜〜があります。
 このRDBMSを使って話すことは、
 
 -->
 
 
 ---
-background: /background.png
----
 
 <!-- Page 8.5 話すこと -->
 
 # 話すこと
- 
-<br>
 
 ## 🍋 RDBMSがSQLをどのように処理するか
-<br>
-
-<style>
-.slidev-code {
-  font-size: 1.2rem !important;
-  margin-top: -24px !important;
-}
-</style>
-
-## 使用するSQL文
-<br>
-
-```sql
-SELECT id, name FROM users WHERE name = 'Alice'   # id = 258, name = 'Alice'
-``` 
-
 
 <br>
-<br>
+<div style="margin-left: 30px;">
+
+## ⚪︎ CREATE TABLE
+## ⚪︎ INSERT INTO
+## ⚪︎ SELECT
+## ⚪︎ DELETE
+
+</div>
 <br>
 
-### ※ なぜidが258なのかは、あとで説明します
+<div style="margin-left: 45px;">
+
+##   を使って、コードを逐次追いながらみていきます
+</div>
+
 
 
 <!-- スピーカーノート：
-idは今は気にしなくてOK
+RDBMSがSQLをどのように処理するかをコードを逐次追いながらみていきます。
 -->
----
-background: /background.png
 ---
 
 
@@ -333,7 +309,7 @@ background: /background.png
 <br>
 
 ## ❌ 特定のデータベース製品の性質や使い方
-## ❌ 難しいSQL文の書き方
+## ❌ SQL文の書き方
 ## ❌ インデックス戦略
 ## ❌ パフォーマンスチューニング
 ## ❌ テーブル設計や正規化
@@ -346,7 +322,20 @@ RDBMSのしくみを見ていくことで、DB君は裏側でこんな感じで�
 -->
 
 ---
-background: /background.png
+
+<div class="absolute inset-0" style="z-index: -1;">
+  <img src="/back_top.png" class="w-full h-full object-contain" style="filter: brightness(1.2);" />
+</div>
+
+<div style="margin-left: 10rem; margin-top: 15rem">
+
+#  SQLとRDBMSのアーキテクチャ
+
+</div>
+
+<!--
+スピーカーノート：
+-->
 ---
 
 <!-- Page 9 SQLの性質 -->
@@ -367,7 +356,7 @@ SELECT id, name FROM users WHERE name = 'Alice'
 ```
 <br>
         
-## 何を取得したいかを伝えるだけで、
+## クライアントは、何を取得したいかを伝えるだけで、
 ## どうやって取得するかはRDBMSが決める
 <br>
 
@@ -379,8 +368,6 @@ RDBMSは、宣言型のSQLを、命令型の処理に変換して実行するわ
 -->
 
 ---
-background: /background.png
----
 
 <!-- Page 10 アーキテクチャ -->
 
@@ -389,18 +376,51 @@ background: /background.png
 
 
 <!-- スピーカーノート：
-クライアントからSQLがくると、まずParserがSQLを解析します。
+クライアントからSQLを受け取ると、まずParserがSQLを解析します。
 Parserはさらに、LexerとParserに分かれています。
 Lexerが文字列を単語に分解して、Parserが単語から意味を理解します。
 Plannerが実行計画を立てて
 Executorが実行します。
-もう少し低レイヤーなところで、
+Executorはストレージ層とやりとりします。そこでは
 Buffer Managerがメモリを管理して、
 File Manager:がディスクの読み書きをする
 -->
+
 ---
-background: /background.png
+
+<div class="absolute inset-0" style="z-index: -1;">
+  <img src="/back_top.png" class="w-full h-full object-contain" style="filter: brightness(1.2);" />
+</div>
+
+<div style="margin-left: 20rem; margin-top: 15rem">
+
+#  SELECT 文
+
+</div>
+
+<!--
+スピーカーノート：
+SELECT文を使って、細かく見ていきます
+-->
 ---
+
+# SELECT 文
+
+```sql
+SELECT id, name FROM users WHERE name = 'Alice'
+```
+
+<img v-click="1" src="/img_1_1.png" alt="Parser diagram" style="width: 100%; height: auto; margin-left: -10px; margin-top: 30px;">
+<img v-click="1" src="/img_1_2.png" alt="Parser diagram" style="width: 100%; height: auto; margin-left: -10px;">
+
+<!-- スピーカーノート：
+今回利用するSELECT文です。
+なぜidが258という中途半端な値なのかは、あとで説明します。
+今は気にしなくて大丈夫です。
+-->
+
+---
+
 <!-- Page 11 字句解析 -->
 
 <CustomTwoCols :leftRatio="30">
@@ -414,11 +434,12 @@ background: /background.png
 ## 文字列をトークン（意味のある最小単位）に分解する
 <br>
 
-<style>
+<style scoped>
 .slidev-code {
-  font-size: 1.2em !important;
+  font-size: 1.48rem !important;
 }
 </style>
+
 ```sql
 SELECT id, name FROM users WHERE name = 'Alice'
 ```
@@ -443,8 +464,7 @@ SELECT id, name FROM users WHERE name = 'Alice'
 
 -->
 ---
-background: /background.png
----
+
 <!-- Page 12 字句解析（分類） -->
 
 <CustomTwoCols :leftRatio="30">
@@ -498,19 +518,37 @@ background: /background.png
 
 
 ---
-background: /background.png
----
 
+<style scoped>
+.slidev-code {
+font-size: 1.44rem !important;
+margin-left: -40px !important;
+margin-right: -40px !important;
+}
+</style>
 
-```python
-
-    select_sql = "SELECT id, name FROM users WHERE name = 'Alice';"
+```python {all|7}
+class StartServer:
+    
+    @staticmethod
+    def main() -> None:
+        # SELECT
+        tx_select = db.new_transaction()
+        select_sql = "SELECT id, name FROM users WHERE name = 'Alice';"
+        print(f"Executing: {select_sql}")
+        plan = planner.create_query_plan(select_sql, tx_select)
+        scan = plan.open()
 
 ```
 
+<!-- スピーカーノート：
+実際のコードを見てみます。
+select文を実行する部分です。
+
+-->
+
 ---
-background: /background.png
----
+
 
 ```python
 class Lexer:
@@ -528,41 +566,90 @@ class Lexer:
         }
 
 ```
----
-background: /background.png
----
+<!-- スピーカーノート：
+最初の字句解析の部分です。
+予約語を定義していて、Lexerクラスで初期化します。
 
-<div style="margin-left: -50px; margin-right: -50px;">
-<img src="/lexer/tokenize.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px;">
-</div>
+-->
 
 ---
-background: /background.png
+
+```python{all|1-5|1-3,6|all}
+
+class Lexer:
+    def _tokenize(self, sql: str) -> list[str]:
+        """SQL文をトークンに分割"""
+        token_pattern = (r"[a-zA-Z_][a-zA-Z_0-9]*|'(?:[^']|'')*'"
+                         r"|\d+(?:\.\d+)?|[=,()<>*+-/;]|\s+|.")
+        tokens = re.findall(token_pattern, sql)
+```
+
+<!-- スピーカーノート：
+
+tokenizeメソッドで、正規表現をマッチさせてトークンに分解します。
+-->
+
 ---
 
-<div style="margin-left: -50px; margin-right: -50px;">
-<img src="/lexer/match_keyword.png" alt="Parser diagram" style="width: auto; height: auto; margin-top: 24px; ">
-<img src="/lexer/eat_keyword.png" alt="Parser diagram" style="width: auto; height: auto; margin-top: 24px; ">
-</div>
+```python {all|1-6|1,7-13|all}
+class Lexer:
+    def match_keyword(self, keyword: str) -> bool:
+        """指定されたキーワードと現在のトークンが一致するかどうかを返す"""
+        if self.current_token is None:
+            return False
+        return self.current_token.lower() == keyword.lower()
+
+    def eat_keyword(self, keyword: str) -> None:
+        """指定されたキーワードを認識して次のトークンに進む"""
+        if self.current_token.lower() != keyword.lower():
+            raise SyntaxError
+
+        self.next_token()
+```
+
+<!-- スピーカーノート：
+Lexerクラスには、予約語かどうかを判定するmatch_keywordメソッドと、
+予約語を認識して次のトークンの処理に進むeat_keywordメソッドがあります。
+eat_keywordメソッドにnext_tokenメソッドがあることで、
+トークンを左から右に、かつ一度だけ処理し、次の解析ステップへ進めることができます
+
+※ 再帰下降パーサ
+
+-->
 
 ---
-background: /background.png
----
 
-<div style="margin-left: -50px; margin-right: -50px;">
-<img src="/lexer/match_id.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
-<img src="/lexer/eat_id.png" alt="Parser diagram" style="width: auto; height: auto; margin-top: 20px; ">
-</div>
 
----
-background: /background.png
+```python {all|1-6|1,7-13|all}
+class Lexer:
+    def match_id(self) -> bool:
+        """現在のトークンが識別子かどうかを返す"""
+        
+        return (self.current_token.isidentifier() and
+                self.current_token not in self.keywords)
+
+    def eat_id(self) -> str:
+        """識別子を認識して次のトークンに進む"""
+        
+        identifier = self.current_token
+        self.next_token()
+        return identifier
+```
+
+<!-- スピーカーノート：
+また、予約語と同じように識別子かどうかを判定するmatch_idメソッドと、
+識別子を認識して次のトークンの処理に進むeat_idメソッドがあります。
+
+これは、他にも、区切り文字、演算子、リテラルなどに対しても同様のメソッドがあります。
+-->
+
 ---
 
 <!-- Page 16 構文解析-->
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
-<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 100%; margin-top: 24px; margin-left: -10px;">
+<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 94%; margin-top: 24px; margin-left: -20px;">
 </template>
 <template v-slot:right>
 <div>
@@ -582,21 +669,12 @@ background: /background.png
 
 ## SQL文をコンピュタが理解しやすい木構造に変換したもの
 
-<style>
-.slidev-code {
-  font-size: 1.5rem !important;
-}
-</style>
-
-```sql
+```
   QueryData
   ├─ SELECT: [id, name]
   ├─ FROM: users
   └─ WHERE: (name = 'Alice')
-
 ```
-
-
 
 </div>
 </template>
@@ -604,41 +682,34 @@ background: /background.png
 
 <!-- スピーカーノート：
 構文解析では、トークンをルールに従って構造化して、抽象構文木（AST）を作成します。
-SQLの各部分が木構造のノードとして表現されます。
+SQL文をコンピュータが理解しやすい木構造に変換したものです。
 -->
 
----
-background: /background.png
 ---
 
 <!-- Page 13 Parser - 複雑な条件 -->
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
-<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 100%; margin-top: 24px; margin-left: -10px;">
+<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 95%; margin-top: 24px; margin-left: -20px;">
 </template>
 <template v-slot:right>
 <div>
 
 # Parser - 複雑な条件
 
-<style>
-.slidev-code {
-  font-size: 1.2rem !important;
-}
-</style>
 ```sql
-WHERE price < 1000 
-    AND (sweets = '牡蠣せんべい' OR sweets = 'もみじ饅頭')
+WHERE price < 1000 AND 
+    sweets = '牡蠣せんべい' OR sweets = 'もみじ饅頭'
 ```
 <div style="text-align: center; font-size: 1.6em;">⬇︎</div>
 
 ```
-condition → AND ─┬─ (price < 1000)
+condition → AND ─┬─ price < 1000
                  │
-                 └─ OR ─┬─ (sweets = '牡蠣せんべい')
+                 └─ OR ─┬─ sweets = '牡蠣せんべい'
                         │
-                        └─  (sweets = 'もみじ饅頭')
+                        └─  sweets = 'もみじ饅頭'
           
 ```
 
@@ -655,91 +726,235 @@ condition → AND ─┬─ (price < 1000)
 -->
 
 ---
-background: /background.png
+
+<!-- Page 14 Parser - ASTの詳細 -->
+
+```python {all|5}
+class Planner:
+    def create_query_plan(self, query: str, tx: TX) -> Plan:
+        """クエリを実行するための計画を作成する"""
+        parser = Parser(query)
+        parsed_query = parser.query()
+
+        self.verify_query()
+```
+
+<!-- スピーカーノート：
+クエリメソッドを実行していきます
+-->
+
+---
+
+```python {all|1-4}
+class Parser:
+    def query(self) -> QueryData:
+        self.lexer.eat_keyword("select")
+        field_list = self.select_list()
+        self.lexer.eat_keyword("from")
+        table_list = self.table_list()
+
+        predicate = Predicate()
+        if self.lexer.match_keyword("where"):
+            self.lexer.eat_keyword("where")
+            predicate = self.predicate()
+
+        return QueryData(field_list, table_list, predicate)
+
+```
+
+<!-- スピーカーノート：
+このクエリメソッドが構文解析のメインの部分で、
+SELECT文の解析を開始するエントリポイントです
+まず、現在のトークンがSELECTであることを確認すると、次のトークンの処理に進みます。
+
+
+-->
+---
+
+```python {all|1-3|1-2,4-6|all}
+class Parser:
+    def select_list(self) -> list[str]:
+        field_list = [self.field()]
+        while self.lexer.match_delimiter(","):
+            self.lexer.eat_delimiter(",")
+            field_list.append(self.field())
+        return field_list
+```
+
+<!-- スピーカーノート：
+次のトークンは、フィールド名として処理されます。
+select_listメソッドは、最初のフィールド名（これはカラム名に相当します）を解析してリストに追加します。
+その後、カンマが続く限り、カンマを認識して次のフィールド名をリストに追加できるので、
+全てのカラム名をフィールドリストとして返すことができます。
+
+-->
+
+---
+
+
+```python {1-2,5-6}
+class Parser:
+    def query(self) -> QueryData:
+        self.lexer.eat_keyword("select")
+        field_list = self.select_list()
+        self.lexer.eat_keyword("from")
+        table_list = self.table_list()
+
+        predicate = Predicate()
+        if self.lexer.match_keyword("where"):
+            self.lexer.eat_keyword("where")
+            predicate = self.predicate()
+
+        return QueryData(field_list, table_list, predicate)
+
+```
+<!-- スピーカーノート：
+
+次に、FROMキーワードを認識して、次のトークン処理に進んで、テーブルリストを作成します。
+
+-->
+
+---
+
+```python {all|1-5|6-11|6-12|all}
+
+class Parser:
+    def table_list(self) -> Collection[str]:
+        table_name = self.lexer.eat_id()
+
+        table_list: list[str] = [table_name]
+        
+        while self.lexer.match_delimiter(","):
+            self.lexer.eat_delimiter(",")
+            table_name = self.lexer.eat_id()
+            table_list.append(table_name)
+            
+        return table_list
+        
+```
+<!-- スピーカーノート：
+このtable_list()メソッドでも、最初のテーブル名を解析してリストに追加して、
+カンマが続く限り、カンマを認識して次のテーブル名をリストに追加していきます。
+-->
+
+
+---
+
+```python {1-2,8-12}
+class Parser:
+    def query(self) -> QueryData:
+        self.lexer.eat_keyword("select")
+        field_list = self.select_list()
+        self.lexer.eat_keyword("from")
+        table_list = self.table_list()
+
+        predicate = Predicate()
+        if self.lexer.match_keyword("where"):
+            self.lexer.eat_keyword("where")
+            predicate = self.predicate()
+
+        return QueryData(field_list, table_list, predicate)
+
+```
+
+<!-- スピーカーノート：
+最後に、WHERE句を認識して、次のトークンの処理に進んで、条件式を解析します。
+predicateはname = Aliceのような条件式のことです。
+
+-->
+---
+
+```python {all|1,3}
+class Parser:
+    def predicate(self) -> Predicate:
+        predicate = Predicate([self.term()])
+        if self.lexer.match_keyword("and"):
+            self.lexer.eat_keyword("and")
+            predicate.conjoin_with(self.predicate())
+```
+
+<!-- スピーカーノート：
+predicateメソッドで条件式の処理をするのですが、まずはtermメソッドが呼ばれます。
+
+-->
+---
+
+```python {all|1,8-9|1-9|1,10|1,11|1-7,11|12|all}
+class Parser:
+    def expression(self) -> Expression:
+        if self.lexer.match_id():
+            return Expression(self.field())
+        else:
+            return Expression(self.constant())
+        
+    def term(self) -> Term:
+        left = self.expression()
+        self.lexer.eat_delimiter("=")
+        right = self.expression()
+        return Term(left, right)
+```
+
+<!-- スピーカーノート：
+
+termメソッドで、左辺を解析しています。
+expressionメソッドで、識別子かリテラルを解析しています。
+
+でイコールを認識して、
+右辺も識別子かリテラルか解析して、条件式を形成して返します。
+
+-->
+
+---
+
+```python {1-2,4-6|all} 
+class Parser:
+    def predicate(self) -> Predicate:
+        predicate = Predicate([self.term()])
+        if self.lexer.match_keyword("and"):
+            self.lexer.eat_keyword("and")
+            predicate.conjoin_with(self.predicate())
+```
+
+<!-- スピーカーノート：
+また、ANDで条件記が続く場合、再帰的にpredicateメソッドを呼び出して、
+条件式を連結しています。
+-->
+
+---
+
+```python {1-2,13|all}
+class Parser:
+    def query(self) -> QueryData:
+        self.lexer.eat_keyword("select")
+        field_list = self.select_list()
+        self.lexer.eat_keyword("from")
+        table_list = self.table_list()
+
+        predicate = Predicate()
+        if self.lexer.match_keyword("where"):
+            self.lexer.eat_keyword("where")
+            predicate = self.predicate()
+
+        return QueryData(field_list, table_list, predicate)
+
+```
+
+<!-- スピーカーノート：
+これで、最初のqueryメソッドに戻ってきて、Queryオブジェクトを作成して返します。
+これがASTです。
+-->
+
 ---
 
 <div style="margin-left: -50px; margin-right: -50px;">
-<img src="/parser/query.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
+<img src="/query_data.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
 </div>
 
----
-background: /background.png
----
+<!-- スピーカーノート：
+これはデバッガーでの実行画面です。
+query_dataが構造化されているのがわかります。
+-->
 
-<div style="margin-left: -50px; margin-right: -50px;">
-<img src="/parser/parser.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
-</div>
-
-
----
-background: /background.png
----
-
-<div style="margin-left: -50px; margin-right: -50px;">
-<img src="/parser/select_list.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
-</div>
-
----
-background: /background.png
----
-
-<div style="margin-left: -50px; margin-right: -50px;">
-<img src="/parser/table_list.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
-</div>
-
-
----
-background: /background.png
----
-
-<div style="margin-left: -50px; margin-right: -50px;">
-<img src="/parser/return_table.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
-</div>
-
-
----
-background: /background.png
----
-
-<div style="margin-left: -50px; margin-right: -50px;">
-<img src="/parser/predicate.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
-</div>
----
-background: /background.png
----
-
-<div style="margin-left: -50px; margin-right: -50px;">
-<img src="/parser/term.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
-</div>
-
----
-background: /background.png
----
-
-<div style="margin-left: -50px; margin-right: -50px;">
-<img src="/parser/return_predicate.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
-</div>
-
----
-background: /background.png
----
-
-<div style="margin-left: -50px; margin-right: -50px;">
-<img src="/parser/query_data.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
-</div>
-
-
----
-background: /background.png
----
-
-<div style="margin-left: -50px; margin-right: -50px;">
-<img src="/plan/query_data.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
-</div>
-
-
----
-background: /background.png
 ---
 
 <!-- Page 14 実行計画 -->
@@ -778,61 +993,79 @@ ProjectPlan(
 </CustomTwoCols>
 
 <!-- スピーカーノート：
-ASTを受け取って、どうやってレコードを取得するかの実行計画を立てます。
+ASTを受け取って、どのテーブルから、どのような順序と方法でレコードを取得するかという、実行計画を立てます。
+例えば、複数のテーブルを結合（join）する時に、joinの順序を変えるだけでも、実行時間が大きく変わることもあります。
 
-SQLのパフォーマンスが出ない時に、先輩などに「実行計画見てみて」と言われることがあると思いますが、
-それがこのQuery Plannerの部分です。
-
-本格的なRDBMSは統計情報を使って最適な実行計画を選んだり、
-インデックスを使ったりします。
+そのために、本格的なRDBMSは統計情報を使って最適な実行計画を選んだり、
+インデックスを使ったりしますが、ここではシンプルな実行計画を作成します。
 -->
 
 ---
-background: /background.png
+
+```python {1-6|7|9|all}
+class Planner:
+    def create_query_plan(self, query: str, tx: TX) -> Plan:
+        """クエリを実行するための計画を作成する"""
+        parser = Parser(query)
+        parsed_query = parser.query()
+
+        self.verify_query()
+
+        return self.query_planner.create_plan(parsed_query, tx)
+```
+
+<!-- スピーカーノート：
+ParserでSQLを解析して、ASTが作成されているので、
+値や式の妥当性を検証した後に、
+Query PlannerにASTを渡して、実行計画を作成します。
+-->
+
+---
+
+```python {all|1-5|1-2,7-9|1-2,11-13|all}
+
+class BasicQueryPlanner(QueryPlanner, ABC):
+    def create_plan(self, query: Query, tx: TX) -> Plan:
+
+        plan_list: list[Plan] = []
+        plan_list.append(TablePlan(tx, table_name, self.mdm))
+
+        plan = SelectPlan(plan, query.get_predicate())
+
+        field_list = query.get_fields()
+
+        return ProjectPlan(plan, field_list)
+
+```
+
+<!-- スピーカーノート：
+実行計画を作成します。
+まず、どのテーブルからレコードを取得するかを決めて、
+TablePlanを作成します。
+次に、WHERE句の条件式を使って、必要なレコードだけを取得するSelectPlanを加えます。
+最後に、SELECT句のカラム名リストを使って、必要なカラムだけを取り出すProjectPlanを加えます。
+ちなみに、SelectPlanのSelectの意味は、SELECT文のSelectではなくて、WHERE句で選択する、の意味です。
+このselectとprojectは数学的な演算から来ている名前です
+
+※ リレーショナル代数演算
+-->
+
 ---
 
 <div style="margin-left: -50px; margin-right: -50px;">
-<img src="/plan/create_plan.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
+<img src="/plan_scsho.png" alt="Parser diagram" style="width: 100%; height: auto; margin-left: -10px; margin-top: 30px;">
 </div>
 
 
----
-background: /background.png
----
+<!-- スピーカーノート：
+ここもデバッガーでの実行を確認すると、
+ProjectPlanの中にSelectPlanがあって、その中にTablePlanが作られていて、
+プランの階層構造になっていることがわかります。
+この階層構造をとることで、パイプライン処理と言って、データアクセスが一度で済んで、処理中の中間テーブルなどの作成が必要ないので、
+効率的にデータ処理できます。
 
-<div style="margin-left: -50px; margin-right: -50px;">
-<img src="/plan/table_plan.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
-</div>
+-->
 
-
----
-background: /background.png
----
-
-<div style="margin-left: -50px; margin-right: -50px;">
-<img src="/plan/select_plan.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
-</div>
-
-
----
-background: /background.png
----
-
-<div style="margin-left: -50px; margin-right: -50px;">
-<img src="/plan/project_plan.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
-</div>
-
----
-background: /background.png
----
-
-<div style="margin-left: -50px; margin-right: -50px;">
-<img src="/plan/plan.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
-</div>
-
-
----
-background: /background.png
 ---
 
 <!-- Page 15 実行エンジン -->
@@ -854,7 +1087,7 @@ background: /background.png
 
 ## 1️⃣ Plan（実行計画）を受け取る
 
-## 2️⃣ Scan（実行オブジェクト）を作って、
+## 2️⃣ Scan（実行オブジェクト）を作る
 ```python
 TableScan('users')        # テーブルから1行ずつ読む
 SelectScan("name='Alice'") # 条件に合うか確認
@@ -877,15 +1110,11 @@ ProjectScan(['id','name']) # 必要なカラムだけ取り出す
 
 
 <!-- スピーカーノート：
-それぞれのスキャンオブジェクトが
-協働して、1レコードずつ返します。
+実行エンジンのしくみを理解するには、ストレージ層の理解が必要になるので、ここで一旦ストレージ層の話に移ります。
 
 -->
 
 ---
-background: /background.png
----
-
 
 <!-- Page 16 ストレージ層の概要 -->
 <CustomTwoCols :leftRatio="30">
@@ -896,15 +1125,21 @@ background: /background.png
 
 # ストレージ層の概要
 
-## **担当コンポーネント**
+## **担当**
 ## 🍋 Buffer ManagerとFile Manager
+## **解決したい課題**
+## 🍋 大量のデータを扱いたい ↔️ 高速に処理したい
+
+<div style="margin-left: 30px;">
+
+## ディスクアクセスはメモリアクセスに比べて非常に遅い
+</div>
+
 ## **役割**
 ## 🍋 RDBMS自身でメモリ管理(OSにまかせない)
 ## 🍋 データの永続化
 
-## **解決したい課題**
-## 🍋 ディスクアクセスはメモリアクセスに比べて非常に遅い
-## 🍋 大量のデータを扱いたい ↔️ でも高速に処理したい
+
 
 
 
@@ -912,10 +1147,12 @@ background: /background.png
 </template>
 </CustomTwoCols>
 
----
-background: /background.png
----
+<!-- スピーカーノート：
+大量のデータを扱いたいけど、高速に処理したい、という相反する要求をできるだけ
+両立させようとしています。
+-->
 
+---
 
 <!-- Page 17 用語 -->
 
@@ -945,8 +1182,6 @@ background: /background.png
 -->
 
 ---
-background: /background.png
----
 
 <!-- Page 18 バッファマネジャ-->
 
@@ -960,11 +1195,11 @@ background: /background.png
 # Buffer Manager
 <br>
 
-## OSにまかせず、RDBMS側でメモリ管理する
+## RDBMS自身でメモリ管理(OSにまかせない)
 
-## 🍋 ブロックをメモリに読み込む
+## 🍋 ブロックのメモリへの読み込み
 ## 🍋 頻繁にアクセスされるブロックをメモリに保持
-## 🍋 使用頻度が低いブロックをメモリから追い出す
+## 🍋 使用頻度が低いブロックのメモリからの追い出し
 
 
 
@@ -973,10 +1208,6 @@ background: /background.png
 </CustomTwoCols>
 
 ---
-background: /background.png
----
-
-
 
 <!-- Page 19 ファイルマネジャー -->
 
@@ -992,21 +1223,20 @@ background: /background.png
 
 ## データを永続化するため、
 ## 🍋 OSのファイルシステムとのやりとり
-## 🍋 ブロックへのアクセスを提供
-## 🍋 ディスク上のデータをブロックを指定して読み書き
+## 🍋 ディスク上のデータをブロック単位で読み書き
 
 </div>
 </template>
 </CustomTwoCols>
 
 <!-- スピーカーノート：
-とは言っても、ディスクにどのように書き込むのか、という話が出てきます。
+Executorに戻って、実際にレコードを取得するしくみを見ていきます。
 -->
 
 ---
 
 <div class="absolute inset-0" style="z-index: -1;">
-  <img src="/back_top.png" class="w-full h-full object-contain" style="filter: brightness(1.1);" />
+  <img src="/back_top.png" class="w-full h-full object-contain" style="filter: brightness(1.2);" />
 </div>
 
 <div style="font-size: 12rem; text-align: center; margin-top: 200px; margin-left: 400px;">
@@ -1019,8 +1249,6 @@ background: /background.png
 
 
 ---
-background: /background.png
----
 
 <!-- Page 20 レコードを探すしくみ -->
 
@@ -1030,9 +1258,25 @@ background: /background.png
 </template>
 <template v-slot:right>
 
-# name = 'Alice' のレコードを探すしくみ
+# レコード取得のしくみ
 
-## 🍋 usersテーブルのブロックを
+
+<style scoped>
+.slidev-code {
+  font-size: 1.35rem !important;
+  margin-left: -32px !important;
+  margin-right: -32px !important;
+}
+</style>
+
+```python
+ProjectPlan(
+    fields=['id', 'name'],
+    SelectPlan(predicate="name='Alice'",
+        TablePlan('users'))) # id = 258, name = 'Alice'
+```
+
+## 🍋 usersテーブルのブロックをストレージ層から
 
 <div style="margin-left: 30px;">
 
@@ -1042,12 +1286,12 @@ background: /background.png
 ## 🍋 ブロックの中は
 <div style="margin-left: 30px;">
 
-## スロットという単位でレコードが保存されている
+## **スロット**という単位でレコードが保存されている
 </div>
 
-<div style="margin-left: 10rem; font-size: 1.2rem;">⬇︎</div>
+<div style="margin-left: 10rem; margin-top: -10px; margin-bottom: -20px; font-size: 1.2rem;">⬇︎</div>
 
-## 🍋 スロットの単位で探す
+## 🍋 **スロット**の単位で探す
 
 </template>
 </CustomTwoCols>
@@ -1058,9 +1302,6 @@ background: /background.png
 -->
 
 ---
-background: /background.png
----
-
 
 <!-- Page 21 スロットとは何か -->
 
@@ -1075,7 +1316,7 @@ background: /background.png
 
 <div style="margin-left: 30px;">
 
-## 固定長の領域
+## ブロック内の固定長の領域
 </div>
 <br>
 
@@ -1123,28 +1364,184 @@ idはint型なので、今回は4バイト分確保しています。nameはvarc
 -->
 
 ---
-background: /background.png
----
 
 <!-- Page 22 Appendix -->
 
 # レコードの読み取り
-## 🍋 スロットのレイアウトがわかれば、レコードにアクセスできる
-## 🍋 スロット毎に、13バイト目から10バイト分を見て、
-## 🍋 nameがAliceかどうかを確認
-## 🍋 レコードを取得して指定されたカラムを出力する { id: 258, name: 'Alice' }
+## 🍋 スロットのレイアウトがわかれば、レコードにアクセス可能
+## 🍋 スロット毎に、13バイト目から10バイト分を確認
+## 🍋 nameがAliceかどうかの確認
+## 🍋 レコードを取得して指定されたカラムの出力 { id: 258, name: 'Alice' }
 
 <img src="/slot7.png" alt="Slot layout diagram" style="width: auto; height: 35%; margin-left: 18rem; margin-top: 40px;">
 
 <!-- スピーカーノート：
+1スロットが22バイトなので、22バイトずつ探していって、スロットの中の13バイト目から10バイト分を見て、nameがAliceかどうかを確認します。
 -->
 
+---
+
+<style scoped>
+.slidev-code {
+font-size: 1.45rem !important;
+margin-left: -44px !important;
+margin-right: -44px !important;
+}
+</style>
+
+```python {1-5,9-10}
+class StartServer:
+    
+    @staticmethod
+    def main() -> None:
+        # SELECT
+        tx_select = db.new_transaction()
+        select_sql = "SELECT id, name FROM users WHERE name = 'Alice';"
+
+        plan = planner.create_query_plan(select_sql, tx_select)
+        scan = plan.open()
+
+```
+
+<!-- スピーカーノート：
+実際のコードを見てみます。
+planが作成できたところからです。
+planはopenメソッドを持っているので、openしてscanを開始します
+-->
+
+---
+
+<style scoped>
+.slidev-code {
+margin-left: -35px !important;
+margin-right: -32px !important;
+}
+</style>
+
+```python {all|1-5|1-4,6-10}
+class TableScan(UpdateScan, ABC):   
+    def get_value(self, field_name: str) -> Constant:
+        """現在のスロットの指定されたフィールドの値を返す"""
+        
+        field_type = self.layout.get_schema().get_type(field_name)
+        
+        if field_type == FieldType.Integer:
+            return Constant(self.get_int(field_name))
+        elif field_type == FieldType.Varchar:
+            return Constant(self.get_string(field_name))
+        else:
+            raise ValueError(f"Unknown field type {field_type}")
+
+```
+
+<!-- スピーカーノート：
+テーブル定義情報をもとに、指定されたフィールドの型を調べて、
+get_intメソッドかget_stringメソッドを呼び出して、値を取得します。
+-->
+
+---
+
+```python {all|1-4,8-9|all}
+class TableScan(UpdateScan, ABC):
+    def get_string(self, field_name: str) -> str:
+        """現在のスロットの指定されたフィールドの文字列を返す"""
+    
+        if self.record_page is None:
+            raise RuntimeError
+    
+        slot = self.current_slot
+        return self.record_page.get_string(slot, field_name)
+
+
+```
+<!-- スピーカーノート：
+get_stringメソッドの例ですが、カレントスロットのフィールド名を指定して、
+値を取得していることがわかると思います。
+-->
+
+---
+
+```python
+
+class SelectScan(UpdateScan, ABC):
+    def next(self) -> bool:
+        while self.scan.next():
+            if self.predicate.is_satisfied(self):
+                return True
+        return False
+```
+
+<!-- スピーカーノート：
+SelectScanで、ループ処理で条件式(name = 'Alice')を満たすかどうかを確認しています。
+-->
+
+---
+
+```python
+class ProjectScan(Scan, ABC):
+    def get_value(self, field_name: str) -> Constant:
+        
+        if self.has_field(field_name):
+            return self.scan.get_value(field_name)
+        else:
+            raise RuntimeError
+
+```
+
+<!-- スピーカーノート：
+最後に、ProjectScanで、必要なカラムだけを取り出しています。
+-->
+---
+
+<style scoped>
+.slidev-code {
+font-size: 1.4rem !important;
+margin-left: -40px !important;
+margin-right: -40px !important;
+}
+</style>
+
+```python {13-14}
+class StartServer:
+    @staticmethod
+    def main() -> None:
+        # SELECT
+        tx_select = db.new_transaction()
+        select_sql = "SELECT id, name FROM users WHERE name = 'Alice';"
+        plan = planner.create_query_plan(select_sql, tx_select)
+        scan = plan.open()
+        while scan.next():
+            print(f"id = {scan.get_int('id')}, "
+                  f"name = {scan.get_string('name')}")
+
+        scan.close()
+        tx_select.commit()
+```
+
+<!-- スピーカーノート：
+scan.close()でexecutorを終了させて、commitして終了です
+-->
+
+---
+
+<!-- Page 20 レコードを探すしくみ -->
+
+<img src="/img_1_1.png" alt="Parser diagram" style="width: 100%; height: auto; margin-left: -10px; margin-top: 30px;">
+<img src="/img_1_2.png" alt="Parser diagram" style="width: 100%; height: auto; margin-left: -10px;">
+
 
 
 ---
-background: /background.png
----
 
+<div class="absolute inset-0" style="z-index: -1;">
+  <img src="/back_top.png" class="w-full h-full object-contain" style="filter: brightness(1.2);" />
+</div>
+<div style="margin-left: 16rem; margin-top: 15rem">
+
+# Insert 文 & Delete 文
+</div>
+
+---
 
 <!-- Page 23 データのインサート -->
 
@@ -1171,11 +1568,11 @@ INSERT INTO users (id, name) VALUES (259, 'Bob')
 
 
 ## 🍋 状態フラグが00のスロットを探す
-## 🍋 トランザクションを介して
+## 🍋 トランザクションを介す
 ## 🍋 Write-Ahead Logging/
 <div style="margin-left: 30px;">
 
-## ログ先行書き込みで障害対策をして
+## ログ先行書き込みで障害対策をする
 </div>
 
 ## 🍋 空きスロットに書き込む
@@ -1188,8 +1585,64 @@ INSERT INTO users (id, name) VALUES (259, 'Bob')
 </template>
 </CustomTwoCols>
 
+
 ---
-background: /background.png
+
+<!-- Page 25 ヘックスビュワー -->
+
+<style scoped>
+.slidev-code {
+font-size: 1.45rem !important;
+margin-left: -40px !important;
+margin-right: -40px !important;
+}
+
+</style>
+
+```python {all|1-7|1-3,8-11|1-3,13-14|all}
+class BasicUpdatePlanner(UpdatePlanner, ABC):
+    AFFECTED = 1
+    def execute_insert(self, data: InsertData, tx: TX) -> int:
+        """レコードを挿入する"""
+
+        fields = data.get_fields()
+        values = iter(data.get_values())
+
+        for field_name in fields:
+            value = next(values)
+            scan.set_value(field_name, value)
+
+        scan.close()
+        return self.AFFECTED
+```
+
+<!-- スピーカーノート：
+プランを作成して実行するところまではSELECTと同じです。
+get_fields()でカラム名のリストを取得して、
+set_valueで対応するカラムに値をセットしています。
+close()で、scanを閉じて、処理されたレコード数を返しています。
+
+
+-->
+
+---
+
+```python
+
+class FileManager:
+    def write(self, block: BlockID, page: Page) -> None:
+        """ブロックIDに対応するファイルにデータを書き込む"""
+        try:
+            f = self._get_file(block.file_name)
+            f.seek(block.block_number * self.block_size)
+            f.write(page.buffer)
+            f.flush()
+            os.fsync(f.fileno())  # 確実にディスクに書き込み
+```
+
+<!-- スピーカーノート：
+FileManagerのwriteメソッドで、ファイルの指定したブロックにデータを書き込んでいます。
+-->
 ---
 
 <!-- Page 24 削除 -->
@@ -1200,30 +1653,20 @@ background: /background.png
 
 # レコードの削除(DELETE)
 
-<div class="large-sql">
-
 ```sql
 DELETE FROM users WHERE id = 259
 ```
 
-</div>
-
-<style scoped>
-.large-sql pre code {
-  font-size: 1.5rem !important;
-}
-</style>
-
-## 🍋 レコードはすぐには削除しない
+## 🍋 データはすぐには消さない
 ## 🍋 (トランザクションを介して)
 
 <div style="margin-left: 30px; margin-top: -20px;">
 
 ## スロットの状態フラグを00に更新
+## データはそのまま残る
 </div>
 
-## 🍋 データはそのまま残る
-## 🍋 後で新しいレコードを追加する時に
+## 🍋 後でレコードを追加する時に
 
 <div style="margin-left: 30px; margin-top: -20px;">
 
@@ -1241,39 +1684,74 @@ DELETE FROM users WHERE id = 259
 <!-- スピーカーノート：
 -->
 
----
-background: /background.png
----
-<!-- Page 25 ヘックスビュワー -->
-
-# 動画
 
 ---
-background: /background.png
+
+<style scoped>
+.slidev-code {
+margin-left: -40px !important;
+margin-right: -40px !important;
+}
+</style>
+
+```python
+
+class RecordPage:
+    EMPTY = 0
+    USED = 1
+
+    def delete(self, slot: int) -> None:
+        """指定されたスロットを削除する"""
+        self._set_flag(slot, RecordPage.EMPTY)
+        
+    def _set_flag(self, slot: int, flag: int) -> None:
+        """スロットの状態を設定する"""
+        self.tx.set_int(self.block, self._offset(slot), flag, True)
+
+```
+
+<!-- スピーカーノート：
+deleteメソッドで、指定されたスロットの状態フラグをEMPTYに更新しています。
+-->
+
 ---
+
+<img src="/img_2.png" alt="Parser diagram" style="width: 100%; height: auto; margin-left: -10px;">
+
+
+<!-- スピーカーノート：
+デバッガーで確認すると、
+黄色の星印のところで、Aliceのレコードの後に、Bobのレコードが追加されました。
+その後、usersテーブルをSELECTすると、
+AliceとBobの2つのレコードが存在しています。
+その後、DELETE文でBobのレコードを削除すると、
+usersテーブルにはAliceのレコードだけが存在していることがわかります。
+-->
+---
+
 <!-- Page 26 スクショで確認 -->
 
 # ヘックスビュアーで確認
 <br>
 
-<img src="/hex.png" style="width: auto; height: 48%;  margin-top: -3rem; margin-left: -2rem; margin-right: -6rem;" />
+<img src="/hex.png" style="width: 110%; max-width: none; image-rendering: crisp-edges; margin-top: -3rem; margin-left: -40px; margin-right: -35px;" />
 
-<img src="/slot_delete.png" style="width: 61%; height: auto; margin-left: 17px;" />
+<img src="/slot_delete.png" style="width: 77%; height: auto; margin-left: 16px;" />
 
 <!-- スピーカーノート：
-拡大したスクショで確認してみましょう。
+これをバイナリファイルで、本当にデータが存在しているのか、確認してみましょう。
+これは、バイナリファイルを16進数で表示しているスクリーンショットです。
+左側が16進数でダンプしていて、右側が対応するASCII文字です。
 
-
+スロットのレイアウトの通り、4byteの状態フラグ、4byteのid、4byteの文字列長、10byteのnameが並んでいるのがわかります。
 あれ？int型のデータがおかしくないですか？
 -->
 
 ---
-background: /background.png
----
 
 <!-- Page 27 エンディアン -->
 
-# int型の並び順が逆になってる
+# int型の並び順が逆
 
 <div style="width: 40%; margin: 0;">
 <TransparentTable :items="[
@@ -1284,7 +1762,17 @@ background: /background.png
 </div>
 <br>
 
-<img src="/hex.png" style="width: auto; height: 38%;" />
+<div style="position: relative;">
+  <img src="/hex.png" style="width: auto; height: 38%;" />
+
+  <!-- 258 (0x0102) の矢印 -->
+  <div v-click="1" style="position: absolute; top: -70%; left: 30%;">
+    <div style="color: red; font-size: 8rem; font-weight: bold;">
+      <span style="display: inline-block;">↓</span>
+      <span style="display: inline-block; position: relative; top: 2rem; left: 3rem;">↓</span>
+    </div>
+  </div>
+</div>
 
 
 <!-- スピーカーノート：
@@ -1293,20 +1781,18 @@ background: /background.png
 
 
 ---
-background: /background.png
----
 
 <!-- Page 28 エンディアン1 -->
 
 
 # エンディアン
 
-## バイト列の並び順の違い
+## バイト列の並び順の設定違い
 
-## **リトルエンディアン（Intel, AMD, Apple Silicon）**
+## **リトルエンディアン**
 ### 🍋 数値の最下位バイトがアドレスの低い方 → 258 (0x0102) は `02 01` 
 
-## **ビッグエンディアン（ネットワーク標準）**
+## **ビッグエンディアン**
 ### 🍋 数値の最上位バイトがアドレスの低い方 → 258 (0x0102) は `01 02` 
 
 ## **なぜ重要？**
@@ -1320,8 +1806,7 @@ background: /background.png
 なので、、異なるシステム間でバイナリデータをやり取りする時やネットワーク通信の実装では、エンディアンに注意する必要があります。
 -->
 ---
-background: /background.png
----
+
 <!-- Page 29 エンディアン2 -->
 
 # Pythonのstructモジュール
@@ -1354,8 +1839,6 @@ iはint型のiです
 -->
 
 ---
-background: /background.png
----
 
 <!-- Page 30 まとめ -->
 
@@ -1378,12 +1861,10 @@ background: /background.png
 <template v-slot:right>
 <div style="padding-left: 4rem;">
 
-5. **Transaction**
-### 🍋  ロック制御、ロールバック
-6. **Buffer Manager**
+5.**Buffer Manager**
 ### 🍋 メモリキャッシュ管理
 ### 🍋 ディスクI/O最小化
-   7. **File Manager**
+6.**File Manager**
 ### 🍋 物理的なディスク読み書き
 ### 🍋 ブロック単位のデータ管理
 
@@ -1413,7 +1894,7 @@ background: /background.png
 ---
 
 <div class="absolute inset-0" style="z-index: -1;">
-  <img src="/back_top.png" class="w-full h-full object-contain" style="filter: brightness(1.1);" />
+  <img src="/back_top.png" class="w-full h-full object-contain" style="filter: brightness(1.2);" />
 </div>
 
 <div style="font-size: 12rem; text-align: center; margin-top: 200px; margin-left: 400px;">
@@ -1423,11 +1904,8 @@ background: /background.png
 スピーカーノート：
 -->
 
-
-
 ---
-background: /background.png
----
+
 <!-- Page 31 we are hiring -->
 
 # 株式会社DeltaXでは、Webエンジニアを募集中です！
@@ -1441,11 +1919,9 @@ background: /background.png
 <br>
 
 ### 🍋 フルリモート
-### 🍋 生成AIを積極的に活用してます
 
 ---
-background: /background.png
----
+
 <!-- Page 32 挨拶 -->
 
 # 最後に
