@@ -3,7 +3,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "slidev build",
+    "build": "slidev build --base /keiPyDB/pycon2025/",
+    "build:gh-pages": "slidev build --base /keiPyDB/pycon2025/",
     "dev": "slidev --open",
     "export": "slidev export"
   },
