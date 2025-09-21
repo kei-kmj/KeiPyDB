@@ -5,6 +5,7 @@
   "scripts": {
     "build": "slidev build --base /keiPyDB/pycon2025/",
     "build:gh-pages": "slidev build --base /keiPyDB/pycon2025/",
+    "build:vercel": "slidev build",
     "dev": "slidev --open",
     "export": "slidev export"
   },

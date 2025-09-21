@@ -134,7 +134,7 @@ background: none
 
 <!-- Page 3 CMスクショ-->
 
-<img src="/cm.png" style="position: absolute; top: 0; left: 0; right: 0; bottom: 30px; width: 100%; height: calc(100% - 30px); object-fit: contain;" />
+<img src="/cm.png" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; object-fit: contain;" />
 <!--
 スピーカーノート：
 関東圏にお住まいの方であれば、お笑い芸人のかが屋さんのCMを見たことがある方がいらっしゃるかもしれません。
@@ -151,7 +151,7 @@ background: none
   <img src="/back_top.png" class="w-full h-full object-contain" style="filter: brightness(1.2);" />
 </div>
 
-<div style="margin-left: 24rem; margin-top: 15rem">
+<div style="margin-left: 20rem; margin-top: 15rem">
 
 # はじめに
 </div>
@@ -327,9 +327,9 @@ RDBMSのしくみを見ていくことで、DB君は裏側でこんな感じで�
   <img src="/back_top.png" class="w-full h-full object-contain" style="filter: brightness(1.2);" />
 </div>
 
-<div style="margin-left: 10rem; margin-top: 15rem">
+<div style="margin-left: 25rem; margin-top: 15rem">
 
-#  SQLとRDBMSのアーキテクチャ
+#  全体像
 
 </div>
 
@@ -410,8 +410,8 @@ SELECT文を使って、細かく見ていきます
 SELECT id, name FROM users WHERE name = 'Alice'
 ```
 
-<img v-click="1" src="/img_1_1.png" alt="Parser diagram" style="width: 100%; height: auto; margin-left: -10px; margin-top: 30px;">
-<img v-click="1" src="/img_1_2.png" alt="Parser diagram" style="width: 100%; height: auto; margin-left: -10px;">
+<img v-click="1" src="/select_alice.png" alt="Parser diagram" style="width: 90%; height: auto; margin-left: -10px; margin-top: 30px;">
+
 
 <!-- スピーカーノート：
 今回利用するSELECT文です。
@@ -425,13 +425,13 @@ SELECT id, name FROM users WHERE name = 'Alice'
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
-<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 100%; margin-top: 24px; margin-left: -10px;">
+<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 92%; margin-top: 24px; margin-left: -10px;">
 </template>
 <template v-slot:right>
 <div>
 
 # Lexer (字句解析)
-## 文字列をトークン（意味のある最小単位）に分解する
+## SQLをトークン（意味のある最小単位）に分解する
 <br>
 
 <style scoped>
@@ -460,7 +460,7 @@ SELECT id, name FROM users WHERE name = 'Alice'
 </CustomTwoCols>
 
 <!-- スピーカーノート：
-一つ一つ見ていくと、まずLexerで、〜
+一つ一つ見ていくと、まずLexerで、〜〜SQLを一つ一つ分解します
 
 -->
 ---
@@ -469,7 +469,7 @@ SELECT id, name FROM users WHERE name = 'Alice'
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
-<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 100%; margin-top: 24px; margin-left: -10px;">
+<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 92%; margin-top: 24px; margin-left: -10px;">
 </template>
 <template v-slot:right>
 <div>
@@ -581,7 +581,7 @@ class Lexer:
         """SQL文をトークンに分割"""
         token_pattern = (r"[a-zA-Z_][a-zA-Z_0-9]*|'(?:[^']|'')*'"
                          r"|\d+(?:\.\d+)?|[=,()<>*+-/;]|\s+|.")
-        tokens = re.findall(token_pattern, sql)
+        token_list = re.findall(token_pattern, sql)
 ```
 
 <!-- スピーカーノート：
@@ -649,7 +649,7 @@ class Lexer:
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
-<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 94%; margin-top: 24px; margin-left: -20px;">
+<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 92%; margin-top: 24px; margin-left: -20px;">
 </template>
 <template v-slot:right>
 <div>
@@ -691,7 +691,7 @@ SQL文をコンピュータが理解しやすい木構造に変換したもの�
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
-<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 95%; margin-top: 24px; margin-left: -20px;">
+<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 92%; margin-top: 24px; margin-left: -20px;">
 </template>
 <template v-slot:right>
 <div>
@@ -700,7 +700,7 @@ SQL文をコンピュータが理解しやすい木構造に変換したもの�
 
 ```sql
 WHERE price < 1000 AND 
-    sweets = '牡蠣せんべい' OR sweets = 'もみじ饅頭'
+ ( sweets = '牡蠣せんべい' OR sweets = 'もみじ饅頭')
 ```
 <div style="text-align: center; font-size: 1.6em;">⬇︎</div>
 
@@ -947,6 +947,7 @@ class Parser:
 ---
 
 <div style="margin-left: -50px; margin-right: -50px;">
+
 <img src="/query_data.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 24px; ">
 </div>
 
@@ -1053,7 +1054,8 @@ TablePlanを作成します。
 ---
 
 <div style="margin-left: -50px; margin-right: -50px;">
-<img src="/plan_scsho.png" alt="Parser diagram" style="width: 100%; height: auto; margin-left: -10px; margin-top: 30px;">
+
+<img src="/plan_obj.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 30px;">
 </div>
 
 
@@ -1158,7 +1160,7 @@ ProjectScan(['id','name']) # 必要なカラムだけ取り出す
 
 <CustomTwoCols :leftRatio="80">
 <template v-slot:left>
-<img src="/disk.png" style="width: auto; height: 90%; margin-top: 30px; margin-left: -30px;">
+<img src="/disc.png" style="width: auto; height: 90%; margin-top: 30px; margin-left: -30px;">
 </template>
 <template v-slot:right>
 <div style="margin-left: -2rem;">
@@ -1230,7 +1232,7 @@ ProjectScan(['id','name']) # 必要なカラムだけ取り出す
 </CustomTwoCols>
 
 <!-- スピーカーノート：
-Executorに戻って、実際にレコードを取得するしくみを見ていきます。
+
 -->
 
 ---
@@ -1273,7 +1275,7 @@ Executorに戻って、実際にレコードを取得するしくみを見てい
 ProjectPlan(
     fields=['id', 'name'],
     SelectPlan(predicate="name='Alice'",
-        TablePlan('users'))) # id = 258, name = 'Alice'
+        TablePlan('users')))
 ```
 
 ## 🍋 usersテーブルのブロックをストレージ層から
@@ -1297,7 +1299,8 @@ ProjectPlan(
 </CustomTwoCols>
 
 <!-- スピーカーノート：
-ファイル、ディスク、ブロックが何かを整理できたところで、実行エンジンの話ができます。
+ストレージ層、ファイル、ブロックなどの説明ができたので、
+Executorに戻って、実際にレコードを取得するしくみを見ていきます。
 
 -->
 
@@ -1376,7 +1379,8 @@ idはint型なので、今回は4バイト分確保しています。nameはvarc
 <img src="/slot7.png" alt="Slot layout diagram" style="width: auto; height: 35%; margin-left: 18rem; margin-top: 40px;">
 
 <!-- スピーカーノート：
-1スロットが22バイトなので、22バイトずつ探していって、スロットの中の13バイト目から10バイト分を見て、nameがAliceかどうかを確認します。
+1スロットが22バイトだとわかれば、22バイトずつ探していけばいいわけです。
+1スロットずつ、スロットの中の13バイト目から10バイト分を見て、nameがAliceかどうかを確認します。
 -->
 
 ---
@@ -1472,7 +1476,7 @@ class SelectScan(UpdateScan, ABC):
 ```
 
 <!-- スピーカーノート：
-SelectScanで、ループ処理で条件式(name = 'Alice')を満たすかどうかを確認しています。
+SelectScanメソッドで、ループ処理で条件式(name = 'Alice')を満たすかどうかを確認しています。
 -->
 
 ---
@@ -1489,7 +1493,7 @@ class ProjectScan(Scan, ABC):
 ```
 
 <!-- スピーカーノート：
-最後に、ProjectScanで、必要なカラムだけを取り出しています。
+最後に、ProjectScanメソッドで、必要なカラムだけを取り出しています。
 -->
 ---
 
@@ -1526,9 +1530,11 @@ scan.close()でexecutorを終了させて、commitして終了です
 
 <!-- Page 20 レコードを探すしくみ -->
 
-<img src="/img_1_1.png" alt="Parser diagram" style="width: 100%; height: auto; margin-left: -10px; margin-top: 30px;">
-<img src="/img_1_2.png" alt="Parser diagram" style="width: 100%; height: auto; margin-left: -10px;">
+<img src="/select_alice.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 130px;">
 
+<!-- スピーカーノート：
+実行すると、id = 258, name = 'Alice'が出力されます。
+-->
 
 
 ---
@@ -1538,7 +1544,7 @@ scan.close()でexecutorを終了させて、commitして終了です
 </div>
 <div style="margin-left: 16rem; margin-top: 15rem">
 
-# Insert 文 & Delete 文
+# INSERT 文 & DELETE 文
 </div>
 
 ---
@@ -1585,6 +1591,9 @@ INSERT INTO users (id, name) VALUES (259, 'Bob')
 </template>
 </CustomTwoCols>
 
+<!-- スピーカーノート：
+idが259、nameがBobのレコードを追加します。
+-->
 
 ---
 
@@ -1683,7 +1692,7 @@ DELETE FROM users WHERE id = 259
 
 <!-- スピーカーノート：
 -->
-
+id = 259のレコードを削除するのですが、
 
 ---
 
@@ -1694,7 +1703,7 @@ margin-right: -40px !important;
 }
 </style>
 
-```python
+```python {all|1-7|1-5,9-11|all}
 
 class RecordPage:
     EMPTY = 0
@@ -1716,16 +1725,16 @@ deleteメソッドで、指定されたスロットの状態フラグをEMPTYに
 
 ---
 
-<img src="/img_2.png" alt="Parser diagram" style="width: 100%; height: auto; margin-left: -10px;">
+<img src="/bob_delete.png" alt="Parser diagram" style="width: 100%; height: auto; margin-top: 50px; margin-left: -10px;">
 
 
 <!-- スピーカーノート：
 デバッガーで確認すると、
 黄色の星印のところで、Aliceのレコードの後に、Bobのレコードが追加されました。
 その後、usersテーブルをSELECTすると、
-AliceとBobの2つのレコードが存在しています。
+AliceとBobの2つのレコードが出力されて
 その後、DELETE文でBobのレコードを削除すると、
-usersテーブルにはAliceのレコードだけが存在していることがわかります。
+Aliceのレコードだけが出力されることがわかります
 -->
 ---
 
@@ -1739,12 +1748,17 @@ usersテーブルにはAliceのレコードだけが存在していることが�
 <img src="/slot_delete.png" style="width: 77%; height: auto; margin-left: 16px;" />
 
 <!-- スピーカーノート：
-これをバイナリファイルで、本当にデータが存在しているのか、確認してみましょう。
-これは、バイナリファイルを16進数で表示しているスクリーンショットです。
-左側が16進数でダンプしていて、右側が対応するASCII文字です。
+実際にバイナリファイルの中身を確認して、データが正しく保存されているか見てみましょう。
+このスクリーンショットは、バイナリファイルを16進数で表示したものです。
 
-スロットのレイアウトの通り、4byteの状態フラグ、4byteのid、4byteの文字列長、10byteのnameが並んでいるのがわかります。
-あれ？int型のデータがおかしくないですか？
+左側に16進数の値が並んでいて、右側にはそれに対応するASCII文字が表示されています。
+- 黄色　最初の4バイト：状態フラグ（int）
+- 水色　次の4バイト：ID（int）  
+- 薄いピンク　次の4バイト：文字列長（int）
+- 濃いピンク　続く10バイト：name（char配列）
+
+で、ここで注目してほしいのが、int型のデータの並び方なんですが...
+なんか直感と違いませんか？
 -->
 
 ---
@@ -1787,12 +1801,12 @@ usersテーブルにはAliceのレコードだけが存在していることが�
 
 # エンディアン
 
-## バイト列の並び順の設定違い
+## バイト列の並び順の設定の違い
 
-## **リトルエンディアン**
+## **リトルエンディアン** 
 ### 🍋 数値の最下位バイトがアドレスの低い方 → 258 (0x0102) は `02 01` 
 
-## **ビッグエンディアン**
+## **ビッグエンディアン** 
 ### 🍋 数値の最上位バイトがアドレスの低い方 → 258 (0x0102) は `01 02` 
 
 ## **なぜ重要？**
@@ -1804,6 +1818,8 @@ usersテーブルにはAliceのレコードだけが存在していることが�
 リトルエンディアンとビッグエンディアンは、必ずしもどちらが優れている、というわけではなく、
 歴史的経緯などもあって、2種類の方式が存在しています。
 なので、、異なるシステム間でバイナリデータをやり取りする時やネットワーク通信の実装では、エンディアンに注意する必要があります。
+
+今私が使っているM3MacのCPUはリトルエンディアンです。
 -->
 ---
 
@@ -1842,32 +1858,40 @@ iはint型のiです
 
 <!-- Page 30 まとめ -->
 
-# まとめ
+
 
 <div class="summary-content">
-<CustomTwoCols :leftRatio="50">
+<CustomTwoCols :leftRatio="30">
 <template v-slot:left>
+  <img src="/architecture1.png" style="width: auto; height: auto; margin-top: 20px;"/>
 
-1. **Lexer** - 字句解析でトークンに分解
-2. **Parser** - 構文解析でASTを構築  
-3. **Planner** - 実行計画を作成
-### 🍋 TablePlan / SelectPlan / ProjectPlan
-4. **Executor** - 実行エンジン
-### 🍋 ProjectScan: カラム抽出
-### 🍋 SelectScan: WHERE条件フィルタ
-### 🍋 TableScan: ファイルアクセス
 
 </template>
 <template v-slot:right>
 <div style="padding-left: 4rem;">
 
-5.**Buffer Manager**
-### 🍋 メモリキャッシュ管理
-### 🍋 ディスクI/O最小化
-6.**File Manager**
-### 🍋 物理的なディスク読み書き
-### 🍋 ブロック単位のデータ管理
+# まとめ
+## 🍋 **Lexer (字句解析)** - SQLをトークンに分解
 
+## 🍋 **Parser (構文解析)** - トークンからAST構築
+
+## 🍋 **Planner (実行計画)** - 最適な実行順を決定
+
+## 🍋 **Executor (実行エンジン)**
+<div style="margin-left: 30px;">
+
+## 実行計画に従ってデータにアクセス
+</div>
+
+## 🍋 **Buffer Manager** - データのメモリ保持
+
+## 🍋 **File Manager**
+<div style="margin-left: 30px;">
+
+## エンディアン変換
+## ディスクへの読み書き
+
+</div>
 </div>
 </template>
 </CustomTwoCols>
@@ -1890,35 +1914,6 @@ iはint型のiです
 <!-- スピーカーノート：
 これで、SQLの1行の裏側で、たくさんの仕組みが動いていることがわかってもらえたと思います。
 -->
-
----
-
-<div class="absolute inset-0" style="z-index: -1;">
-  <img src="/back_top.png" class="w-full h-full object-contain" style="filter: brightness(1.2);" />
-</div>
-
-<div style="font-size: 12rem; text-align: center; margin-top: 200px; margin-left: 400px;">
-☕️
-</div>
-<!--
-スピーカーノート：
--->
-
----
-
-<!-- Page 31 we are hiring -->
-
-# 株式会社DeltaXでは、Webエンジニアを募集中です！
-<br>
-<br>
-
-### 🍋 言語：Python／TypeScript
-### 🍋 フレームワーク：FastAPI／Astro／React／Remix
-### 🍋 インフラ：AWS／OpenSearch／PostgreSQL／DynamoDB他
-
-<br>
-
-### 🍋 フルリモート
 
 ---
 
