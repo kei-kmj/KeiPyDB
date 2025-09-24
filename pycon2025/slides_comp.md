@@ -276,7 +276,7 @@ SQLは、〜〜があって、機能としては〜〜があります。
 
 # 話すこと
 
-## 🍋 SQLの1行の裏側で、たくさんの仕組みが動いていること
+## 🍋 RDBMSがSQLをどのように処理するか
 
 <br>
 <div style="margin-left: 30px;">
@@ -503,7 +503,7 @@ margin-right: -40px !important;
 }
 </style>
 
-```python {all|7|all}
+```python {all|7}
 class StartServer:
     
     @staticmethod
@@ -516,10 +516,6 @@ class StartServer:
         scan = plan.open()
 
 ```
-
-<div v-click="[1, 2]" class="absolute top-[250px] left-[640px]">
-  <Balloon text="実行" />
-</div>
 
 <!-- スピーカーノート：
 実際のコードを見てみます。
@@ -546,11 +542,6 @@ class Lexer:
             "delete",
 
 ```
-
-<div v-click="[1, 2]" class="absolute top-[140px] left-[300px]">
-  <Balloon text="キーワード（予約語）<br>が定義されている" />
-</div>
-
 <!-- スピーカーノート：
 最初の字句解析の部分です。
 予約語を定義していて、Lexerクラスで初期化します。
@@ -575,13 +566,6 @@ class Lexer:
         # マッチするものをすべて抽出
         token_list = re.findall(token_pattern, sql)
 ```
-
-<div v-click="[1, 2]" class="absolute top-[150px] left-[440px]">
-  <Balloon text="トークン分割用の正規表現" />
-</div>
-<div v-click="[2, 3]" class="absolute top-[370px] left-[440px]">
-  <Balloon text="マッチするものをすべて抽出" />
-</div>
 
 <!-- スピーカーノート：
 
@@ -615,10 +599,8 @@ class Lexer:
 </div>
 
 <!-- スピーカーノート：
-Lexerクラスには、match_keyword()メソッドがあり、
-予約語と一致するかどうかどうかを判定します。
-また、eat_keyword()メソッドがあり、このメソッドで
-予約語を認識して次のトークンの処理に進む
+Lexerクラスには、予約語かどうかを判定するmatch_keywordメソッドと、
+予約語を認識して次のトークンの処理に進むeat_keywordメソッドがあります。
 eat_keywordメソッドにnext_tokenメソッドがあることで、
 トークンを左から右に、かつ一度だけ処理し、次の解析ステップへ進めることができます
 
@@ -652,10 +634,8 @@ class Lexer:
 </div>
 
 <!-- スピーカーノート：
-また、予約語と同じようにmatch_id()メソッドがあり、
-識別子かどうかを判定します。
-eat_id()メソッドがあり、このメソッドで
-識別子を認識して次のトークンの処理に進みます。
+また、予約語と同じように識別子かどうかを判定するmatch_idメソッドと、
+識別子を認識して次のトークンの処理に進むeat_idメソッドがあります。
 
 これは、他にも、区切り文字、演算子、リテラルなどに対しても同様のメソッドがあります。
 -->
@@ -676,13 +656,15 @@ eat_id()メソッドがあり、このメソッドで
 
 <div style="text-align: center; font-size: 1.0em; margin-left: -8rem; margin-right: -8rem;">
 
-### `SELECT` `id` `,` `name` `FROM` `users` `WHERE` `name` `=` `'Alice'`
+### `SELECT` `id` `,` `name` `FROM` `users` `WHERE` `name` `=` `'Alice'`   
 </div>
 
 <div style="text-align: center; font-size: 1.2em;">⬇︎</div>
 
 
-## **ASTを構築**
+## **AST（抽象構文木: Abstract Syntax Tree）**
+
+## トークン列を構造化して木構造にしたもの
 
 ```
   QueryData
@@ -1278,50 +1260,32 @@ ProjectScan(['id','name']) # 必要なカラムだけ取り出す
 
 <!-- Page 17 用語 -->
 
-<CustomTwoCols :leftRatio="40">
+<CustomTwoCols :leftRatio="80">
 <template v-slot:left>
-<img src="/img.png" style="width: auto; height: 90%; margin-top: 18px; margin-left: -30px;">
+<img src="/disc.png" style="width: auto; height: 90%; margin-top: 30px; margin-left: -30px;">
 </template>
 <template v-slot:right>
 <div style="margin-left: -2rem;">
 
 # 用語
 
-## 🍋**ブロック**
-<div style="margin-left: 30px; margin-top: -10px;">
-
-## ストレージとのやりとりに用いる、
-</div>
-<div style="margin-left: 30px; margin-top: -10px;">
-
-## 固定長のデータ単位 (KeiPyDBでは400バイト)
-</div>
-
 <br>
 
-## 🍋**スロット**
-<div style="margin-left: 30px; margin-top: -10px;">
+### 🍋 ファイル : 
+## OSのファイルシステムで内部的に定義される、ブロックの論理的な集まり
+### 🍋 ブロック : 
+## ディスクを固定長に区切った領域
 
-## ブロック内でレコードを保存する固定長の領域
-</div>
-<div style="margin-left: 30px; margin-top: -10px;">
-
-## テーブル情報でサイズとレイアウトが決まる
-</div>
 </div>
 </template>
 </CustomTwoCols>
 
 <!-- スピーカーノート：
-ファイル、ブロック、スロットとは何かを整理しておきます。
-ファイルは〜〜
-ブロックは〜〜
-スロットは〜〜
+ファイル、ブロックとは何かを整理しておきます。
 
 -->
 
 ---
-
 
 <!-- Page 18 バッファマネジャ-->
 
@@ -1337,6 +1301,7 @@ ProjectScan(['id','name']) # 必要なカラムだけ取り出す
 
 ## RDBMS自身でメモリ管理(OSにまかせない)
 
+## 🍋 ブロックのメモリへの読み込み
 ## 🍋 頻繁にアクセスされるブロックをメモリに保持
 ## 🍋 使用頻度が低いブロックのメモリからの追い出し
 
@@ -1352,7 +1317,7 @@ ProjectScan(['id','name']) # 必要なカラムだけ取り出す
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
-<img src="/file_manager.png" alt="Parser diagram" style="width: auto; height: 100%; margin-top: 20px;">
+<img src="/file_manager.png" alt="Parser diagram" style="width: auto; height: 98%; margin-top: 15px; margin-left: -10px;">
 </template>
 <template v-slot:right>
 <div>
@@ -1362,7 +1327,7 @@ ProjectScan(['id','name']) # 必要なカラムだけ取り出す
 
 ## データの永続化
 ## 🍋 OSのファイルシステムとのやりとり
-## 🍋 ストレージのデータをブロックの単位で読み書き
+## 🍋 ディスク上のデータをブロック単位で読み書き
 
 </div>
 </template>
@@ -1427,17 +1392,25 @@ ProjectPlan(
 ## （トランザクションを介して）1つずつ読む
 </div>
 
-## 🍋 ブロックの中をスロット単位で探す
+## 🍋 ブロックの中は
+<div style="margin-left: 30px; margin-top: -10px;">
+
+## **スロット**という単位でレコードが保存されている
+</div>
+
+<div style="margin-left: 10rem; margin-top: -10px; margin-bottom: -20px; font-size: 1.2rem;">⬇︎</div>
+
+## 🍋 **スロット**の単位で探す
 
 </template>
 </CustomTwoCols>
 
 <!-- スピーカーノート：
-ストレージ層の概要と、ここから使われる用語を確認したところで、
+ストレージ層、ファイル、ブロックなどの説明ができたので、
 Executorに戻って、実際にレコードを取得するしくみを見ていきます。
 TablePlan('users')なので、usersテーブルのブロックをストレージ層から1つずつ読むのですが、
 ブロックの中にはブロックのサイズにもよりますが、複数のレコードが保存されています。
-レコードはスロット単位で保存されているので、スロット単位でレコードを探していきます。
+レコードはスロットという単位で保存されているので、スロットの単位でレコードを探していきます。
 
 -->
 
@@ -1450,9 +1423,15 @@ TablePlan('users')なので、usersテーブルのブロックをストレージ
 <template v-slot:left>
 <div>
 
-# スロットのサイズとレイアウト
+# スロットとは何か
 
-## 🍋 サイズ/レイアウトはテーブル情報で決まる
+## 🍋 テーブル情報から定義される
+
+<div style="margin-left: 30px;">
+
+## ブロック内の固定長の領域
+</div>
+<br>
 
 <div class="large-sql">
 
@@ -1464,13 +1443,10 @@ CREATE TABLE users (id int, name varchar(10))
 
 <style scoped>
 .large-sql pre code {
-  font-size: 1.25rem !important;
+  font-size: 1.2rem !important;
 }
 </style>
 
-<br>
-<br>
-<br>
 <br>
 <br>
 
@@ -1493,7 +1469,7 @@ CREATE TABLE users (id int, name varchar(10))
 </CustomTwoCols>
 
 <!-- スピーカーノート：
-スロットのレイアウトを見てみます。
+スロットとは何か。
 CREATE TABLE 〜〜なので、
 〜〜
 idはint型なので、今回は4バイト分確保しています。nameはvarchar(10)なので、10バイト分確保しています。
