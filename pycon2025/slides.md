@@ -217,9 +217,9 @@ Pythonで、標準ライブラリのみを使って実装
 </CustomTwoCols>
 
 <!-- スピーカーノート：
-今日使う、Python製RDBMSですが、これは自作しました。
+今日使う、Python製RDBMSは、KeiPDBといいます。これは自作しました。
 Database Design and Implementation という一般にSimpleDB本と呼ばれる書籍を参考にしてます。
-JavaでRDBMSを実装していく内容ですが、書籍を参考に、Pythonで標準ライブラリのみ使って実装しています。
+この書籍はJavaでRDBMSを実装していく内容の書籍で、この書籍を参考に、Pythonで標準ライブラリのみ使って実装しています。
 -->
 
 ---
@@ -258,6 +258,12 @@ JavaでRDBMSを実装していく内容ですが、書籍を参考に、Python�
 ### 🍋 ハッシュインデックス
 ### 🍋 B-treeインデックス
 
+<br>
+
+## サポートするデータ型
+### 🍋 整数(int)
+### 🍋 文字列(varchar)
+
 </div>
 </div>
 
@@ -291,13 +297,14 @@ SQLは、〜〜があって、機能としては〜〜があります。
 
 <div style="margin-left: 10px;">
 
-##  を使って、コードを追っていきます
+##  を使って見ていきます
 </div>
 
 
 
 <!-- スピーカーノート：
-RDBMSがSQLをどのように処理するかをコードを追っていきます
+SQLの1行の裏側で、たくさんの仕組みが動いていることを
+見ていきます
 -->
 ---
 
@@ -398,7 +405,7 @@ SELECT 〜〜
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
-<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 92%; margin-top: 24px; margin-left: -10px;">
+<img src="/parser.png" alt="Parser diagram" style="width: auto; height: 95%; margin-top: 24px; margin-left: -10px;">
 </template>
 <template v-slot:right>
 <div>
@@ -451,11 +458,14 @@ SELECT id, name FROM users WHERE name = 'Alice'
 # Lexer (字句解析)
 ## 分解したトークンの種類を判定して分類
 
-<br>
+<div style="text-align: center; font-size: 1.0em; margin-left: -8rem; margin-right: -8rem;">
 
+### `SELECT` `id` `,` `name` `FROM` `users` `WHERE` `name` `=` `'Alice'`
+</div>
+<br>
 <div class="compact-table">
 
-| トークン | 種類（Lexerが判定） |
+| トークン | 種類（Lexerが分類） |
 |---------|--------------|
 | `SELECT`, `FROM`, `WHERE` | キーワード（予約語）   |
 | `id`, `name`, `users` | 識別子          |
@@ -497,7 +507,7 @@ SELECT id, name FROM users WHERE name = 'Alice'
 # SELECT文の実行
 <style scoped>
 .slidev-code {
-font-size: 1.44rem !important;
+font-size: 1.43rem !important;
 margin-left: -40px !important;
 margin-right: -40px !important;
 }
@@ -615,10 +625,10 @@ class Lexer:
 </div>
 
 <!-- スピーカーノート：
-Lexerクラスには、match_keyword()メソッドがあり、
+Lexerクラスには、match_keyword()メソッドがあり、このメソッドで
 予約語と一致するかどうかどうかを判定します。
-また、eat_keyword()メソッドがあり、このメソッドで
-予約語を認識して次のトークンの処理に進む
+また、match_keywrod()メソッドとは別にeat_keyword()メソッドがあります。
+このメソッドでは、予約語を認識すると、次のトークンの処理に進みます
 eat_keywordメソッドにnext_tokenメソッドがあることで、
 トークンを左から右に、かつ一度だけ処理し、次の解析ステップへ進めることができます
 
@@ -654,7 +664,7 @@ class Lexer:
 <!-- スピーカーノート：
 また、予約語と同じようにmatch_id()メソッドがあり、
 識別子かどうかを判定します。
-eat_id()メソッドがあり、このメソッドで
+先ほどのeat_keywrod()メソッドと同じように、eat_id()メソッドがあり、このメソッドで
 識別子を認識して次のトークンの処理に進みます。
 
 これは、他にも、区切り文字、演算子、リテラルなどに対しても同様のメソッドがあります。
@@ -682,7 +692,7 @@ eat_id()メソッドがあり、このメソッドで
 <div style="text-align: center; font-size: 1.2em;">⬇︎</div>
 
 
-## **ASTを構築**
+## **AST(抽象構文木：Abstract Syntax Tree)を構築**
 
 ```
   QueryData
@@ -1016,7 +1026,7 @@ class Parser:
 
 
 <!-- スピーカーノート：
-また、ANDで条件記が続く場合、再帰的にpredicateメソッドを呼び出して、
+また、ANDで条件式が続く場合、再帰的にpredicateメソッドを呼び出して、
 条件式を連結しています。
 -->
 
@@ -1042,7 +1052,7 @@ class Parser:
 
 <!-- スピーカーノート：
 これで、queryメソッドに戻ってきました。
-カラム、テーブル、条件式を構造化できましたので、
+フィールド、テーブル、条件式を構造化できましたので、
 QueryDataオブジェクトにまとめて返します。これがASTです
 -->
 
@@ -1164,7 +1174,7 @@ class BasicQueryPlanner(QueryPlanner, ABC):
 まず、どのテーブルからレコードを取得するかを決めて、
 TablePlanを作成します。
 次に、WHERE句の条件式を使って、必要なレコードだけを取得するSelectPlanを加えます。
-最後に、SELECT句のカラム名リストを使って、必要なカラムだけを取り出すProjectPlanを加えます。
+最後に、SELECT句のカラム名リストを使って、指定されたカラムだけを取り出すProjectPlanを加えます。
 ちなみに、SelectPlanのSelectの意味は、SELECT文のSelectではなくて、WHERE句で選択する、の意味です。
 このselectとprojectは数学的な演算から来ている名前です
 
@@ -1194,7 +1204,7 @@ ProjectPlanの中にSelectPlanがあって、その中にTablePlanが作られ�
 
 <CustomTwoCols :leftRatio="30">
 <template v-slot:left>
-<img src="/executor.png" alt="Parser diagram" style="width: auto; height: 91%; margin-top: 24px; margin-left: -10px;">
+<img src="/executor.png" alt="Parser diagram" style="width: auto; height: 93%; margin-top: 19px; margin-left: -10px;">
 </template>
 <template v-slot:right>
 <div>
@@ -1213,7 +1223,7 @@ ProjectPlanの中にSelectPlanがあって、その中にTablePlanが作られ�
 ```python
 TableScan('users')        # テーブルから1行ずつ読む
 SelectScan("name='Alice'") # 条件に合うか確認
-ProjectScan(['id','name']) # 必要なカラムだけ取り出す
+ProjectScan(['id','name']) # 指定カラムだけ取り出す
 ```
 
 ## 3️⃣ レコードを返す
@@ -1306,16 +1316,17 @@ ProjectScan(['id','name']) # 必要なカラムだけ取り出す
 </div>
 <div style="margin-left: 30px; margin-top: -10px;">
 
-## テーブル情報でサイズとレイアウトが決まる
+## テーブル情報からサイズとレイアウトが決まる
 </div>
 </div>
 </template>
 </CustomTwoCols>
 
 <!-- スピーカーノート：
-ファイル、ブロック、スロットとは何かを整理しておきます。
-ファイルは〜〜
-ブロックは〜〜
+ここで、この後に出てくる用語を確認しておきます。
+ブロックは〜〜で、一般にはOSに合わせて4096バイトとかにすることが多いですが、
+今回はシンプルに1ブロック400バイトにしています。
+1ブロックの中に複数のスロットがあって、1スロットに1レコードが保存されます。
 スロットは〜〜
 
 -->
@@ -1387,7 +1398,7 @@ ProjectScan(['id','name']) # 必要なカラムだけ取り出す
 [//]: # (</div>)
 <!--
 スピーカーノート：
-17-18m
+19m
 -->
 
 
@@ -1433,11 +1444,10 @@ ProjectPlan(
 </CustomTwoCols>
 
 <!-- スピーカーノート：
-ストレージ層の概要と、ここから使われる用語を確認したところで、
+ストレージ層の概要と、用語を確認したところで、
 Executorに戻って、実際にレコードを取得するしくみを見ていきます。
-TablePlan('users')なので、usersテーブルのブロックをストレージ層から1つずつ読むのですが、
-ブロックの中にはブロックのサイズにもよりますが、複数のレコードが保存されています。
-レコードはスロット単位で保存されているので、スロット単位でレコードを探していきます。
+TablePlan('users')なので、usersテーブルのブロックをストレージ層から1つずつ読んで、
+スロット単位でレコードを探していきます。
 
 -->
 
@@ -1493,7 +1503,8 @@ CREATE TABLE users (id int, name varchar(10))
 </CustomTwoCols>
 
 <!-- スピーカーノート：
-スロットのレイアウトを見てみます。
+用語の説明のところで、スロットはテーブル情報からサイズとレイアウトが決まる、と言いました。
+具体的には、
 CREATE TABLE 〜〜なので、
 〜〜
 idはint型なので、今回は4バイト分確保しています。nameはvarchar(10)なので、10バイト分確保しています。
@@ -1510,7 +1521,7 @@ idはint型なので、今回は4バイト分確保しています。nameはvarc
 ## 🍋 スロットのサイズとレイアウトがわかれば、レコードにアクセス可能
 ## 🍋 スロット毎に、13バイト目から10バイト分を確認
 ## 🍋 nameがAliceかどうかの確認
-## 🍋 レコードを取得して指定されたカラムを出力 { id: 258, name: 'Alice' }
+## 🍋 レコードを取得して指定されたフィールドを出力 { id: 258, name: 'Alice' }
 
 <img src="/slot7.png" alt="Slot layout diagram" style="width: auto; height: 35%; margin-left: 18rem; margin-top: 40px;">
 
@@ -1634,12 +1645,12 @@ class SelectScan(UpdateScan, ABC):
 </div>
 
 <!-- スピーカーノート：
-SelectScanメソッドで、ループ処理で条件式(name = 'Alice')を満たすかどうかを確認しています。
+SelectScanクラスのnext()メソッドで、ループ処理で条件式(name = 'Alice')を満たすかどうかを確認しています。
 -->
 
 ---
 
-# Executor(実行エンジン) - 指定したカラムの値を取得
+# Executor(実行エンジン) - 指定したフィールドの値を取得
 ```python {all|1-2,5|all}
 class ProjectScan(Scan, ABC):
     def get_value(self, field_name: str) -> Constant:
@@ -1651,11 +1662,11 @@ class ProjectScan(Scan, ABC):
 
 ```
 <div v-click="[1, 2]" class="absolute top-[200px] left-[600px]">
-  <Balloon text="指定したカラムの値を取得" />
+  <Balloon text="指定したフィールドの値を取得" />
 </div>
 
 <!-- スピーカーノート：
-最後に、ProjectScanメソッドで、必要なカラムだけを取り出しています。
+最後に、ProjectScanクラスのget_value()メソッドで、指定されたフィールドだけを取り出しています。
 -->
 ---
 
