@@ -283,8 +283,6 @@ SQLは、〜〜があって、機能としては〜〜があります。
 # 話すこと
 
 ## 🍋 SQLの1行の裏側で、たくさんの仕組みが動いていること
-
-<br>
 <div style="margin-left: 30px;">
 
 ## ⚪︎ CREATE TABLE
@@ -293,18 +291,23 @@ SQLは、〜〜があって、機能としては〜〜があります。
 ## ⚪︎ DELETE
 
 </div>
-<br>
 
-<div style="margin-left: 10px;">
+## 🍋 RDBMSに共通する考え方と基本構成
 
-##  を使って見ていきます
+<div style="margin-left: 20px;">
+
+### ※ 個別のアルゴリズムとしては、かなりシンプル
 </div>
-
 
 
 <!-- スピーカーノート：
 SQLの1行の裏側で、たくさんの仕組みが動いていることを
-見ていきます
+〜〜を使ってお話しします。
+かなり簡単なアルゴリズムで実装しているので、実用的なRDBMSと全く同じというわけではないですが、
+RDBMSに共通する考え方や基本構成などの仕組みはわかってもらえるかなと思うので、
+この話を聞いていただくことで、
+トラブルシューティングの時などに、仕組みがこうだから、ここを疑ってみよう、
+みたいな感じで役に立つといいかなと思います。
 -->
 ---
 
@@ -323,9 +326,7 @@ SQLの1行の裏側で、たくさんの仕組みが動いていることを
 
 
 <!-- スピーカーノート：
-RDBMSのしくみを見ていくことで、DB君は裏側でこんな感じで頑張っているんだな、
-とイメージが湧いて、トラブルシューティングの時などに、仕組みがこうだから、ここを疑ってみよう、
-みたいな感じで役に立つといいかなと思います。
+つまり、実務に直結する話はありません。
 -->
 
 ---
@@ -787,6 +788,11 @@ class Parser:
         
         self.lexer.eat_keyword("from")
         table_list = self.table_list()
+        
+        predicate = Predicate()
+        if self.lexer.match_keyword("where"):
+            self.lexer.eat_keyword("where")
+            predicate = self.predicate()
 
 ```
 
@@ -1166,7 +1172,7 @@ class BasicQueryPlanner(QueryPlanner, ABC):
   <Balloon text="条件式の実行計画の作成" />
 </div>
 <div v-click="[3, 4]" class="absolute top-[320px] left-[450px]">
-  <Balloon text="カラム取得の実行計画の作成" />
+  <Balloon text="フィールド取得の実行計画の作成" />
 </div>
 
 <!-- スピーカーノート：
@@ -1174,7 +1180,7 @@ class BasicQueryPlanner(QueryPlanner, ABC):
 まず、どのテーブルからレコードを取得するかを決めて、
 TablePlanを作成します。
 次に、WHERE句の条件式を使って、必要なレコードだけを取得するSelectPlanを加えます。
-最後に、SELECT句のカラム名リストを使って、指定されたカラムだけを取り出すProjectPlanを加えます。
+最後に、フィールドリストを使って、指定されたフィールドだけを取り出すProjectPlanを加えます。
 ちなみに、SelectPlanのSelectの意味は、SELECT文のSelectではなくて、WHERE句で選択する、の意味です。
 このselectとprojectは数学的な演算から来ている名前です
 
@@ -1223,7 +1229,7 @@ ProjectPlanの中にSelectPlanがあって、その中にTablePlanが作られ�
 ```python
 TableScan('users')        # テーブルから1行ずつ読む
 SelectScan("name='Alice'") # 条件に合うか確認
-ProjectScan(['id','name']) # 指定カラムだけ取り出す
+ProjectScan(['id','name']) # 指定フィールドだけ取り出す
 ```
 
 ## 3️⃣ レコードを返す
@@ -1306,7 +1312,6 @@ ProjectScan(['id','name']) # 指定カラムだけ取り出す
 
 ## 固定長のデータ単位 (KeiPyDBでは400バイト)
 </div>
-
 <br>
 
 ## 🍋**スロット**
@@ -1318,16 +1323,20 @@ ProjectScan(['id','name']) # 指定カラムだけ取り出す
 
 ## テーブル情報からサイズとレイアウトが決まる
 </div>
+
+
 </div>
 </template>
 </CustomTwoCols>
 
+
+
 <!-- スピーカーノート：
 ここで、この後に出てくる用語を確認しておきます。
-ブロックは〜〜で、一般にはOSに合わせて4096バイトとかにすることが多いですが、
-今回はシンプルに1ブロック400バイトにしています。
-1ブロックの中に複数のスロットがあって、1スロットに1レコードが保存されます。
+ブロックは〜〜で、KeiPyDBは1ブロック400バイトにしています。
 スロットは〜〜
+1ブロックの中に複数のスロットがあって、1スロットに1レコードが保存されます。
+
 
 -->
 
@@ -1821,9 +1830,9 @@ class BasicUpdatePlanner(UpdatePlanner, ABC):
 
 
 <!-- スピーカーノート：
-プランを作成して実行するところまではSELECTと同じです。
-get_fields()でカラム名のリストを取得して、
-set_valueで対応するカラムに値をセットしています。
+プランを作成して実行するのはSELECTと同じです。
+get_fields()でフィールド名のリストを取得して、
+set_valueで対応するフィールドに値をセットしています。
 close()で、scanを閉じて、処理されたレコード数を返しています。
 
 
