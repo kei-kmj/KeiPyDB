@@ -52,22 +52,21 @@ class KeiPyClient:
             fields = schema.get_fields()
 
             while scan.next():
-                # 各フィールドの値を取得して表示
-                values = []
+                field_values = []
                 for field in fields:
                     try:
                         # フィールドの型に基づいて適切に取得
                         field_type = schema.get_type(field)
                         if field_type == FieldType.Integer:
                             value = scan.get_int(field)
-                            values.append(f"{field} = {value}")
-                        else:  # FieldType.Varchar
+                            field_values.append(f"{field} = {value}")
+                        else:
                             value = scan.get_string(field)
-                            values.append(f"{field} = {value}")
+                            field_values.append(f"{field} = {value}")
                     except Exception:
-                        values.append(f"{field} = NULL")
+                        field_values.append(f"{field} = NULL")
 
-                print(", ".join(values))
+                print(", ".join(field_values))
 
             scan.close()
             tx.commit()
