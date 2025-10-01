@@ -37,13 +37,15 @@ class StartServer:
                 tx_insert = db.new_transaction()
                 insert_sql = "INSERT INTO users (id, name) VALUES (258, 'Alice')"
                 print(f"Executing: {insert_sql}")
+                print("\n")
                 rows_affected = planner.execute_update(insert_sql, tx_insert)
-                print(f"Rows affected: {rows_affected}")
                 tx_insert.commit()
 
                 # SELECT
                 tx_select = db.new_transaction()
                 select_sql = "SELECT id, name FROM users WHERE name = 'Alice';"
+                print(f"Executing: {select_sql}")
+                print("\n")
                 plan = planner.create_query_plan(select_sql, tx_select)
                 scan = plan.open()
 
@@ -56,17 +58,34 @@ class StartServer:
                 # INSERT
                 tx_insert2 = db.new_transaction()
                 insert_sql2 = "INSERT INTO users (id, name) VALUES (259, 'Bob');"
+                print("\n")
                 print(f"Executing: {insert_sql2}")
+                print("\n")
                 rows_affected2 = planner.execute_update(insert_sql2, tx_insert2)
-                print(f"Rows affected: {rows_affected2}")
+
                 tx_insert2.commit()
+
+                # SELECT文を実行
+                tx3 = db.new_transaction()
+                select_sql = "SELECT id, name FROM users"
+                print(f"Executing: {select_sql}")
+                print("\n")
+                plan = planner.create_query_plan(select_sql, tx3)
+                scan = plan.open()
+
+                while scan.next():
+                    print(f"id = {scan.get_int('id')}, name = {scan.get_string('name')}")
+
+                scan.close()
+                tx3.commit()
 
                 # DELETE
                 tx_delete = db.new_transaction()
                 delete_sql = "DELETE FROM users WHERE id = 259;"
+                print("\n")
                 print(f"Executing: {delete_sql}")
+                print("\n")
                 rows_deleted = planner.execute_update(delete_sql, tx_delete)
-                print(f"Rows deleted: {rows_deleted}")
                 tx_delete.commit()
 
                 # tx_insert2 = db.new_transaction()
