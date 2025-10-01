@@ -1,5 +1,5 @@
 .idea/
-pycon2025/public
+pycon2025/
 .venv/
 __pycache__/
 *.pyc
