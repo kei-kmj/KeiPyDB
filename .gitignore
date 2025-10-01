@@ -3,3 +3,7 @@ pycon2025/
 .venv/
 __pycache__/
 *.pyc
+.coverage
+htmlcov/
+*.cover
+.pytest_cache/
