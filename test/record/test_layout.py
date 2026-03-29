@@ -131,7 +131,7 @@ def test_invalid_field_type():
     # _length_in_bytesで例外が発生する
     with pytest.raises(ValueError) as exc_info:
         # layoutの初期化時にエラーが発生するはず
-        layout = Layout(schema)
+        Layout(schema)
     assert "Unknown field type 999" in str(exc_info.value)
 
 

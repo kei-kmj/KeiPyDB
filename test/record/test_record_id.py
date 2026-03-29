@@ -1,4 +1,3 @@
-
 from db.record.record_id import RecordID
 
 
@@ -54,7 +53,7 @@ def test_record_id_not_equals():
     # 異なる型との比較
     assert rid1 != "test"
     assert rid1 != 10
-    assert rid1 != None
+    assert rid1 is not None
     assert rid1 != (10, 5)
 
 

@@ -7,7 +7,6 @@ import os
 import shutil
 import tempfile
 
-
 from db.server.keipy_db import KeiPyDB
 
 
@@ -74,7 +73,7 @@ def run_sql_commands(db, commands):
                         if "id" in command.lower():
                             value = scan.get_string("id")
                             query_results.append({"id": value})
-                    except:
+                    except Exception:  # noqa
                         pass
 
                 scan.close()
@@ -88,7 +87,7 @@ def run_sql_commands(db, commands):
         except Exception as e:
             try:
                 tx.rollback()
-            except:
+            except Exception:  # noqa
                 pass
             results.append({"command": command, "type": "error", "error": str(e)})
 
@@ -98,7 +97,6 @@ def run_sql_commands(db, commands):
 # 使用例とテスト
 if __name__ == "__main__":
 
-    @test_with_fresh_db
     def sample_test(db_dir):
         print(f"Testing with fresh database in: {db_dir}")
 

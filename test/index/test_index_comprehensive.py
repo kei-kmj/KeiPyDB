@@ -27,20 +27,6 @@ from db.record.schema import Schema
 from db.record.table_scan import TableScan
 from db.transaction.transaction import Transaction
 
-# Import planner classes
-try:
-    from db.index.planner.index_join_plan import IndexJoinPlan
-    from db.index.planner.index_select_plan import IndexSelectPlan
-    from db.index.planner.index_update_planner import IndexUpdatePlanner
-except ImportError as e:
-    print(f"Warning: Could not import planner classes: {e}")
-
-try:
-    from db.index.query.index_join_scan import IndexJoinScan
-    from db.index.query.index_select_scan import IndexSelectScan
-except ImportError as e:
-    print(f"Warning: Could not import query scan classes: {e}")
-
 
 @pytest.fixture
 def real_db_env():

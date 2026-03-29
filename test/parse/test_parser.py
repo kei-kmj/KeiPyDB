@@ -188,7 +188,8 @@ def test_parser_create_table_basic():
 
 def test_parser_create_table_complex():
     """複雑なCREATE TABLE文のパース"""
-    sql = "CREATE TABLE products (product_id int, title varchar(100), description varchar(500), price int, category varchar(30))"
+    sql = """CREATE TABLE products
+           (product_id int, title varchar(100), description varchar(500), price int, category varchar(30))"""
     parser = Parser(sql)
 
     create_table = parser.update_command()

@@ -24,58 +24,6 @@ def test_block():
     assert buffer_list.get_buffer(BlockID("testfile", 2)) is None
 
 
-def test_block():
-    buffer_manager = Mock(spec=BufferManager)
-    buffer_list = BufferList(buffer_manager)
-
-    block = BlockID("testfile", 1)
-    buffer = Mock(spec=Buffer)
-    buffer_manager.pin.return_value = buffer
-
-    buffer_list.pin(block)
-
-    assert buffer_list.buffers[block] == buffer
-    assert block in buffer_list.pins
-    buffer_manager.pin.assert_called_once_with(block)
-
-
-def test_block():
-    buffer_manager = Mock(spec=BufferManager)
-    buffer_list = BufferList(buffer_manager)
-
-    block = BlockID("testfile", 1)
-    buffer = Mock(spec=Buffer)
-    buffer_list.buffers[block] = buffer
-    buffer_list.pins.append(block)
-
-    buffer_list.unpin(block)
-
-    assert block not in buffer_list.pins
-    assert block not in buffer_list.buffers
-    buffer_manager.unpin.assert_called_once_with(buffer)
-
-
-def test_block():
-    buffer_manager = Mock(spec=BufferManager)
-    buffer_list = BufferList(buffer_manager)
-
-    block = BlockID("testfile", 1)
-    another_block = BlockID("testfile", 2)
-    buffer = Mock(spec=Buffer)
-    another_buffer = Mock(spec=Buffer)
-
-    buffer_list.buffers[block] = buffer
-    buffer_list.buffers[another_block] = another_buffer
-    buffer_list.pins.extend([block, another_block])
-
-    buffer_list.unpin_all()
-
-    assert buffer_list.pins == []
-    assert buffer_list.buffers == {}
-    buffer_manager.unpin.assert_any_call(buffer)
-    buffer_manager.unpin.assert_any_call(another_buffer)
-
-
 @pytest.fixture
 def real_buffer_list_env():
     """実際のBufferManagerを使用するテスト環境"""

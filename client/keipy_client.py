@@ -34,7 +34,7 @@ class KeiPyClient:
         except Exception as e:
             try:
                 tx.rollback()
-            except:
+            except Exception:  # noqa
                 pass
             raise e
 

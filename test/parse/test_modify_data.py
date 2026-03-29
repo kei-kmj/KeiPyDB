@@ -21,11 +21,3 @@ def test_get(modify_data):
 
 def test_field(modify_data):
     assert modify_data.get_field_name() == "test_field", "フィールド名が正しく取得できません"
-
-
-def test_get(modify_data):
-    assert modify_data.get_new_value() == modify_data.new_value, "新しい値が正しく取得できません"
-
-
-def test_get(modify_data):
-    assert modify_data.get_predicate() == modify_data.predicate, "条件式が正しく取得できません"

@@ -155,9 +155,6 @@ def test_log_manager_boundary_conditions(temp_log_env):
 
     log_manager, file_manager, log_file = temp_log_env
 
-    # ブロックサイズぎりぎりまでデータを埋める
-    block_size = file_manager.block_size
-
     # 最初のブロックの境界位置を取得
     initial_boundary = log_manager.log_page.get_int(0)
 

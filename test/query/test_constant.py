@@ -1,4 +1,3 @@
-
 from db.query.constant import Constant
 
 

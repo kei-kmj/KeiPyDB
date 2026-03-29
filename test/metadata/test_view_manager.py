@@ -32,7 +32,7 @@ def test_view_manager_initialization(real_view_env):
 
     # TableManagerが必要
     table_manager = TableManager(True, tx)
-    view_manager = ViewManager(True, table_manager, tx)
+    ViewManager(True, table_manager, tx)
 
     # view_catalogテーブルが作成されていることを確認
     view_catalog_layout = table_manager.get_layout("view_catalog", tx)
@@ -114,7 +114,8 @@ def test_view_definition_max_length(real_view_env):
         # 長い定義が切り捨てられているかチェック
         retrieved_def = view_manager.get_view_def("long_view", tx)
         print(
-            f"Long view definition handling: original_length={len(long_view_def)}, retrieved_length={len(retrieved_def) if retrieved_def else 0}"
+            f"Long view definition handling: original_length={len(long_view_def)}, "
+            f"retrieved_length={len(retrieved_def) if retrieved_def else 0}"
         )
 
         if retrieved_def:

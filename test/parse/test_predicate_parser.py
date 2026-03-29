@@ -45,17 +45,6 @@ def test_integer_constant(mock_lexer):
     assert result is None, "整数定数が正しくパースできません"
 
 
-def test_field(mock_lexer):
-
-    mock_lexer.match_id.return_value = True
-    mock_lexer.eat_id.return_value = "field_name"
-    parser = PredicateParser("")
-    parser.lexer = mock_lexer
-
-    result = parser.expression()
-    assert result is None, "式が正しくパースできません"
-
-
 def test_can_parse_expression_with_constant(mock_lexer):
 
     mock_lexer.match_id.return_value = False

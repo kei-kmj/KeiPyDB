@@ -10,7 +10,9 @@ from db.transaction.transaction import Transaction
 
 class IndexJoinPlan(Plan, ABC):
 
-    def __init__(self, left_plan: Plan, right_plan: Plan, index_info: IndexInfo, join_filed: str, transaction: Transaction) -> None:
+    def __init__(
+        self, left_plan: Plan, right_plan: Plan, index_info: IndexInfo, join_filed: str, transaction: Transaction
+    ) -> None:
         """インデックス結合計画を作成"""
         super().__init__()
         self.left_plan = left_plan

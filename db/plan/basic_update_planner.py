@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import cast
 
 from db.metadata.metadata_manager import MetadataManager
 from db.parse.create_index import CreateIndex

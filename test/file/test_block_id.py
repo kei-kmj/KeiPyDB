@@ -1,4 +1,3 @@
-
 from db.file.block_id import BlockID
 
 
@@ -44,7 +43,7 @@ def test_block_id_not_equals():
     # 異なる型との比較
     assert block_id != "test"
     assert block_id != 1
-    assert block_id != None
+    assert block_id is not None
 
 
 def test_block_id_string():
