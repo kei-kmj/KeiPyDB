@@ -4,7 +4,9 @@ from db.query.predicate import Predicate
 
 
 class QueryData:
-    def __init__(self, fields: list[str], tables: Collection[str], predicate: Predicate, order_by: list[str] = None) -> None:
+    def __init__(
+        self, fields: list[str], tables: Collection[str], predicate: Predicate, order_by: list[str] = None
+    ) -> None:
         self.fields = fields
         self.tables = tables
         self.predicate = predicate

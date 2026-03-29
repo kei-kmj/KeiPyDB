@@ -36,12 +36,14 @@ def test_get_order_by(query_data):
     query_data = QueryData(fields, tables, predicate, order_by=["field1"])
     assert query_data.get_order_by() == ["field1"]
 
+
 def test_get_order_by_default_empty():
     fields = ["field1"]
     tables = {"table1"}
     predicate = Predicate()
     query_data = QueryData(fields, tables, predicate)
     assert query_data.get_order_by() == []
+
 
 def test_string_representation_with_order_by(query_data):
     # Table order may vary in string representation

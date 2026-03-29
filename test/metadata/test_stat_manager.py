@@ -43,7 +43,7 @@ def create_test_table_with_data(table_manager, tx, table_name, num_records=10):
 
     # データ挿入
     table_scan = TableScan(tx, table_name, layout)
-    
+
     for i in range(num_records):
         table_scan.insert()
         table_scan.set_int("id", i + 1)
@@ -178,12 +178,12 @@ def test_refresh_statistics_manually(real_stat_env):
 def test_calculate_table_stats_accuracy(real_stat_env):
     """テーブル統計計算の正確性テスト"""
     file_manager, log_manager, buffer_manager = real_stat_env
-    
+
     # TableManagerの初期化（カタログテーブル作成）
     init_tx = Transaction(file_manager, log_manager, buffer_manager)
     table_manager = TableManager(True, init_tx)
     # init_txは内部でコミットされる
-    
+
     # 新しいトランザクションでテスト実行
     tx = Transaction(file_manager, log_manager, buffer_manager)
     stat_manager = StatManager(table_manager, tx)
@@ -254,7 +254,7 @@ def test_stat_manager_thread_safety(real_stat_env):
     init_tx = Transaction(file_manager, log_manager, buffer_manager)
     table_manager = TableManager(True, init_tx)
     # init_txは内部でコミットされる
-    
+
     # 共有テーブルを作成するための新しいトランザクション
     setup_tx = Transaction(file_manager, log_manager, buffer_manager)
     stat_manager = StatManager(table_manager, setup_tx)

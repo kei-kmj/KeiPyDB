@@ -1,7 +1,6 @@
 import pytest
 
 from db.constants import FieldType
-from db.exception import BadSyntaxException
 from db.parse.create_index import CreateIndex
 from db.parse.create_table import CreateTable
 from db.parse.create_view import CreateView

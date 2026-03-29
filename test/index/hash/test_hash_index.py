@@ -2,13 +2,13 @@ from unittest.mock import Mock
 
 import pytest
 
-# Re-enable tests to check if production code issues were fixed
-
 from db.index.hash.hash_index import HashIndex
 from db.query.constant import Constant
 from db.record.layout import Layout
 from db.record.table_scan import TableScan
 from db.transaction.transaction import Transaction
+
+# Re-enable tests to check if production code issues were fixed
 
 
 @pytest.fixture

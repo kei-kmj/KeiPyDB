@@ -18,6 +18,5 @@ class RecordComparator:
 
         return 0
 
-
-    def compare_row(self, row:dict) -> tuple:
+    def compare_row(self, row: dict) -> tuple:
         return tuple(row[field] for field in self.sort_fields)

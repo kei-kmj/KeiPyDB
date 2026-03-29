@@ -4,11 +4,6 @@ import tempfile
 
 import pytest
 
-from db.materialize.record_comparator import RecordComparator
-from db.materialize.sort_scan import SortScan
-from db.materialize.temp_table import TempTable
-from db.query.constant import Constant
-from db.record.schema import Schema
 from db.server.keipy_db import KeiPyDB
 
 

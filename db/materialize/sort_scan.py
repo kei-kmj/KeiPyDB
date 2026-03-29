@@ -1,4 +1,3 @@
-from abc import ABC
 from typing import Optional
 
 from db.materialize.record_comparator import RecordComparator

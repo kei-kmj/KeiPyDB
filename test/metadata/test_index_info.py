@@ -268,7 +268,7 @@ def test_index_info_nonexistent_field(real_index_info_env):
     try:
         index_info = IndexInfo("idx_nonexistent", "nonexistent_field", table_schema, stat_info)
         # エラーが発生する可能性がある
-        print(f"Nonexistent field handling: IndexInfo created with field that doesn't exist")
+        print("Nonexistent field handling: IndexInfo created with field that doesn't exist")
     except Exception as e:
         print(f"Expected error with nonexistent field: {e}")
 

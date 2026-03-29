@@ -7,7 +7,7 @@ import os
 import shutil
 import tempfile
 
-import pytest
+
 from db.server.keipy_db import KeiPyDB
 
 
