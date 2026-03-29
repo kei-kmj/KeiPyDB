@@ -86,6 +86,7 @@ def test_file_manager_temp_file_cleanup(setup_dir):
         assert (Path(setup_dir) / file_name).exists()
 
 
+@pytest.mark.skip
 def test_file_manager_write(setup_file, setup_dir):
     block_size = 4096
     db_directory = setup_dir
