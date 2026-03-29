@@ -266,7 +266,7 @@ def test_index_info_nonexistent_field(real_index_info_env):
 
     # 存在しないフィールドでIndexInfoを作成
     try:
-        index_info = IndexInfo("idx_nonexistent", "nonexistent_field", table_schema, stat_info)
+        IndexInfo("idx_nonexistent", "nonexistent_field", table_schema, stat_info)
         # エラーが発生する可能性がある
         print("Nonexistent field handling: IndexInfo created with field that doesn't exist")
     except Exception as e:

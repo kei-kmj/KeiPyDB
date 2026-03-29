@@ -12,7 +12,6 @@ from db.plan.select_plan import SelectPlan
 from db.plan.table_plan import TablePlan
 from db.plan.update_planner import UpdatePlanner
 from db.query.update_scan import UpdateScan
-from db.transaction import transaction
 from db.transaction.transaction import Transaction
 
 

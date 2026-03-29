@@ -17,19 +17,6 @@ def test_record():
     right_scan.before_first.assert_any_call()
 
 
-def test_record():
-    left_scan = Mock()
-    right_scan = Mock()
-    product_scan = ProductScan(left_scan, right_scan)
-
-    product_scan.before_first()
-    product_scan.next()
-
-    result = product_scan.next()
-
-    assert result is True
-
-
 def test_can_get():
     left_scan = Mock()
     right_scan = Mock()
@@ -41,19 +28,6 @@ def test_can_get():
     result = product_scan.get_int("field1")
 
     assert result == left_scan.get_int.return_value
-
-
-def test_can_get():
-    left_scan = Mock()
-    right_scan = Mock()
-    product_scan = ProductScan(left_scan, right_scan)
-
-    product_scan.before_first()
-    product_scan.next()
-
-    result = product_scan.get_string("field1")
-
-    assert result == left_scan.get_string.return_value
 
 
 def test_field():

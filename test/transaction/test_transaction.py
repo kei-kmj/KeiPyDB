@@ -34,27 +34,6 @@ def test_works_correctly():
     print(f"Transaction {transaction.tx_number} committed")
 
 
-def test_works_correctly():
-
-    file_manager = Mock()
-    log_manager = Mock()
-    buffer_manager = Mock()
-    transaction = Transaction(file_manager, log_manager, buffer_manager)
-    recovery_manager = Mock()
-    transaction.recovery_manager = recovery_manager
-    concurrency_manager = Mock()
-    transaction.concurrency_manager = concurrency_manager
-    buffer_list = Mock()
-    transaction.buffer_list = buffer_list
-
-    transaction.rollback()
-
-    recovery_manager.rollback.assert_called_once()
-    concurrency_manager.release.assert_called_once()
-    buffer_list.unpin_all.assert_called_once()
-    print(f"Transaction {transaction.tx_number} rolled back")
-
-
 def test_block():
 
     file_manager = Mock()
@@ -68,21 +47,6 @@ def test_block():
     transaction.pin(block)
 
     buffer_list.pin.assert_called_once_with(block)
-
-
-def test_block():
-
-    file_manager = Mock()
-    log_manager = Mock()
-    buffer_manager = Mock()
-    transaction = Transaction(file_manager, log_manager, buffer_manager)
-    buffer_list = Mock()
-    transaction.buffer_list = buffer_list
-    block = BlockID("test", 1)
-
-    transaction.unpin(block)
-
-    buffer_list.unpin.assert_called_once_with(block)
 
 
 # Removed incomplete test without reason

@@ -1,6 +1,5 @@
 from unittest.mock import Mock
 
-
 from db.query.constant import Constant
 from db.query.expression import Expression
 from db.query.predicate import Predicate
