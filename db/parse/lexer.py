@@ -1,7 +1,27 @@
 import re
 from collections import deque
+from typing import Optional
 
 from db.exception import BadSyntaxException
+
+
+def _tokenize(sql: str) -> list[str]:
+    """SQL文をトークンに分割"""
+    token_pattern = r"[a-zA-Z_][a-zA-Z_0-9]*|'(?:[^']|'')*'|\d+(?:\.\d+)?|[=,()<>*+-/;]|\s+|."
+    tokens = re.findall(token_pattern, sql)
+
+    # 文字列リテラル以外のトークンのみ小文字化
+    processed_tokens = []
+    for token in tokens:
+        if not token.isspace():
+            if token.startswith("'") and token.endswith("'"):
+                # 文字列リテラルは大文字小文字を保持
+                processed_tokens.append(token)
+            else:
+                # その他のトークンは小文字化
+                processed_tokens.append(token.lower())
+
+    return processed_tokens
 
 
 class Lexer:
@@ -61,27 +81,10 @@ class Lexer:
             "offset",
         }
         self.sql = sql
-        self.tokens = deque(self._tokenize(sql))
+        self.tokens = deque(_tokenize(sql))
         self.current_token_index = 0
+        self.current_token: Optional[str] = None
         self.next_token()
-
-    def _tokenize(self, sql: str) -> list[str]:
-        """SQL文をトークンに分割"""
-        token_pattern = r"[a-zA-Z_][a-zA-Z_0-9]*|'(?:[^']|'')*'|\d+(?:\.\d+)?|[=,()<>*+-/;]|\s+|."
-        tokens = re.findall(token_pattern, sql)
-
-        # 文字列リテラル以外のトークンのみ小文字化
-        processed_tokens = []
-        for token in tokens:
-            if not token.isspace():
-                if token.startswith("'") and token.endswith("'"):
-                    # 文字列リテラルは大文字小文字を保持
-                    processed_tokens.append(token)
-                else:
-                    # その他のトークンは小文字化
-                    processed_tokens.append(token.lower())
-
-        return processed_tokens
 
     def match_delimiter(self, delimiter: str) -> bool:
         """指定されたデリミタと現在のトークンが一致するかどうかを返す"""
@@ -126,6 +129,9 @@ class Lexer:
         """整数定数を消費"""
         if not self.match_int_constant():
             raise BadSyntaxException(f"Expected integer constant, but found {self.current_token}")
+
+        if self.current_token is None:
+            raise BadSyntaxException("Unexpected end of input")
 
         try:
             value = int(self.current_token)

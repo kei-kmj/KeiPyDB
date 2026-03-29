@@ -85,12 +85,12 @@ class KeiPyClient:
                             # フィールドの型に基づいて適切に取得
                             field_type: int = schema.get_type(field)
                             if field_type == FieldType.Integer:
-                                value: int = scan.get_int(field)
-                                field_values.append(f"{field} = {value}")
+                                int_value: int = scan.get_int(field)
+                                field_values.append(f"{field} = {int_value}")
                             else:
-                                value: str = scan.get_string(field)
-                                field_values.append(f"{field} = {value}")
-                        except Exception:
+                                str_value: str = scan.get_string(field)
+                                field_values.append(f"{field} = {str_value}")
+                        except (RuntimeError, ValueError, KeyError):
                             field_values.append(f"{field} = {NULL_VALUE}")
 
                     print(", ".join(field_values))

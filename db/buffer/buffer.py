@@ -1,3 +1,5 @@
+from typing import Optional
+
 from db.file.block_id import BlockID
 from db.file.file_manager import FileManager
 from db.file.page import Page
@@ -9,7 +11,7 @@ class Buffer:
         self.file_manager = file_manager
         self.log_manager = log_manager
         self.contents = Page(self.file_manager.block_size)
-        self.block = None
+        self.block: Optional[BlockID] = None
         self.pins = 0
         self.transaction_number = -1
         self.log_sequence_number = -1

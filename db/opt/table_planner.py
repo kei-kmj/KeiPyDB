@@ -53,7 +53,7 @@ class TablePlanner:
             constant = self.predicate.equates_with_constant(field_name)
 
             if constant:
-                return IndexSelectPlan(self.my_plan, index_info, constant)
+                return IndexSelectPlan(self.my_plan, index_info, constant, self.transaction)
 
         return None
 
@@ -62,7 +62,7 @@ class TablePlanner:
         for field_name, index_info in self.indexes.items():
             outer_field = self.predicate.equates_with_field(field_name)
             if outer_field is not None and current_schema.has_field(outer_field):
-                plan = IndexJoinPlan(current, self.my_plan, index_info, outer_field)
+                plan = IndexJoinPlan(current, self.my_plan, index_info, outer_field, self.transaction)
                 predicate_plan = self._add_select_predicate(plan)
 
                 return self._add_join_predicate(predicate_plan, current_schema)

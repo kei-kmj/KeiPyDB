@@ -52,8 +52,6 @@ class BasicUpdatePlanner(UpdatePlanner, ABC):
         if not isinstance(scan, UpdateScan):
             raise TypeError(f"UpdateScanが期待されましたが、{type(scan)}が渡されました")
 
-        scan = cast(UpdateScan, scan)
-
         count = 0
 
         while scan.next():

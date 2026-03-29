@@ -55,6 +55,10 @@ class HashIndex(Index, ABC):
 
     def insert(self, data_value: Constant, data_record_id: RecordID) -> None:
         self.before_first(data_value)
+
+        if self.table_scan is None:
+            raise RuntimeError("table_scan is not initialized")
+
         self.table_scan.insert()
         self.table_scan.set_int("block", data_record_id.block_number)
         self.table_scan.set_int("id", data_record_id.slot)
