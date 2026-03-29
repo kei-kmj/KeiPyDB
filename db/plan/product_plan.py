@@ -1,4 +1,5 @@
 from abc import ABC
+from typing import Optional
 
 from db.plan.plan import Plan
 from db.query.product_scan import ProductScan
@@ -12,7 +13,7 @@ class ProductPlan(Plan, ABC):
         super().__init__()
         self.plan_left = left_plan
         self.plan_right = right_plan
-        self._schema = None  # 遅延初期化のため
+        self._schema: Optional[Schema] = None  # 遅延初期化のため
 
     def open(self) -> Scan:
 

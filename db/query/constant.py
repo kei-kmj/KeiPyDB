@@ -55,8 +55,10 @@ class Constant:
         """定数の値を文字列として返す"""
         if self.int_value is not None:
             return str(self.int_value)
-        else:
-            return self.str_value
+        if self.str_value is None:
+            raise ValueError("Constant does not hold a string")
+
+        return self.str_value
 
     def __repr__(self) -> str:
         """デバッグ用の詳細な文字列表現を返す"""

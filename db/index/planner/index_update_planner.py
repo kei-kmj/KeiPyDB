@@ -12,6 +12,7 @@ from db.plan.select_plan import SelectPlan
 from db.plan.table_plan import TablePlan
 from db.plan.update_planner import UpdatePlanner
 from db.query.update_scan import UpdateScan
+from db.transaction import transaction
 from db.transaction.transaction import Transaction
 
 
@@ -20,35 +21,35 @@ class IndexUpdatePlanner(UpdatePlanner, ABC):
     def __init__(self, metadata_manager: MetadataManager) -> None:
         self.metadata_manager = metadata_manager
 
-    def execute_insert(self, data: InsertData, transaction: Transaction) -> int:
+    def execute_insert(self, data: InsertData, tx: Transaction) -> int:
         table_name = data.table_name
-        plan = TablePlan(transaction, table_name, self.metadata_manager)
+        plan = TablePlan(tx, table_name, self.metadata_manager)
 
         scan = plan.open()
         update_scan = cast(UpdateScan, scan)
         update_scan.insert()
         record_id = update_scan.get_rid()
 
-        indexes = self.metadata_manager.get_index_info(table_name, transaction)
+        indexes = self.metadata_manager.get_index_info(table_name, tx)
         val_iterator = iter(data.values)
         for field_name in data.fields:
             val = next(val_iterator)
             update_scan.set_value(field_name, val)
 
             if field_name in indexes:
-                index = indexes[field_name].open()
+                index = indexes[field_name].open(tx)
                 index.insert(val, record_id)
                 index.close()
 
         update_scan.close()
         return 1
 
-    def execute_delete(self, data: DeleteData, transaction: Transaction) -> int:
+    def execute_delete(self, data: DeleteData, tx: Transaction) -> int:
         table_name = data.table_name
-        table_plan = TablePlan(transaction, table_name, self.metadata_manager)
+        table_plan = TablePlan(tx, table_name, self.metadata_manager)
         plan = SelectPlan(table_plan, data.predicate)
 
-        indexes = self.metadata_manager.get_index_info(table_name, transaction)
+        indexes = self.metadata_manager.get_index_info(table_name, tx)
 
         update_scan = cast(UpdateScan, plan.open())
         count = 0
@@ -56,7 +57,7 @@ class IndexUpdatePlanner(UpdatePlanner, ABC):
             record_id = update_scan.get_rid()
             for filed_name, index_info in indexes.items():
                 value = update_scan.get_value(filed_name)
-                index = index_info.open()
+                index = index_info.open(tx)
                 index.delete(value, record_id)
                 index.close()
 
@@ -66,15 +67,15 @@ class IndexUpdatePlanner(UpdatePlanner, ABC):
         update_scan.close()
         return count
 
-    def execute_modify(self, data: ModifyData, transaction: Transaction) -> int:
+    def execute_modify(self, data: ModifyData, tx: Transaction) -> int:
         table_name = data.table_name
         target_field = data.field_name
 
-        table_plan = TablePlan(transaction, table_name, self.metadata_manager)
+        table_plan = TablePlan(tx, table_name, self.metadata_manager)
         plan = SelectPlan(table_plan, data.predicate)
 
-        index_info = self.metadata_manager.get_index_info(table_name, transaction).get(target_field)
-        index = index_info.open() if index_info else None
+        index_info = self.metadata_manager.get_index_info(table_name, tx).get(target_field)
+        index = index_info.open(tx) if index_info else None
 
         update_scan = cast(UpdateScan, plan.open())
         count = 0
@@ -98,14 +99,14 @@ class IndexUpdatePlanner(UpdatePlanner, ABC):
 
         return count
 
-    def execute_create_table(self, data: CreateTable, transaction: Transaction) -> int:
-        self.metadata_manager.create_table(data.table_name, data.schema, transaction)
+    def execute_create_table(self, data: CreateTable, tx: Transaction) -> int:
+        self.metadata_manager.create_table(data.table_name, data.schema, tx)
         return 0
 
-    def execute_create_view(self, data: CreateView, transaction: Transaction) -> int:
-        self.metadata_manager.create_view(data.view_name, data.view_definition(), transaction)
+    def execute_create_view(self, data: CreateView, tx: Transaction) -> int:
+        self.metadata_manager.create_view(data.view_name, data.view_definition(), tx)
         return 0
 
-    def execute_create_index(self, data: CreateIndex, transaction: Transaction) -> int:
-        self.metadata_manager.create_index(data.index_name, data.table_name, data.field_name, transaction)
+    def execute_create_index(self, data: CreateIndex, tx: Transaction) -> int:
+        self.metadata_manager.create_index(data.index_name, data.table_name, data.field_name, tx)
         return 0

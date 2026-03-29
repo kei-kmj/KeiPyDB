@@ -23,7 +23,7 @@ class KeiPyDB:
 
             is_new = self.file_manager.is_new
             self.metadata_manager = None
-            self.planner = None
+            self.planner: Planner
 
             if is_new:
                 print("creating new database")
@@ -62,7 +62,7 @@ class KeiPyDB:
     def get_metadata_manager(self) -> Optional[MetadataManager]:
         return self.metadata_manager
 
-    def get_planner(self) -> Optional[Planner]:
+    def get_planner(self) -> Planner:
         return self.planner
 
     def get_file_manager(self) -> FileManager:

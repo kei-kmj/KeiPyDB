@@ -130,7 +130,6 @@ class TableScan(UpdateScan, ABC):
                 self._move_to_new_block()
             else:
                 self._move_to_block(self.record_page.get_block().block_number + 1)
-            self.current_slot = slot
 
     def delete(self) -> None:
         """現在のスロットを削除する"""

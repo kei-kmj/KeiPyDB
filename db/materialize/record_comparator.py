@@ -1,3 +1,4 @@
+from db.query.constant import Constant
 from db.query.scan import Scan
 
 
@@ -18,5 +19,5 @@ class RecordComparator:
 
         return 0
 
-    def compare_row(self, row: dict) -> tuple:
+    def compare_row(self, row: dict[str, Constant]) -> tuple[Constant, ...]:
         return tuple(row[field] for field in self.sort_fields)
