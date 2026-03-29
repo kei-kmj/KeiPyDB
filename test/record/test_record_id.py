@@ -1,4 +1,3 @@
-import pytest
 
 from db.record.record_id import RecordID
 

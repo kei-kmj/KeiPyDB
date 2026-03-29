@@ -160,7 +160,7 @@ def test_metadata_manager_index_operations(real_metadata_manager_env):
             assert index_info.field_name == field_name
             print(f"Index created successfully: {index_name}")
         else:
-            print(f"Index not found in retrieved info")
+            print("Index not found in retrieved info")
 
     except Exception as e:
         print(f"Index creation failed (expected due to implementation issues): {e}")
@@ -326,7 +326,6 @@ def test_metadata_manager_persistence_across_transactions(real_metadata_manager_
     assert layout is not None
     assert layout.schema.has_field("id")
     assert layout.schema.has_field("data")
-
 
     # ビューの永続性確認
     view_def = metadata_manager2.get_view_definition("persistent_view", tx2)

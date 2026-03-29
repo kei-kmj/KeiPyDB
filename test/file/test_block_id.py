@@ -1,4 +1,3 @@
-import pytest
 
 from db.file.block_id import BlockID
 

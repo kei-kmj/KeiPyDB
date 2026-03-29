@@ -1,4 +1,4 @@
-from abc import ABC
+from typing import Optional
 
 from db.materialize.record_comparator import RecordComparator
 from db.materialize.temp_table import TempTable
@@ -8,7 +8,7 @@ from db.query.update_scan import UpdateScan
 from db.record.record_id import RecordID
 
 
-class SortScan(Scan, ABC):
+class SortScan(Scan):
 
     def __init__(self, runs: list[TempTable], comparator: RecordComparator) -> None:
         sorted_first = runs[0].open()

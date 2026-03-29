@@ -1,3 +1,4 @@
+from db.materialize.sort_plan import SortPlan
 from db.parse.create_index import CreateIndex
 from db.parse.create_table import CreateTable
 from db.parse.create_view import CreateView
@@ -23,8 +24,12 @@ class Planner:
         data = parser.query()
 
         self.verify_query()
+        plan = self.query_planner.create_plan(data, transaction)
 
-        return self.query_planner.create_plan(data, transaction)
+        if data.get_order_by():
+            plan = SortPlan(transaction, plan, data.get_order_by())
+
+        return plan
 
     def execute_update(self, command: str, transaction: Transaction) -> int:
         """更新コマンドを実行する"""

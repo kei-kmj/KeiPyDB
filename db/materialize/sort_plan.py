@@ -15,15 +15,15 @@ class SortPlan(Plan, ABC):
     MAX_RUNS_FOR_MERGE = 2
     LIST_FIRST_INDEX = 0
 
-    def __init__(self, transaction: Transaction, plan: Plan, sort_fields: list[str]) -> None:
+    def __init__(self, transaction: Transaction, source_plan: Plan, sort_fields: list[str]) -> None:
         super().__init__()
         self.transaction = transaction
-        self.plan = plan
-        self._schema = self.plan.schema()
+        self.source_plan = source_plan
+        self._schema = self.source_plan.schema()
         self.comparator = RecordComparator(sort_fields)
 
     def open(self) -> Scan:
-        source_scan = self.plan.open()
+        source_scan = self.source_plan.open()
         runs = self._split_into_runs(source_scan)
         source_scan.close()
 
@@ -33,25 +33,24 @@ class SortPlan(Plan, ABC):
         return SortScan(runs, self.comparator)
 
     def _split_into_runs(self, source_scan: Scan) -> list[TempTable]:
-        temp_tables: list[TempTable] = []
-        source_scan.before_first()
+        schema = self.source_plan.schema()
+        records = []
 
-        if not source_scan.next():
-            return temp_tables
+        while source_scan.next():
+            row = {field: source_scan.get_value(field) for field in schema.get_fields()}
+            records.append(row)
 
-        current_temp_table = TempTable(self.transaction, self._schema)
-        temp_tables.append(current_temp_table)
-        current_scan = current_temp_table.open()
+        records.sort(key=lambda r: self.comparator.compare_row(r))
 
-        while self._copy(source_scan, current_scan):
-            if self.comparator.compare(source_scan, current_scan) < 0:
-                current_scan.close()
-                current_temp_table = TempTable(self.transaction, self._schema)
-                temp_tables.append(current_temp_table)
-                current_scan = current_temp_table.open()
+        run = TempTable(self.transaction, schema)
+        dest = run.open()
+        for record in records:
+            dest.insert()
+            for field_name in schema.get_fields():
+                dest.set_value(field_name, record[field_name])
 
-        current_scan.close()
-        return temp_tables
+        dest.close()
+        return [run]
 
     def _do_a_merge_iteration(self, runs: list[TempTable]) -> list[TempTable]:
         result = []
@@ -101,15 +100,15 @@ class SortPlan(Plan, ABC):
         return source.next()
 
     def schema(self) -> Schema:
-        return self.plan.schema()
+        return self.source_plan.schema()
 
     def distinct_values(self, field_name: str) -> int:
-        return self.plan.distinct_values(field_name)
+        return self.source_plan.distinct_values(field_name)
 
     def records_output(self) -> int:
-        return self.plan.records_output()
+        return self.source_plan.records_output()
 
     def blocks_accessed(self) -> int:
 
-        materialized_plan = MaterializePlan(self.transaction, self.plan)
+        materialized_plan = MaterializePlan(self.transaction, self.source_plan)
         return materialized_plan.blocks_accessed()

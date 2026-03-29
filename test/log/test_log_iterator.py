@@ -145,7 +145,6 @@ def test_log_iterator_move_to_block():
         shutil.rmtree(temp_dir)
 
 
-
 def test_log_iterator_single_record():
     """単一レコードでのイテレーターテスト"""
     import shutil

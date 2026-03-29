@@ -246,7 +246,7 @@ def run_core_regression_tests():
             if os.path.exists(test_dir):
                 shutil.rmtree(test_dir)
 
-    print(f"\n=== 結果 ===")
+    print("\n=== 結果 ===")
     print(f"成功: {passed}/{passed + failed}")
     print(f"失敗: {failed}/{passed + failed}")
 

@@ -4,12 +4,10 @@ import tempfile
 import pytest
 
 from db.buffer.buffer_manager import BufferManager
-from db.constants import FieldType
 from db.file.file_manager import FileManager
 from db.log.log_manager import LogManager
 from db.metadata.table_manager import TableManager
 from db.metadata.view_manager import ViewManager
-from db.record.schema import Schema
 from db.transaction.transaction import Transaction
 
 
