@@ -11,7 +11,7 @@ from db.transaction.transaction import Transaction
 
 
 class KeiPyDB:
-    BLOCK_SIZE = 400
+    BLOCK_SIZE = 4096
     BUFFER_SIZE = 8
     LOG_FILE = "keipydb.log"
 
