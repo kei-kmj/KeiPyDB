@@ -73,7 +73,13 @@ class Parser:
             self.lexer.eat_keyword("where")
             predicate = self.predicate()
 
-        return QueryData(field_list, tables, predicate)
+        order_by = []
+        if self.lexer.match_keyword("order"):
+            self.lexer.eat_keyword("order")
+            self.lexer.eat_keyword("by")
+            order_by= self.order_by_list()
+
+        return QueryData(field_list, tables, predicate, order_by)
 
     def select_list(self) -> list[str]:
         field_list = [self.field()]
@@ -91,6 +97,15 @@ class Parser:
             table_name = self.lexer.eat_id()
             tables.append(table_name)
         return tables
+
+
+    def order_by_list(self) -> list[str]:
+        fields = [self.field()]
+        while self.lexer.match_delimiter(","):
+            self.lexer.eat_delimiter(",")
+            fields.append(self.field())
+        return fields
+
 
     def update_command(self) -> InsertData | DeleteData | ModifyData | object:
         if self.lexer.match_keyword("insert"):

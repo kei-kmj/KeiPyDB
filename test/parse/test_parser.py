@@ -42,7 +42,17 @@ def test_parser_select_with_where():
 
     predicate = query_data.get_predicate()
     assert predicate is not None
-    # 述語の詳細確認（実装依存）
+
+
+def test_parser_select_with_order_by():
+    """ORDER BY句付きSELECT文のパース"""
+    sql = "SELECT id, name FROM users ORDER BY name"
+    parser = Parser(sql)
+
+    query_data = parser.query()
+
+    assert isinstance(query_data, QueryData)
+    assert query_data.get_order_by() == ["name"]
 
 
 # Removed test_parser_select_multiple_tables - Parser does not support table aliases

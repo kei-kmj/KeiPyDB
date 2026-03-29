@@ -11,8 +11,13 @@ class RecordComparator:
             val_first = scan_first.get_value(field_name)
             val_second = scan_second.get_value(field_name)
 
-            result = val_first.__lt__(val_second)
-
-            return result
+            if val_first < val_second:
+                return -1
+            elif val_first > val_second:
+                return 1
 
         return 0
+
+
+    def compare_row(self, row:dict) -> tuple:
+        return tuple(row[field] for field in self.sort_fields)
