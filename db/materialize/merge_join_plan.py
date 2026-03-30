@@ -3,6 +3,7 @@ from abc import ABC
 from db.materialize.merge_join_scan import MergeJoinScan
 from db.materialize.sort_plan import SortPlan
 from db.materialize.sort_scan import SortScan
+from db.parse.query_data import OrderByField
 from db.plan.plan import Plan
 from db.query.scan import Scan
 from db.record.schema import Schema
@@ -22,10 +23,10 @@ class MergedJoinPlan(Plan, ABC):
         self.field_name_first = field_name_first
         self.field_name_second = field_name_second
 
-        self.sort_list_first = [field_name_first]
+        self.sort_list_first = [OrderByField(field_name_first)]
         self.plan_first = SortPlan(transaction, plan_first, self.sort_list_first)
 
-        self.sort_list_second = [field_name_second]
+        self.sort_list_second = [OrderByField(field_name_second)]
         self.plan_second = SortPlan(transaction, plan_second, self.sort_list_second)
 
         self._schema = Schema()

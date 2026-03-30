@@ -79,6 +79,8 @@ class Lexer:
             "exists",
             "limit",
             "offset",
+            "asc",
+            "desc",
         }
         self.sql = sql
         self.tokens = deque(_tokenize(sql))

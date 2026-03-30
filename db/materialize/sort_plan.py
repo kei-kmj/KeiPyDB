@@ -4,6 +4,7 @@ from db.materialize.materialize_plan import MaterializePlan
 from db.materialize.record_comparator import RecordComparator
 from db.materialize.sort_scan import SortScan
 from db.materialize.temp_table import TempTable
+from db.parse.query_data import OrderByField
 from db.plan.plan import Plan
 from db.query.scan import Scan
 from db.query.update_scan import UpdateScan
@@ -15,7 +16,7 @@ class SortPlan(Plan, ABC):
     MAX_RUNS_FOR_MERGE = 2
     LIST_FIRST_INDEX = 0
 
-    def __init__(self, transaction: Transaction, source_plan: Plan, sort_fields: list[str]) -> None:
+    def __init__(self, transaction: Transaction, source_plan: Plan, sort_fields: list[OrderByField]) -> None:
         super().__init__()
         self.transaction = transaction
         self.source_plan = source_plan
