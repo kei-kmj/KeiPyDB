@@ -8,15 +8,22 @@ class OrderByField(NamedTuple):
     field_name: str
     ascending: bool = True
 
+    def __str__(self) -> str:
+        return f"{self.field_name} {'ASC' if self.ascending else 'DESC'}"
+
 
 class QueryData:
     def __init__(
-        self, fields: list[str], tables: Collection[str], predicate: Predicate, order_by: Optional[OrderByField] = None
+        self,
+        fields: list[str],
+        tables: Collection[str],
+        predicate: Predicate,
+        order_by: Optional[list[OrderByField]] = None,
     ) -> None:
         self.fields = fields
         self.tables = tables
         self.predicate = predicate
-        self.order_by = order_by or []
+        self.order_by: list[OrderByField] = list(order_by) if order_by is not None else []
 
     def get_fields(self) -> list[str]:
         return self.fields
@@ -27,7 +34,7 @@ class QueryData:
     def get_predicate(self) -> Predicate:
         return self.predicate
 
-    def get_order_by(self) -> list[str]:
+    def get_order_by(self) -> list[OrderByField]:
         return self.order_by
 
     def __str__(self) -> str:
@@ -35,7 +42,7 @@ class QueryData:
         fields_str = ", ".join(self.fields)
         tables_str = ", ".join(self.tables)
         predicate_str = str(self.predicate)
-        order_by_str = ", ".join(self.get_order_by())
+        order_by_str = ", ".join(str(f) for f in self.get_order_by())
         query_str = f"SELECT {fields_str} FROM {tables_str}"
 
         if predicate_str:

@@ -3,6 +3,7 @@ from abc import ABC
 from db.materialize.aggregation_function import AggregationFunction
 from db.materialize.group_by_scan import GroupByScan
 from db.materialize.sort_plan import SortPlan
+from db.parse.query_data import OrderByField
 from db.plan.plan import Plan
 from db.query.scan import Scan
 from db.record.schema import Schema
@@ -16,7 +17,8 @@ class GroupByPlan(Plan, ABC):
     ) -> None:
         super().__init__()
         self.transaction = transaction
-        self.plan = SortPlan(transaction, plan, group_fields)
+        order_by_fields = [OrderByField(field) for field in group_fields]
+        self.plan = SortPlan(transaction, plan, order_by_fields)
         self.group_fields = group_fields
         self.agg_fns = agg_fns
         self._schema = Schema()

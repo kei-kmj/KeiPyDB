@@ -13,7 +13,9 @@ class _Reverse:
     def __gt__(self, other: "_Reverse") -> bool:
         return self.value < other.value
 
-    def __eq__(self, other: "_Reverse") -> bool:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, _Reverse):
+            return NotImplemented
         return self.value == other.value
 
 
@@ -34,8 +36,5 @@ class RecordComparator:
 
         return 0
 
-
-    def compare_row(self, row: dict[str, Constant]) -> tuple[Constant, ...]:
+    def compare_row(self, row: dict[str, Constant]) -> tuple[Constant | _Reverse, ...]:
         return tuple(row[f.field_name] if f.ascending else _Reverse(row[f.field_name]) for f in self.sort_fields)
-
-

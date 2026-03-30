@@ -105,7 +105,6 @@ class Parser:
             fields.append(self.order_by_field())
         return fields
 
-
     def order_by_field(self) -> OrderByField:
         field_name = self.field()
         ascending = True
