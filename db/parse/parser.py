@@ -8,7 +8,7 @@ from db.parse.delete_data import DeleteData
 from db.parse.insert_data import InsertData
 from db.parse.lexer import Lexer
 from db.parse.modify_data import ModifyData
-from db.parse.query_data import QueryData
+from db.parse.query_data import OrderByField, QueryData
 from db.query.constant import Constant
 from db.query.expression import Expression
 from db.query.predicate import Predicate
@@ -98,12 +98,24 @@ class Parser:
             tables.append(table_name)
         return tables
 
-    def order_by_list(self) -> list[str]:
-        fields = [self.field()]
+    def order_by_list(self) -> list[OrderByField]:
+        fields = [self.order_by_field()]
         while self.lexer.match_delimiter(","):
             self.lexer.eat_delimiter(",")
-            fields.append(self.field())
+            fields.append(self.order_by_field())
         return fields
+
+
+    def order_by_field(self) -> OrderByField:
+        field_name = self.field()
+        ascending = True
+        if self.lexer.match_keyword("asc"):
+            self.lexer.eat_keyword("asc")
+        elif self.lexer.match_keyword("desc"):
+            self.lexer.eat_keyword("desc")
+            ascending = False
+
+        return OrderByField(field_name, ascending)
 
     def update_command(self) -> InsertData | DeleteData | ModifyData | object:
         if self.lexer.match_keyword("insert"):

@@ -1,12 +1,17 @@
 from collections.abc import Collection
-from typing import Optional
+from typing import NamedTuple, Optional
 
 from db.query.predicate import Predicate
 
 
+class OrderByField(NamedTuple):
+    field_name: str
+    ascending: bool = True
+
+
 class QueryData:
     def __init__(
-        self, fields: list[str], tables: Collection[str], predicate: Predicate, order_by: Optional[list[str]] = None
+        self, fields: list[str], tables: Collection[str], predicate: Predicate, order_by: Optional[OrderByField] = None
     ) -> None:
         self.fields = fields
         self.tables = tables

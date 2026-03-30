@@ -8,7 +8,7 @@ from db.parse.delete_data import DeleteData
 from db.parse.insert_data import InsertData
 from db.parse.modify_data import ModifyData
 from db.parse.parser import Parser
-from db.parse.query_data import QueryData
+from db.parse.query_data import OrderByField, QueryData
 from db.query.constant import Constant
 from db.query.expression import Expression
 from db.query.predicate import Predicate
@@ -51,10 +51,18 @@ def test_parser_select_with_order_by():
     query_data = parser.query()
 
     assert isinstance(query_data, QueryData)
-    assert query_data.get_order_by() == ["name"]
+    assert query_data.get_order_by() == [OrderByField(field_name="name", ascending=True)]
 
 
-# Removed test_parser_select_multiple_tables - Parser does not support table aliases
+def test_parser_select_with_order_by_desc():
+    """ORDER BY句でDESC指定のSELECT文のパース"""
+    sql = "SELECT id, name FROM users ORDER BY name DESC"
+    parser = Parser(sql)
+
+    query_data = parser.query()
+
+    assert isinstance(query_data, QueryData)
+    assert query_data.get_order_by() == [OrderByField(field_name="name", ascending=False)]
 
 
 def test_parser_select_and_condition():
