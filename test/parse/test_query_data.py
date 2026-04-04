@@ -1,6 +1,6 @@
 import pytest
 
-from db.parse.query_data import QueryData, OrderByField
+from db.parse.query_data import OrderByField, QueryData
 from db.query.predicate import Predicate
 
 
@@ -35,7 +35,6 @@ def test_get_order_by(query_data):
     predicate = Predicate()
     query_data = QueryData(fields, tables, predicate, [OrderByField("field1")])
     assert query_data.get_order_by() == [OrderByField("field1")]
-
 
 
 def test_get_order_by_default_empty():

@@ -1,4 +1,3 @@
-
 def test_sort_scan_single_field(test_db):
     db, tx = test_db
     planner = db.get_planner()

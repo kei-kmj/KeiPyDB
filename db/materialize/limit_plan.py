@@ -1,5 +1,3 @@
-from abc import ABC
-
 from db.materialize.limit_scan import LimitScan
 from db.plan.plan import Plan
 from db.query.scan import Scan

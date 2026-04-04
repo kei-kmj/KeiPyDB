@@ -1,5 +1,3 @@
-
-
 def test_limit(test_db):
     db, tx = test_db
     planner = db.get_planner()

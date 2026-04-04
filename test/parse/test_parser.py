@@ -1,8 +1,6 @@
 import pytest
 
-from db.constants import FieldType
 from db.parse.create_index import CreateIndex
-from db.parse.create_table import CreateTable
 from db.parse.create_view import CreateView
 from db.parse.delete_data import DeleteData
 from db.parse.insert_data import InsertData

@@ -30,9 +30,9 @@ class Planner:
         if data.get_order_by():
             plan = SortPlan(transaction, plan, data.get_order_by())
 
-
-        if data.get_limit() is not None:
-            plan = LimitPlan(plan, data.get_limit())
+        limit = data.get_limit()
+        if limit is not None:
+            plan = LimitPlan(plan, limit)
 
         return plan
 
