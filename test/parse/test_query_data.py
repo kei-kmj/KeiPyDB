@@ -1,6 +1,6 @@
 import pytest
 
-from db.parse.query_data import QueryData
+from db.parse.query_data import QueryData, OrderByField
 from db.query.predicate import Predicate
 
 
@@ -33,8 +33,9 @@ def test_get_order_by(query_data):
     fields = ["field1"]
     tables = {"table1"}
     predicate = Predicate()
-    query_data = QueryData(fields, tables, predicate, order_by=["field1"])
-    assert query_data.get_order_by() == ["field1"]
+    query_data = QueryData(fields, tables, predicate, [OrderByField("field1")])
+    assert query_data.get_order_by() == [OrderByField("field1")]
+
 
 
 def test_get_order_by_default_empty():
@@ -50,10 +51,35 @@ def test_string_representation_with_order_by(query_data):
     fields = ["field1", "field2"]
     tables = {"table1"}
     predicate = Predicate()
-    query_data = QueryData(fields, tables, predicate, order_by=["field1", "field2"])
+    query_data = QueryData(fields, tables, predicate, [OrderByField("field1"), OrderByField("field2")])
     result_str = str(query_data)
-    assert "ORDER BY field1, field2" in result_str
+    assert "ORDER BY field1 ASC, field2 ASC" in result_str
 
 
 def test_string_representation_without_order_by(query_data):
     assert "ORDER BY" not in str(query_data)
+
+
+def test_get_limit_default_none():
+    fields = ["field1"]
+    tables = {"table1"}
+    predicate = Predicate()
+    query_data = QueryData(fields, tables, predicate)
+    assert query_data.get_limit() is None
+
+
+def test_get_limit():
+    fields = ["field1"]
+    tables = {"table1"}
+    predicate = Predicate()
+    query_data = QueryData(fields, tables, predicate, limit=10)
+    assert query_data.get_limit() == 10
+
+
+def test_string_representation_with_limit():
+    fields = ["field1"]
+    tables = {"table1"}
+    predicate = Predicate()
+    query_data = QueryData(fields, tables, predicate, limit=10)
+    result_str = str(query_data)
+    assert "LIMIT 10" in result_str

@@ -79,7 +79,12 @@ class Parser:
             self.lexer.eat_keyword("by")
             order_by = self.order_by_list()
 
-        return QueryData(field_list, tables, predicate, order_by)
+        limit = None
+        if self.lexer.match_keyword("limit"):
+            self.lexer.eat_keyword("limit")
+            limit = self.lexer.eat_int_constant()
+
+        return QueryData(field_list, tables, predicate, order_by, limit)
 
     def select_list(self) -> list[str]:
         field_list = [self.field()]

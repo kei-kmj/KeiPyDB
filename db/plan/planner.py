@@ -1,3 +1,4 @@
+from db.materialize.limit_plan import LimitPlan
 from db.materialize.sort_plan import SortPlan
 from db.parse.create_index import CreateIndex
 from db.parse.create_table import CreateTable
@@ -28,6 +29,10 @@ class Planner:
 
         if data.get_order_by():
             plan = SortPlan(transaction, plan, data.get_order_by())
+
+
+        if data.get_limit() is not None:
+            plan = LimitPlan(plan, data.get_limit())
 
         return plan
 

@@ -1,22 +1,3 @@
-import os
-import shutil
-import tempfile
-
-import pytest
-
-from db.server.keipy_db import KeiPyDB
-
-
-@pytest.fixture
-def test_db():
-    """テスト用の新しいデータベースを作成"""
-    temp_dir = tempfile.mkdtemp()
-    db = KeiPyDB(temp_dir)
-    tx = db.new_transaction()
-    yield db, tx
-    if os.path.exists(temp_dir):
-        shutil.rmtree(temp_dir)
-
 
 def test_sort_scan_single_field(test_db):
     db, tx = test_db

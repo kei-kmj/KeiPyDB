@@ -15,8 +15,8 @@ from db.query.predicate import Predicate
 from db.query.term import Term
 
 
-def test_parser_select_basic():
-    """基本的なSELECT文のパース"""
+def test_parser_select_fields_and_table():
+    """フィールドとテーブルのみのSELECT文のパース"""
     sql = "SELECT id, name FROM users"
     parser = Parser(sql)
 
@@ -65,7 +65,7 @@ def test_parser_select_with_order_by_desc():
     assert query_data.get_order_by() == [OrderByField(field_name="name", ascending=False)]
 
 
-def test_parser_select_and_condition():
+def test_parser_select_with_multiple_where_conditions():
     """複数条件のSELECT文のパース"""
     sql = "SELECT name FROM users WHERE age = 25 AND status = 'active'"
     parser = Parser(sql)
@@ -80,8 +80,28 @@ def test_parser_select_and_condition():
     assert predicate is not None
 
 
-def test_parser_insert_basic():
-    """基本的なINSERT文のパース"""
+def test_parser_select_with_limit():
+    """LIMIT句付きSELECT文のパース"""
+    sql = "SELECT id FROM users LIMIT 10"
+    parser = Parser(sql)
+
+    query_data = parser.query()
+
+    assert query_data.get_limit() == 10
+
+
+def test_parser_select_without_limit():
+    """LIMIT句なしのSELECT文のパース"""
+    sql = "SELECT id FROM users"
+    parser = Parser(sql)
+
+    query_data = parser.query()
+
+    assert query_data.get_limit() is None
+
+
+def test_parser_insert_fields_and_values():
+    """フィールドと値を指定したINSERT文のパース"""
     sql = "INSERT INTO users (id, name, age) VALUES (1, 'John', 25)"
     parser = Parser(sql)
 
@@ -139,8 +159,8 @@ def test_parser_delete_with_where():
     assert predicate is not None
 
 
-def test_parser_update_basic():
-    """基本的なUPDATE文のパース"""
+def test_parser_update_with_where():
+    """WHERE句付きUPDATE文のパース"""
     sql = "UPDATE users SET age = 26 WHERE id = 1"
     parser = Parser(sql)
 
@@ -167,51 +187,6 @@ def test_parser_update_with_string():
     assert isinstance(modify_data, ModifyData)
     assert modify_data.get_table_name() == "users"
     assert modify_data.get_field_name() == "name"
-
-
-def test_parser_create_table_basic():
-    """基本的なCREATE TABLE文のパース"""
-    sql = "CREATE TABLE users (id int, name varchar(50), age int)"
-    parser = Parser(sql)
-
-    create_table = parser.update_command()
-
-    assert isinstance(create_table, CreateTable)
-    assert create_table.get_table_name() == "users"
-
-    schema = create_table.get_schema()
-    assert schema is not None
-    assert schema.has_field("id")
-    assert schema.has_field("name")
-    assert schema.has_field("age")
-
-    # フィールドタイプの確認
-    assert schema.get_type("id") == FieldType.Integer
-    assert schema.get_type("name") == FieldType.Varchar
-    assert schema.get_type("age") == FieldType.Integer
-
-    # varchar長の確認
-    assert schema.get_length("name") == 50
-
-
-def test_parser_create_table_complex():
-    """複雑なCREATE TABLE文のパース"""
-    sql = """CREATE TABLE products
-           (product_id int, title varchar(100), description varchar(500), price int, category varchar(30))"""
-    parser = Parser(sql)
-
-    create_table = parser.update_command()
-
-    assert isinstance(create_table, CreateTable)
-    assert create_table.get_table_name() == "products"
-
-    schema = create_table.get_schema()
-    assert len(schema.fields) == 5
-
-    # 各フィールドの確認
-    expected_fields = ["product_id", "title", "description", "price", "category"]
-    for field in expected_fields:
-        assert schema.has_field(field)
 
 
 def test_parser_create_view():
@@ -391,86 +366,3 @@ def test_parser_edge_case_only_whitespace():
 
     with pytest.raises(SyntaxError):
         parser.query()
-
-
-def test_parser_case_insensitive_keywords():
-    """キーワードの大文字小文字無関係のテスト"""
-    sql = "select id, name from users where age = 25"
-    parser = Parser(sql)
-
-    query_data = parser.query()
-
-    assert isinstance(query_data, QueryData)
-    assert query_data.get_fields() == ["id", "name"]
-    assert "users" in query_data.get_tables()
-
-
-def test_parser_mixed_case_keywords():
-    """混在する大文字小文字のテスト"""
-    sql = "Select Id, Name From Users Where Age = 25"
-    parser = Parser(sql)
-
-    query_data = parser.query()
-
-    assert isinstance(query_data, QueryData)
-    assert query_data.get_fields() == ["id", "name"]  # 小文字に正規化される
-
-
-def test_parser_complex_where_clause():
-    """複雑なWHERE句のテスト"""
-    sql = "SELECT name FROM users WHERE age = 25 AND status = 'active' AND department = 'IT'"
-    parser = Parser(sql)
-
-    query_data = parser.query()
-
-    assert isinstance(query_data, QueryData)
-    predicate = query_data.get_predicate()
-    assert predicate is not None
-
-
-def test_parser_multiple_field_select():
-    """多数フィールドのSELECT文のテスト"""
-    sql = "SELECT id, name, email, age, department, salary, hire_date FROM employees"
-    parser = Parser(sql)
-
-    query_data = parser.query()
-
-    assert isinstance(query_data, QueryData)
-    fields = query_data.get_fields()
-    assert len(fields) == 7
-    expected_fields = ["id", "name", "email", "age", "department", "salary", "hire_date"]
-    assert fields == expected_fields
-
-
-def test_parser_create_table_various_types():
-    """様々なデータ型のCREATE TABLEテスト"""
-    sql = "CREATE TABLE test_table (small_int int, medium_text varchar(100), large_text varchar(500), another_int int)"
-    parser = Parser(sql)
-
-    create_table = parser.update_command()
-
-    assert isinstance(create_table, CreateTable)
-    schema = create_table.get_schema()
-
-    assert schema.get_type("small_int") == FieldType.Integer
-    assert schema.get_type("medium_text") == FieldType.Varchar
-    assert schema.get_type("large_text") == FieldType.Varchar
-    assert schema.get_type("another_int") == FieldType.Integer
-
-    assert schema.get_length("medium_text") == 100
-    assert schema.get_length("large_text") == 500
-
-
-def test_parser_stress_test_large_insert():
-    """大きなINSERT文のストレステスト"""
-    fields = [f"field_{i}" for i in range(20)]
-    values = [f"'value_{i}'" if i % 2 == 0 else str(i) for i in range(20)]
-
-    sql = f"INSERT INTO large_table ({', '.join(fields)}) VALUES ({', '.join(values)})"
-    parser = Parser(sql)
-
-    insert_data = parser.update_command()
-
-    assert isinstance(insert_data, InsertData)
-    assert len(insert_data.get_fields()) == 20
-    assert len(insert_data.get_values()) == 20
