@@ -30,6 +30,9 @@ class IndexSelectScan(Scan, ABC):
     def get_string(self, field_name: str) -> str:
         return self.table_scan.get_string(field_name)
 
+    def get_vector(self, field_name: str) -> list[float]:
+        return self.table_scan.get_vector(field_name)
+
     def get_value(self, field_name: str) -> Constant:
         return self.table_scan.get_value(field_name)
 

@@ -1,11 +1,14 @@
 class Format:
     IntBigEndian = ">i"
     IntLittleEndian = "<i"
+    FloatLittleEndian = "<f"
+
 
 
 class ByteSize:
     Int = 4
     ASCII = 1
+    Float = 4
 
 
 class FileMode:
@@ -34,6 +37,7 @@ class LockMode:
 class FieldType:
     Integer = 1
     Varchar = 2
+    Vector = 3
 
 
 class SchemaType:

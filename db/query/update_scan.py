@@ -20,6 +20,10 @@ class UpdateScan(Scan, ABC):
         pass
 
     @abstractmethod
+    def set_vector(self, field_name: str, val: list[float]) -> None:
+        pass
+
+    @abstractmethod
     def insert(self) -> None:
         pass
 

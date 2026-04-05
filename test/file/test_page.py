@@ -161,12 +161,15 @@ def test_page_mixed_data():
     page.set_string(4, "test string")
     page.set_bytes(100, b"binary data")
     page.set_int(200, -999)
+    page.set_vector(300, [1.0, 2.0, 3.0])
 
     # すべて正しく読み取れることを確認
     assert page.get_int(0) == 42
     assert page.get_string(4) == "test string"
     assert page.get_bytes(100) == b"binary data"
     assert page.get_int(200) == -999
+
+    assert page.get_vector(300, 3) == [1.0, 2.0, 3.0]
 
 
 def test_page_max_length():
@@ -214,6 +217,20 @@ def test_page_get_contents_after_modification():
     assert page.get_int(0) == 12345
     assert page.get_string(10) == "test"
 
+
+def test_page_vector():
+    page = Page(4096)
+    offset = 0
+    vector = [1.0, 2.0, 3.0]
+    page.set_vector(offset, vector)
+    assert page.get_vector(offset, len(vector)) == vector
+
+
+def test_page_get_vector_length():
+    assert Page.get_vector_length(0) == 0
+    assert Page.get_vector_length(1) == ByteSize.Float
+    assert Page.get_vector_length(10) == 10 * ByteSize.Float
+    assert Page.get_vector_length(384) == 384 * ByteSize.Float
 
 @pytest.mark.skip
 def test_page_get_contents_isolation():

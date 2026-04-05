@@ -232,15 +232,14 @@ class Parser:
             self.lexer.eat_keyword("int")
             schema.add_int_field(field_name)
         elif self.lexer.match_keyword("varchar"):
-            self.lexer.eat_keyword("varchar")
-            self.lexer.eat_delimiter("(")
-            string_length = self.lexer.eat_int_constant()
-            self.lexer.eat_delimiter(")")
-
-            if string_length is None:
-                raise ValueError(f"String length must be provided for field '{field_name}'")
+            string_length = self._eat_type_with_length("varchar")
 
             schema.add_string_field(field_name, string_length)
+
+        elif self.lexer.match_keyword("vector"):
+            dimension = self._eat_type_with_length("vector")
+
+            schema.add_vector_field(field_name, dimension)
         else:
             raise SyntaxError(f"Expected string_length, but not found {self.lexer.current_token}")
 
@@ -272,3 +271,12 @@ class Parser:
                 f"Expected index_name, table_name and field_name, but not found {self.lexer.current_token}"
             )
         return CreateIndex(index_name, table_name, field_name)
+
+
+    def _eat_type_with_length(self, type_name: str) -> int:
+        self.lexer.eat_keyword(type_name)
+        self.lexer.eat_delimiter("(")
+        length = self.lexer.eat_int_constant()
+        self.lexer.eat_delimiter(")")
+
+        return length

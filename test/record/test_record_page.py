@@ -87,6 +87,30 @@ def test_can_correctly_set_and_get_string_values(setup_managers):
     transaction.commit()
 
 
+def test_can_correctly_set_and_get_vector_values(setup_managers):
+    file_manager, log_manager, buffer_manager = setup_managers
+
+    transaction = Transaction(file_manager, log_manager, buffer_manager)
+
+    schema = Schema()
+    schema.add_vector_field("test_vector", 3)  # 3次元ベクトフィールド
+    layout = Layout(schema)
+
+    block = BlockID("test.tbl", 0)
+    transaction.append("test.tbl")
+
+    page = RecordPage(transaction, block, layout)
+
+    test_vector = [1.5, 2.5, 3.5]
+    slot = 0
+    page.set_vector(slot, "test_vector", test_vector)
+
+    retrieved_vector = page.get_vector(slot, "test_vector", 3)
+    assert retrieved_vector == test_vector
+
+    transaction.commit()
+
+
 def test_can_delete_records(setup_managers):
     file_manager, log_manager, buffer_manager = setup_managers
 

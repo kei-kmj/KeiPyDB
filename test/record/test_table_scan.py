@@ -132,6 +132,31 @@ def test_get_value_and_set_value(setup_managers):
     table_scan.close()
     transaction.commit()
 
+def test_vector_insertion_and_reading(setup_managers):
+    """ベクトルフィールドの挿入と読み取りテスト"""
+    file_manager, log_manager, buffer_manager = setup_managers
+
+    transaction = Transaction(file_manager, log_manager, buffer_manager)
+
+    schema = Schema()
+    schema.add_int_field("id")
+    schema.add_vector_field("embedding", 3)
+    layout = Layout(schema)
+
+    table_scan = TableScan(transaction, "vectors", layout)
+
+    vector = [1.0, 2.0, 3.0]
+    table_scan.insert()
+    table_scan.set_int("id", 1)
+    table_scan.set_vector("embedding", vector)
+
+    table_scan.before_first()
+    assert table_scan.next() is True
+    assert table_scan.get_int("id") == 1
+    assert table_scan.get_vector("embedding") == vector
+
+    table_scan.close()
+    transaction.commit()
 
 def test_has_field(setup_managers):
     """has_fieldのテスト"""
@@ -142,12 +167,14 @@ def test_has_field(setup_managers):
     schema = Schema()
     schema.add_int_field("id")
     schema.add_string_field("name", 50)
+    schema.add_vector_field("embedding", 3)
     layout = Layout(schema)
 
     table_scan = TableScan(transaction, "test_table", layout)
 
     assert table_scan.has_field("id") is True
     assert table_scan.has_field("name") is True
+    assert table_scan.has_field("embedding") is True
     assert table_scan.has_field("nonexistent") is False
 
     table_scan.close()

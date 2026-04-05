@@ -95,6 +95,15 @@ def test_add_string_field():
     assert schema.get_length("username") == 50
 
 
+def test_add_vector_field():
+    schema = Schema()
+    schema.add_vector_field("embedding", 128)
+
+    assert schema.has_field("embedding")
+    assert schema.get_type("embedding") == FieldType.Vector
+    assert schema.get_length("embedding") == 128 * ByteSize.Float
+
+
 def test_multiple_field_addition_order_is_preserved():
     schema = Schema()
     field_names = ["id", "name", "age", "email", "created_at"]

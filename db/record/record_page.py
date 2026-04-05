@@ -37,6 +37,16 @@ class RecordPage:
         field_position = self._offset(slot) + self.layout.get_offset(field_name)
         self.transaction.set_string(self.block, field_position, value, ok_to_log=True)
 
+    def get_vector(self, slot: int, field_name: str, dimensions: int) -> list[float]:
+        """指定されたスロットの指定されたフィールドのベクトル値を返す"""
+        field_position = self._offset(slot) + self.layout.get_offset(field_name)
+        return self.transaction.get_vector(self.block, field_position, dimensions)
+
+    def set_vector(self, slot: int, field_name: str, value: list[float]) -> None:
+        """指定されたスロットの指定されたフィールドにベクトル値を設定する"""
+        field_position = self._offset(slot) + self.layout.get_offset(field_name)
+        self.transaction.set_vector(self.block, field_position, value)
+
     def delete(self, slot: int) -> None:
         """指定されたスロットを削除する"""
         self._set_flag(slot, RecordPage.EMPTY)

@@ -81,6 +81,7 @@ class Lexer:
             "offset",
             "asc",
             "desc",
+            "vector",
         }
         self.sql = sql
         self.tokens = deque(_tokenize(sql))
