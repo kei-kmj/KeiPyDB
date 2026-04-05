@@ -1,5 +1,6 @@
 from abc import ABC
 
+from db.constants import FieldType
 from db.metadata.metadata_manager import MetadataManager
 from db.parse.create_index import CreateIndex
 from db.parse.create_table import CreateTable
@@ -73,10 +74,16 @@ class BasicUpdatePlanner(UpdatePlanner, ABC):
 
         fields = data.get_fields()
         values = iter(data.get_values())
+        schema = self.metadata_manager.get_layout(data.table_name, transaction).get_schema()
 
         for field_name in fields:
             value = next(values)
-            scan.set_value(field_name, value)
+
+            if schema.get_type(field_name) == FieldType.Vector:
+                vector = self._parse_vector(value.as_string())
+                scan.set_vector(field_name, vector)
+            else:
+                scan.set_value(field_name, value)
 
         scan.close()
         return self.AFFECTED
@@ -95,3 +102,11 @@ class BasicUpdatePlanner(UpdatePlanner, ABC):
         """インデックスを作成する"""
         self.metadata_manager.create_index(data.index_name, data.table_name, data.field_name, transaction)
         return 0
+
+    @staticmethod
+    def _parse_vector(vector_str: str) -> list[float]:
+        """文字列をベクトルに変換する"""
+        try:
+            return [float(x) for x in vector_str.strip("[]").split(",")]
+        except ValueError as e:
+            raise ValueError(f"Invalid vector format: {vector_str}") from e

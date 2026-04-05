@@ -82,11 +82,15 @@ class KeiPyClient:
                     field_values: List[str] = []
                     for field in fields:
                         try:
-                            # フィールドの型に基づいて適切に取得
+                            # フィールドの型に基づいて取得
                             field_type: int = schema.get_type(field)
                             if field_type == FieldType.Integer:
                                 int_value: int = scan.get_int(field)
                                 field_values.append(f"{field} = {int_value}")
+                            elif field_type == FieldType.Vector:
+                                vector_value: list[float] = scan.get_vector(field)
+                                rounded = [round(x, 6) for x in vector_value]
+                                field_values.append(f"{field} = {rounded}")
                             else:
                                 str_value: str = scan.get_string(field)
                                 field_values.append(f"{field} = {str_value}")

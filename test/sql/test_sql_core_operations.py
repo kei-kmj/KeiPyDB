@@ -258,6 +258,25 @@ def run_core_regression_tests():
         return False
 
 
+def test_vector_insert_and_select(clean_db):
+    db = KeiPyDB(clean_db)
+    planner = db.get_planner()
+    tx = db.new_transaction()
+
+    planner.execute_update("CREATE TABLE items (name varchar(20), embedding vector(3))", tx)
+    planner.execute_update("INSERT INTO items (name, embedding) VALUES ('apple', '[1.0, 2.0, 3.0]')", tx)
+    planner.execute_update("INSERT INTO items (name, embedding) VALUES ('banana', '[4.0, 5.0, 6.0]')", tx)
+
+    plan = planner.create_query_plan("SELECT name, embedding FROM items", tx)
+    scan = plan.open()
+
+    scan.next()
+    assert scan.get_string("name") == "apple"
+    assert scan.get_vector("embedding") == [1.0, 2.0, 3.0]
+    scan.close()
+    tx.commit()
+
+
 if __name__ == "__main__":
     success = run_core_regression_tests()
     if not success:
