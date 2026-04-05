@@ -7,7 +7,7 @@ from db.exception import BadSyntaxException
 
 def _tokenize(sql: str) -> list[str]:
     """SQL文をトークンに分割"""
-    token_pattern = r"[a-zA-Z_][a-zA-Z_0-9]*|'(?:[^']|'')*'|\d+(?:\.\d+)?|[=,()<>*+-/;]|\s+|."
+    token_pattern = r"[a-zA-Z_][a-zA-Z_0-9]*|'(?:[^']|'')*'|\d+(?:\.\d+)?|<->|[=,()<>*+-/;]|\s+|."
     tokens = re.findall(token_pattern, sql)
 
     # 文字列リテラル以外のトークンのみ小文字化
@@ -180,3 +180,20 @@ class Lexer:
             self.current_token = self.tokens.popleft()
         else:
             self.current_token = None
+
+    def match_distance_operator(self) -> bool:
+        """現在のトークンが距離演算子と一致するかどうかを返す"""
+        return self.current_token == "<->"
+
+    def eat_distance_operator(self) -> str:
+        """距離演算子を消費"""
+
+        if not self.match_distance_operator():
+            raise SyntaxError(f"Expected distance operator '<->', but not found {self.current_token}")
+
+        if self.current_token is None:
+            raise SyntaxError("Expected distance operator '<->', but got end of input")
+
+        value = self.current_token
+        self.next_token()
+        return value

@@ -6,7 +6,7 @@ from db.parse.delete_data import DeleteData
 from db.parse.insert_data import InsertData
 from db.parse.modify_data import ModifyData
 from db.parse.parser import Parser
-from db.parse.query_data import OrderByField, QueryData
+from db.parse.query_data import OrderByField, QueryData, VectorOrderBy
 from db.query.constant import Constant
 from db.query.expression import Expression
 from db.query.predicate import Predicate
@@ -364,3 +364,18 @@ def test_parser_edge_case_only_whitespace():
 
     with pytest.raises(SyntaxError):
         parser.query()
+
+
+def test_query_with_vector_order_by():
+    """ベクトルソートのクエリのパーステスト"""
+    sql = "SELECT id FROM items ORDER BY embedding <-> '[1.0, 2.0, 3.0]'"
+    parser = Parser(sql)
+
+    query_data = parser.query()
+
+    assert isinstance(query_data, QueryData)
+    order_by = query_data.get_order_by()
+    assert len(order_by) == 1
+    assert isinstance(order_by[0], VectorOrderBy)
+    assert order_by[0].field_name == "embedding"
+    assert order_by[0].query_vector == [1.0, 2.0, 3.0]

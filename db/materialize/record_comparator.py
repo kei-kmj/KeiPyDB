@@ -36,5 +36,11 @@ class RecordComparator:
 
         return 0
 
-    def compare_row(self, row: dict[str, Constant]) -> tuple[Constant | _Reverse, ...]:
-        return tuple(row[f.field_name] if f.ascending else _Reverse(row[f.field_name]) for f in self.sort_fields)
+    def compare_row(self, row: dict[str, Constant | list[float]]) -> tuple[Constant | _Reverse, ...]:
+        result = []
+        for f in self.sort_fields:
+            val = row[f.field_name]
+            if isinstance(val, list):
+                continue
+            result.append(val if f.ascending else _Reverse(val))
+        return tuple(result)

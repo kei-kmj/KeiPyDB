@@ -7,6 +7,7 @@ from db.parse.delete_data import DeleteData
 from db.parse.insert_data import InsertData
 from db.parse.modify_data import ModifyData
 from db.parse.parser import Parser
+from db.parse.query_data import OrderByField
 from db.plan.plan import Plan
 from db.plan.query_planner import QueryPlanner
 from db.plan.update_planner import UpdatePlanner
@@ -27,8 +28,11 @@ class Planner:
         self.verify_query()
         plan = self.query_planner.create_plan(data, transaction)
 
-        if data.get_order_by():
-            plan = SortPlan(transaction, plan, data.get_order_by())
+        order_by = data.get_order_by()
+        sort_fields = [f for f in order_by if isinstance(f, OrderByField)]
+
+        if sort_fields:
+            plan = SortPlan(transaction, plan, sort_fields)
 
         limit = data.get_limit()
         if limit is not None:

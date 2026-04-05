@@ -8,11 +8,12 @@ from db.parse.delete_data import DeleteData
 from db.parse.insert_data import InsertData
 from db.parse.lexer import Lexer
 from db.parse.modify_data import ModifyData
-from db.parse.query_data import OrderByField, QueryData
+from db.parse.query_data import OrderByField, QueryData, VectorOrderBy
 from db.query.constant import Constant
 from db.query.expression import Expression
 from db.query.predicate import Predicate
 from db.query.term import Term
+from db.query.vector import parse_vector_literal
 from db.record.schema import Schema
 
 
@@ -103,15 +104,26 @@ class Parser:
             tables.append(table_name)
         return tables
 
-    def order_by_list(self) -> list[OrderByField]:
+    def order_by_list(self) -> list[OrderByField | VectorOrderBy]:
         fields = [self.order_by_field()]
         while self.lexer.match_delimiter(","):
             self.lexer.eat_delimiter(",")
             fields.append(self.order_by_field())
         return fields
 
-    def order_by_field(self) -> OrderByField:
+    def order_by_field(self) -> OrderByField | VectorOrderBy:
         field_name = self.field()
+
+        if self.lexer.match_distance_operator():
+            self.lexer.eat_distance_operator()
+            query_vector_str = self.lexer.eat_string_constant()
+
+            if query_vector_str is None:
+                raise SyntaxError(f"Expected vector literal, but not found {self.lexer.current_token}")
+
+            query_vector = parse_vector_literal(query_vector_str)
+            return VectorOrderBy(field_name, query_vector)
+
         ascending = True
         if self.lexer.match_keyword("asc"):
             self.lexer.eat_keyword("asc")

@@ -1,11 +1,13 @@
 from abc import ABC
 
+from db.constants import FieldType
 from db.materialize.materialize_plan import MaterializePlan
 from db.materialize.record_comparator import RecordComparator
 from db.materialize.sort_scan import SortScan
 from db.materialize.temp_table import TempTable
 from db.parse.query_data import OrderByField
 from db.plan.plan import Plan
+from db.query.constant import Constant
 from db.query.scan import Scan
 from db.query.update_scan import UpdateScan
 from db.record.schema import Schema
@@ -34,11 +36,18 @@ class SortPlan(Plan, ABC):
         return SortScan(runs, self.comparator)
 
     def _split_into_runs(self, source_scan: Scan) -> list[TempTable]:
+        # すべてのレコードをメモリに読み込み、ソートしてから一時テーブルに書き出す
+        # 現状未使用だが、将来的にメモリ制限を考慮して分割してソートするための基盤
         schema = self.source_plan.schema()
         records = []
 
         while source_scan.next():
-            row = {field: source_scan.get_value(field) for field in schema.get_fields()}
+            row: dict[str, Constant | list[float]] = {}
+            for field in schema.get_fields():
+                if schema.get_type(field) == FieldType.Vector:
+                    row[field] = source_scan.get_vector(field)
+                else:
+                    row[field] = source_scan.get_value(field)
             records.append(row)
 
         records.sort(key=lambda r: self.comparator.compare_row(r))
@@ -48,7 +57,11 @@ class SortPlan(Plan, ABC):
         for record in records:
             dest.insert()
             for field_name in schema.get_fields():
-                dest.set_value(field_name, record[field_name])
+                value = record[field_name]
+                if isinstance(value, list):
+                    dest.set_vector(field_name, value)
+                else:
+                    dest.set_value(field_name, value)
 
         dest.close()
         return [run]

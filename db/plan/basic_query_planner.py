@@ -1,8 +1,9 @@
 from abc import ABC
 
+from db.materialize.vector_sort_plan import VectorSortPlan
 from db.metadata.metadata_manager import MetadataManager
 from db.parse.parser import Parser
-from db.parse.query_data import QueryData
+from db.parse.query_data import QueryData, VectorOrderBy
 from db.plan.plan import Plan
 from db.plan.product_plan import ProductPlan
 from db.plan.project_plan import ProjectPlan
@@ -39,6 +40,11 @@ class BasicQueryPlanner(QueryPlanner, ABC):
             plan = ProductPlan(plan, next_plan)
 
         plan = SelectPlan(plan, query_data.get_predicate())
+
+        order_by = query_data.get_order_by()
+        vector_sort_fields = [f for f in order_by if isinstance(f, VectorOrderBy)]
+        if vector_sort_fields:
+            plan = VectorSortPlan(transaction, plan, vector_sort_fields[0])
 
         fields = query_data.get_fields()
 

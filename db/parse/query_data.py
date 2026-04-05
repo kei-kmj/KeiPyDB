@@ -12,19 +12,28 @@ class OrderByField(NamedTuple):
         return f"{self.field_name} {'ASC' if self.ascending else 'DESC'}"
 
 
+class VectorOrderBy(NamedTuple):
+    field_name: str
+    query_vector: list[float]
+
+    def __str__(self) -> str:
+        vector_str = "[" + ", ".join(str(v) for v in self.query_vector) + "]"
+        return f"{self.field_name} <-> '{vector_str}'"
+
+
 class QueryData:
     def __init__(
         self,
         fields: list[str],
         tables: Collection[str],
         predicate: Predicate,
-        order_by: Optional[list[OrderByField]] = None,
+        order_by: Optional[list[OrderByField | VectorOrderBy]] = None,
         limit: Optional[int] = None,
     ) -> None:
         self.fields = fields
         self.tables = tables
         self.predicate = predicate
-        self.order_by: list[OrderByField] = list(order_by) if order_by is not None else []
+        self.order_by: list[OrderByField | VectorOrderBy] = list(order_by) if order_by is not None else []
         self.limit = limit
 
     def get_fields(self) -> list[str]:
@@ -36,7 +45,7 @@ class QueryData:
     def get_predicate(self) -> Predicate:
         return self.predicate
 
-    def get_order_by(self) -> list[OrderByField]:
+    def get_order_by(self) -> list[OrderByField | VectorOrderBy]:
         return self.order_by
 
     def get_limit(self) -> Optional[int]:
