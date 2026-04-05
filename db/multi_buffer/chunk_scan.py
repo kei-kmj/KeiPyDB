@@ -1,6 +1,6 @@
 from abc import ABC
 
-from db.constants import FieldType, ByteSize
+from db.constants import ByteSize, FieldType
 from db.file.block_id import BlockID
 from db.query.constant import Constant
 from db.query.scan import Scan

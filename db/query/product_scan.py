@@ -51,7 +51,6 @@ class ProductScan(Scan, ABC):
                 available_fields.extend([f"right_{f}" for f in self.scan_right.get_fields()])
             raise ValueError(f"Field '{field_name}' not found. Available fields: {available_fields}")
 
-
     def get_vector(self, field_name: str) -> list[float]:
         """ベクトルを取得（左スキャン優先）"""
         if self.scan_left.has_field(field_name):

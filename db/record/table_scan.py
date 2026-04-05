@@ -68,7 +68,6 @@ class TableScan(UpdateScan, ABC):
 
         return self.record_page.get_string(self.current_slot, field_name)
 
-
     def get_vector(self, field_name: str) -> list[float]:
         """現在のスロットの指定されたフィールドのベクトル値を返す"""
 
@@ -112,7 +111,6 @@ class TableScan(UpdateScan, ABC):
             raise RuntimeError("Record page is not initialized. Ensure you have moved to a valid block first")
 
         self.record_page.set_string(self.current_slot, field_name, value)
-
 
     def set_vector(self, field_name: str, value: list[float]) -> None:
         """現在のスロットの指定されたフィールドにベクトル値を設定する"""

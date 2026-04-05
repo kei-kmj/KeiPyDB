@@ -86,7 +86,6 @@ class SortScan(Scan, ABC):
 
         raise RuntimeError("No current scan is selected")
 
-
     def get_vector(self, field_name: str) -> list[float]:
 
         if self.current_scan:

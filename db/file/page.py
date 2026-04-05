@@ -56,7 +56,6 @@ class Page:
 
         self.set_bytes(offset, byte_string)
 
-
     def get_vector(self, offset: int, dimensions: int) -> list[float]:
         """指定されたオフセットからfloat配列を取得"""
         return [
@@ -69,7 +68,6 @@ class Page:
         for i, value in enumerate(vector):
             struct.pack_into(Format.FloatLittleEndian, self.buffer, offset + i * ByteSize.Float, value)
 
-
     def get_contents(self) -> bytes:
         """バッファ全体を含むバイト列を取得"""
         return bytes(self.buffer)
@@ -79,9 +77,6 @@ class Page:
         bytes_per_char = len(codecs.lookup(Page.CHARSET).incrementalencoder().encode("a"))
         return ByteSize.Int + (string_length * bytes_per_char)
 
-
     @staticmethod
     def get_vector_length(dimensions: int) -> int:
         return dimensions * ByteSize.Float
-
-

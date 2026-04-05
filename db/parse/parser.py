@@ -272,7 +272,6 @@ class Parser:
             )
         return CreateIndex(index_name, table_name, field_name)
 
-
     def _eat_type_with_length(self, type_name: str) -> int:
         self.lexer.eat_keyword(type_name)
         self.lexer.eat_delimiter("(")

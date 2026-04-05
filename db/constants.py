@@ -4,7 +4,6 @@ class Format:
     FloatLittleEndian = "<f"
 
 
-
 class ByteSize:
     Int = 4
     ASCII = 1

@@ -28,7 +28,6 @@ class Schema:
         """スキーマにベクトルフィールドを追加"""
         self.add_field(field_name, FieldType.Vector, dimensions * ByteSize.Float)
 
-
     def add(self, field_name: str, schema: "Schema") -> None:
         """別のスキーマに基づいたフィールドをスキーマに追加する"""
         field_type = schema.get_type(field_name)

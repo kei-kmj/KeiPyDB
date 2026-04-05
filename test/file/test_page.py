@@ -232,6 +232,7 @@ def test_page_get_vector_length():
     assert Page.get_vector_length(10) == 10 * ByteSize.Float
     assert Page.get_vector_length(384) == 384 * ByteSize.Float
 
+
 @pytest.mark.skip
 def test_page_get_contents_isolation():
     """取得したコピーが元のページから独立していることを確認"""

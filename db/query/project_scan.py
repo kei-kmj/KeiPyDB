@@ -27,7 +27,6 @@ class ProjectScan(Scan, ABC):
         else:
             raise RuntimeError(f"field '{field_name}' not in field_list")
 
-
     def get_vector(self, field_name: str) -> list[float]:
         if self.has_field(field_name):
             return self.scan.get_vector(field_name)

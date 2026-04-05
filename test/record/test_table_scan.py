@@ -132,6 +132,7 @@ def test_get_value_and_set_value(setup_managers):
     table_scan.close()
     transaction.commit()
 
+
 def test_vector_insertion_and_reading(setup_managers):
     """ベクトルフィールドの挿入と読み取りテスト"""
     file_manager, log_manager, buffer_manager = setup_managers
@@ -157,6 +158,7 @@ def test_vector_insertion_and_reading(setup_managers):
 
     table_scan.close()
     transaction.commit()
+
 
 def test_has_field(setup_managers):
     """has_fieldのテスト"""

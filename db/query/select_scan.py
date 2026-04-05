@@ -50,7 +50,6 @@ class SelectScan(UpdateScan, ABC):
         if isinstance(self.scan, UpdateScan):
             self.scan.set_string(field_name, value)
 
-
     def set_vector(self, field_name: str, value: list[float]) -> None:
 
         if isinstance(self.scan, UpdateScan):
