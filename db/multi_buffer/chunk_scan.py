@@ -1,6 +1,6 @@
 from abc import ABC
 
-from db.constants import FieldType
+from db.constants import ByteSize, FieldType
 from db.file.block_id import BlockID
 from db.query.constant import Constant
 from db.query.scan import Scan
@@ -59,6 +59,10 @@ class ChunkScan(Scan, ABC):
 
     def get_string(self, field_name: str) -> str:
         return self.record_page.get_string(self.current_slot, field_name)
+
+    def get_vector(self, field_name: str) -> list[float]:
+        dimensions = self.layout.schema.get_length(field_name) // ByteSize.Float
+        return self.record_page.get_vector(self.current_slot, field_name, dimensions)
 
     def get_value(self, field_name: str) -> Constant:
 

@@ -12,6 +12,7 @@ class Transaction:
     _next_tx_number = 0
     _lock = Lock()
     END_OF_FILE = -1
+    NO_LOG = -1
 
     def __init__(self, file_manager: FileManager, log_manager: LogManager, buffer_manager: BufferManager) -> None:
         from db.transaction.recovery.recovery_manager import RecoveryManager
@@ -82,6 +83,22 @@ class Transaction:
             lsn = self.recovery_manager.set_string(buffer, offset)
         buffer.get_contents().set_string(offset, value)
         buffer.set_modified(self.tx_number, lsn)
+
+    def get_vector(self, block: BlockID, offset: int, dimensions: int) -> list[float]:
+        self.concurrency_manager.lock_shared(block)
+        buffer = self.buffer_list.get_buffer(block)
+        if not buffer:
+            raise ValueError(f"Block {block} not pinned")
+        return buffer.get_contents().get_vector(offset, dimensions)
+
+    def set_vector(self, block: BlockID, offset: int, vector: list[float], ok_to_log: bool = True) -> None:
+        self.concurrency_manager.lock_exclusive(block)
+        buffer = self.buffer_list.get_buffer(block)
+        if not buffer:
+            raise ValueError(f"Block {block} not pinned")
+
+        buffer.get_contents().set_vector(offset, vector)
+        buffer.set_modified(self.tx_number, Transaction.NO_LOG)
 
     def size(self, file_name: str) -> int:
         return self.file_manager.length(file_name)

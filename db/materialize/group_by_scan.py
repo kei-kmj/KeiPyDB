@@ -65,6 +65,9 @@ class GroupByScan(Scan, ABC):
     def get_string(self, field_name: str) -> str:
         return self.get_value(field_name).as_string()
 
+    def get_vector(self, field_name: str) -> list[float]:
+        raise RuntimeError("Vectoor fields not supported in GroupByScan")
+
     def has_field(self, field_name: str) -> bool:
         if field_name in self.group_fields:
             return True

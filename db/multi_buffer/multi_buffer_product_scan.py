@@ -60,6 +60,12 @@ class MultiBufferProductScan(Scan, ABC):
 
         raise RuntimeError("No scan open")
 
+    def get_vector(self, field_name: str) -> list[float]:
+        if self.product_scan:
+            return self.product_scan.get_vector(field_name)
+
+        raise RuntimeError("No scan open")
+
     def has_field(self, field_name: str) -> bool:
         if self.product_scan:
             return self.product_scan.has_field(field_name)

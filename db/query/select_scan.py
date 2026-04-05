@@ -31,6 +31,9 @@ class SelectScan(UpdateScan, ABC):
     def get_value(self, field_name: str) -> Constant:
         return self.scan.get_value(field_name)
 
+    def get_vector(self, field_name: str) -> list[float]:
+        return self.scan.get_vector(field_name)
+
     def has_field(self, field_name: str) -> bool:
         return self.scan.has_field(field_name)
 
@@ -46,6 +49,11 @@ class SelectScan(UpdateScan, ABC):
 
         if isinstance(self.scan, UpdateScan):
             self.scan.set_string(field_name, value)
+
+    def set_vector(self, field_name: str, value: list[float]) -> None:
+
+        if isinstance(self.scan, UpdateScan):
+            self.scan.set_vector(field_name, value)
 
     def set_value(self, field_name: str, value: Constant) -> None:
         """値を設定"""

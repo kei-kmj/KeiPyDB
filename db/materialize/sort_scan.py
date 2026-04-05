@@ -1,3 +1,4 @@
+from abc import ABC
 from typing import Optional
 
 from db.materialize.record_comparator import RecordComparator
@@ -8,7 +9,7 @@ from db.query.update_scan import UpdateScan
 from db.record.record_id import RecordID
 
 
-class SortScan(Scan):
+class SortScan(Scan, ABC):
 
     def __init__(self, runs: list[TempTable], comparator: RecordComparator) -> None:
         sorted_first = runs[0].open()
@@ -82,6 +83,13 @@ class SortScan(Scan):
 
         if self.current_scan:
             return self.current_scan.get_string(field_name)
+
+        raise RuntimeError("No current scan is selected")
+
+    def get_vector(self, field_name: str) -> list[float]:
+
+        if self.current_scan:
+            return self.current_scan.get_vector(field_name)
 
         raise RuntimeError("No current scan is selected")
 

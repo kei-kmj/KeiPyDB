@@ -49,6 +49,12 @@ class IndexJoinScan(Scan, ABC):
         else:
             return self.left_scan.get_string(field_name)
 
+    def get_vector(self, field_name: str) -> list[float]:
+        if self.right_scan.has_field(field_name):
+            return self.right_scan.get_vector(field_name)
+        else:
+            return self.left_scan.get_vector(field_name)
+
     def has_field(self, field_name: str) -> bool:
         return self.right_scan.has_field(field_name) or self.left_scan.has_field(field_name)
 

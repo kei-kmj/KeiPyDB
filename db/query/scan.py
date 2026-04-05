@@ -22,6 +22,10 @@ class Scan(ABC):
         pass
 
     @abstractmethod
+    def get_vector(self, field_name: str) -> list[float]:
+        pass
+
+    @abstractmethod
     def get_value(self, field_name: str) -> Constant:
         pass
 

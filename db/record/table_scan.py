@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Optional
 
-from db.constants import FieldType
+from db.constants import ByteSize, FieldType
 from db.file.block_id import BlockID
 from db.query.constant import Constant
 from db.query.update_scan import UpdateScan
@@ -68,6 +68,15 @@ class TableScan(UpdateScan, ABC):
 
         return self.record_page.get_string(self.current_slot, field_name)
 
+    def get_vector(self, field_name: str) -> list[float]:
+        """現在のスロットの指定されたフィールドのベクトル値を返す"""
+
+        if self.record_page is None:
+            raise RuntimeError("Record page is not initialized. Ensure you have moved to a valid block first")
+
+        dimensions = self.layout.get_schema().get_length(field_name) // ByteSize.Float
+        return self.record_page.get_vector(self.current_slot, field_name, dimensions)
+
     def get_value(self, field_name: str) -> Constant:
         """現在のスロットの指定されたフィールドの値を返す"""
         field_type = self.layout.get_schema().get_type(field_name)
@@ -75,6 +84,8 @@ class TableScan(UpdateScan, ABC):
             return Constant(self.get_int(field_name))
         elif field_type == FieldType.Varchar:
             return Constant(self.get_string(field_name))
+        elif field_type == FieldType.Vector:
+            raise ValueError("Vector fields cannot be converted to Constant")
         else:
             raise ValueError(f"Unknown field type {field_type}")
 
@@ -100,6 +111,13 @@ class TableScan(UpdateScan, ABC):
             raise RuntimeError("Record page is not initialized. Ensure you have moved to a valid block first")
 
         self.record_page.set_string(self.current_slot, field_name, value)
+
+    def set_vector(self, field_name: str, value: list[float]) -> None:
+        """現在のスロットの指定されたフィールドにベクトル値を設定する"""
+        if self.record_page is None:
+            raise RuntimeError("Record page is not initialized. Ensure you have moved to a valid block first")
+
+        self.record_page.set_vector(self.current_slot, field_name, value)
 
     def set_value(self, field_name: str, value: Constant) -> None:
         """現在のスロットの指定されたフィールドに値を設定"""

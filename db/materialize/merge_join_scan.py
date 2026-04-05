@@ -63,6 +63,13 @@ class MergeJoinScan(Scan, ABC):
 
         return self.right_scan.get_string(field_name)
 
+    def get_vector(self, field_name: str) -> list[float]:
+
+        if self.left_scan.has_field(field_name):
+            return self.left_scan.get_vector(field_name)
+
+        return self.right_scan.get_vector(field_name)
+
     def get_value(self, field_name: str) -> Constant:
         if self.left_scan.has_field(field_name):
             return self.left_scan.get_value(field_name)

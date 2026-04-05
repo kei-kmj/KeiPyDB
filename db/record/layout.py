@@ -47,5 +47,7 @@ class Layout:
             return ByteSize.Int
         elif field_type == FieldType.Varchar:
             return Page.get_max_length(self.schema.get_length(field_name))
+        elif field_type == FieldType.Vector:
+            return self.schema.get_length(field_name)
         else:
             raise ValueError(f"Unknown field type {field_type}")
