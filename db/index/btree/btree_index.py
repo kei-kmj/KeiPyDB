@@ -46,7 +46,7 @@ class BtreeIndex:
             root.format(self.root_block, Node.Valid)
 
             field_type = dir_schema.get_type("data_value")
-            min_value = Constant(int("-inf")) if field_type == FieldType.Integer else Constant("")
+            min_value = Constant(-2**31) if field_type == FieldType.Integer else Constant("")
 
             first_leaf_block = 0
             root.insert_directory(Slot.First, min_value, first_leaf_block)

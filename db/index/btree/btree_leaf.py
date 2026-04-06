@@ -45,7 +45,7 @@ class BtreeLeaf:
     def insert(self, record_id: RecordID) -> DirectoryEntry | None:
         if (
             self.contents.get_flag() >= Node.Valid
-            and self.contents.get_data_value(Slot.First).__lt__(self.search_key) > 0
+            and self.contents.get_data_value(Slot.First) > self.search_key
         ):
             first_value = self.contents.get_data_value(Slot.First)
             new_block = self.contents.split(Slot.First, self.contents.get_flag())

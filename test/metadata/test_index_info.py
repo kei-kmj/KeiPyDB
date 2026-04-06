@@ -63,7 +63,7 @@ def test_index_info_initialization(real_index_info_env):
     assert index_info.index_layout is not None
     assert index_info.index_layout.schema.has_field("block")
     assert index_info.index_layout.schema.has_field("id")
-    assert index_info.index_layout.schema.has_field("dataval")
+    assert index_info.index_layout.schema.has_field("data_value")
 
 
 def test_index_info_with_integer_field(real_index_info_env):
@@ -77,7 +77,7 @@ def test_index_info_with_integer_field(real_index_info_env):
     index_info = IndexInfo("idx_id", "id", table_schema, stat_info)
 
     # インデックスレイアウトのdatavalフィールドがInteger型であることを確認
-    dataval_type = index_info.index_layout.schema.get_type("dataval")
+    dataval_type = index_info.index_layout.schema.get_type("data_value")
     assert dataval_type == FieldType.Integer
 
     # スロットサイズが適切に計算されていることを確認
@@ -96,11 +96,11 @@ def test_index_info_with_varchar_field(real_index_info_env):
     index_info = IndexInfo("idx_name", "name", table_schema, stat_info)
 
     # インデックスレイアウトのdatavalフィールドがVarchar型であることを確認
-    dataval_type = index_info.index_layout.schema.get_type("dataval")
+    dataval_type = index_info.index_layout.schema.get_type("data_value")
     assert dataval_type == FieldType.Varchar
 
     # フィールド長が正しく設定されていることを確認
-    dataval_length = index_info.index_layout.schema.get_length("dataval")
+    dataval_length = index_info.index_layout.schema.get_length("data_value")
     expected_length = table_schema.get_length("name")
     assert dataval_length == expected_length
 
@@ -214,12 +214,12 @@ def test_index_info_with_different_field_types(real_index_info_env):
         index_info = IndexInfo(index_name, field_name, schema, stat_info)
 
         # インデックスレイアウトが正しく作成されていることを確認
-        assert index_info.index_layout.schema.has_field("dataval")
-        dataval_type = index_info.index_layout.schema.get_type("dataval")
+        assert index_info.index_layout.schema.has_field("data_value")
+        dataval_type = index_info.index_layout.schema.get_type("data_value")
         assert dataval_type == expected_type
 
         if expected_type == FieldType.Varchar:
-            dataval_length = index_info.index_layout.schema.get_length("dataval")
+            dataval_length = index_info.index_layout.schema.get_length("data_value")
             expected_length = schema.get_length(field_name)
             assert dataval_length == expected_length
 

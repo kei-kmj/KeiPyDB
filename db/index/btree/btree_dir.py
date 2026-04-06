@@ -53,9 +53,10 @@ class BtreeDir:
     def insert(self, dir_entry: DirectoryEntry) -> DirectoryEntry | None:
         if self.contents.get_flag() == self.LEAF_NODE:
             self.insert_entry(dir_entry)
+            return None
 
-        chile_block = self.find_child_block(dir_entry.data_value)
-        child_dir = BtreeDir(self.transaction, chile_block, self.layout)
+        child_block = self.find_child_block(dir_entry.data_value)
+        child_dir = BtreeDir(self.transaction, child_block, self.layout)
         my_entry = child_dir.insert(dir_entry)
         child_dir.close()
 

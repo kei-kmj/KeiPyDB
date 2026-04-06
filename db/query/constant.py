@@ -1,6 +1,8 @@
+from functools import total_ordering
 from typing import Union
 
 
+@total_ordering
 class Constant:
 
     def __init__(self, value: Union[int, str]) -> None:

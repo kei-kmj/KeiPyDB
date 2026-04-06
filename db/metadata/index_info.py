@@ -39,9 +39,9 @@ class IndexInfo:
         schema.add_int_field("id")
 
         if self.table_schema.get_type(self.field_name) == FieldType.Integer:
-            schema.add_int_field("dataval")
+            schema.add_int_field("data_value")
         else:
             field_length = self.table_schema.get_length(self.field_name)
-            schema.add_string_field("dataval", field_length)
+            schema.add_string_field("data_value", field_length)
 
         return Layout(schema)

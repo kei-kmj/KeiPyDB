@@ -26,7 +26,9 @@ class BtreePage:
             self.transaction.unpin(self.current_block)
 
     def is_full(self) -> bool:
-        return self.slot_position(self.get_num_records() + 1) >= self.transaction.block_size()
+        return self.slot_position(
+            self.get_num_records() + 1) + self.layout.get_slot_size() >= self.transaction.block_size()
+
 
     def split(self, split_position: int, flag: int) -> BlockID:
         new_block = self.append_new(flag)
@@ -142,8 +144,10 @@ class BtreePage:
         self.transaction.set_int(block, 0, flag, False)
         self.transaction.set_int(block, ByteSize.Int, 0, False)
         record_size = self.layout.get_slot_size()
+        header_size = ByteSize.Int * 2
+        last_valid_position = self.transaction.block_size() - record_size + 1
 
-        for position in range(ByteSize.Int * 2, self.transaction.block_size(), record_size):
+        for position in range(header_size, last_valid_position, record_size):
             self.make_default_record(block, position)
 
     def make_default_record(self, block: BlockID, position: int) -> None:
