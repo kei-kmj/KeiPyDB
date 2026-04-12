@@ -1,3 +1,5 @@
+from abc import ABC
+
 import math
 from typing import Optional
 
@@ -6,6 +8,7 @@ from db.file.block_id import BlockID
 from db.index.btree.btree_dir import BtreeDir
 from db.index.btree.btree_leaf import BtreeLeaf
 from db.index.btree.btree_page import BtreePage
+from db.index.index import Index
 from db.query.constant import Constant
 from db.record.layout import Layout
 from db.record.record_id import RecordID
@@ -13,7 +16,7 @@ from db.record.schema import Schema
 from db.transaction.transaction import Transaction
 
 
-class BtreeIndex:
+class BtreeIndex(Index, ABC):
     BASE_SEARCH_COST = 1
     ROOT_BLOCK_INDEX = 0
     EMPTY = 0
@@ -46,7 +49,7 @@ class BtreeIndex:
             root.format(self.root_block, Node.Valid)
 
             field_type = dir_schema.get_type("data_value")
-            min_value = Constant(-2**31) if field_type == FieldType.Integer else Constant("")
+            min_value = Constant(-(2**31)) if field_type == FieldType.Integer else Constant("")
 
             first_leaf_block = 0
             root.insert_directory(Slot.First, min_value, first_leaf_block)

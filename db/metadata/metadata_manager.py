@@ -28,8 +28,10 @@ class MetadataManager:
     def get_view_definition(self, view_name: str, transaction: Transaction) -> str | None:
         return self.view_manager.get_view_def(view_name, transaction)
 
-    def create_index(self, index_name: str, table_name: str, field_name: str, transaction: Transaction) -> None:
-        self.index_manager.create_index(index_name, table_name, field_name, transaction)
+    def create_index(
+        self, index_name: str, table_name: str, field_name: str, index_type: str, transaction: Transaction
+    ) -> None:
+        self.index_manager.create_index(index_name, table_name, field_name, index_type, transaction)
 
     def get_index_info(self, table_name: str, transaction: Transaction) -> dict[str, IndexInfo]:
         return self.index_manager.get_index_info(table_name, transaction)

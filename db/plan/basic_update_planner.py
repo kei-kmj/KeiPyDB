@@ -100,5 +100,7 @@ class BasicUpdatePlanner(UpdatePlanner, ABC):
 
     def execute_create_index(self, data: CreateIndex, transaction: Transaction) -> int:
         """インデックスを作成する"""
-        self.metadata_manager.create_index(data.index_name, data.table_name, data.field_name, transaction)
+        self.metadata_manager.create_index(
+            data.index_name, data.table_name, data.field_name, data.index_type, transaction
+        )
         return 0

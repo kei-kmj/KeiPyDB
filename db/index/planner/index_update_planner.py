@@ -107,5 +107,5 @@ class IndexUpdatePlanner(UpdatePlanner, ABC):
         return 0
 
     def execute_create_index(self, data: CreateIndex, tx: Transaction) -> int:
-        self.metadata_manager.create_index(data.index_name, data.table_name, data.field_name, tx)
+        self.metadata_manager.create_index(data.index_name, data.table_name, data.field_name, data.index_type, tx)
         return 0

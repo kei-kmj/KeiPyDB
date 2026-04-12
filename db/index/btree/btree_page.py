@@ -26,9 +26,10 @@ class BtreePage:
             self.transaction.unpin(self.current_block)
 
     def is_full(self) -> bool:
-        return self.slot_position(
-            self.get_num_records() + 1) + self.layout.get_slot_size() >= self.transaction.block_size()
-
+        return (
+            self.slot_position(self.get_num_records() + 1) + self.layout.get_slot_size()
+            >= self.transaction.block_size()
+        )
 
     def split(self, split_position: int, flag: int) -> BlockID:
         new_block = self.append_new(flag)

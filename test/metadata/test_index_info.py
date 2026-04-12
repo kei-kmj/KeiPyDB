@@ -297,3 +297,54 @@ def test_index_info_integration_with_transaction(real_index_info_env):
         print(f"Integration test error: {e}")
 
     tx.commit()
+
+
+def test_index_info_open_returns_hash_index(real_index_info_env):
+    """index_type='hash'のときHashIndexが返されることを確認"""
+    file_manager, log_manager, buffer_manager = real_index_info_env
+    tx = Transaction(file_manager, log_manager, buffer_manager)
+    table_schema, _ = create_test_schema_and_layout()
+    stat_info = StatInfo(num_blocks=6, num_records=60)
+
+    from db.index.hash.hash_index import HashIndex
+
+    index_info = IndexInfo("idx_hash", "id", table_schema, stat_info, "hash")
+    index = index_info.open(tx)
+    assert isinstance(index, HashIndex)
+
+    index.close()
+    tx.commit()
+
+
+def test_index_info_open_returns_btree_index(real_index_info_env):
+    """index_type='btree'のときBtreeIndexが返されることを確認"""
+    file_manager, log_manager, buffer_manager = real_index_info_env
+    tx = Transaction(file_manager, log_manager, buffer_manager)
+    table_schema, _ = create_test_schema_and_layout()
+    stat_info = StatInfo(num_blocks=6, num_records=60)
+
+    from db.index.btree.btree_index import BtreeIndex
+
+    index_info = IndexInfo("idx_btree", "id", table_schema, stat_info, "btree")
+    index = index_info.open(tx)
+    assert isinstance(index, BtreeIndex)
+
+    index.close()
+    tx.commit()
+
+
+def test_index_info_open_default_is_hash(real_index_info_env):
+    """index_typeを省略したときHashIndexが返されることを確認"""
+    file_manager, log_manager, buffer_manager = real_index_info_env
+    tx = Transaction(file_manager, log_manager, buffer_manager)
+    table_schema, _ = create_test_schema_and_layout()
+    stat_info = StatInfo(num_blocks=6, num_records=60)
+
+    from db.index.hash.hash_index import HashIndex
+
+    index_info = IndexInfo("idx_default", "id", table_schema, stat_info)
+    index = index_info.open(tx)
+    assert isinstance(index, HashIndex)
+
+    index.close()
+    tx.commit()

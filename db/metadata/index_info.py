@@ -1,4 +1,5 @@
 from db.constants import FieldType
+from db.index.btree.btree_index import BtreeIndex
 from db.index.hash.hash_index import HashIndex
 from db.index.index import Index
 from db.metadata.stat_info import StatInfo
@@ -8,15 +9,20 @@ from db.transaction.transaction import Transaction
 
 
 class IndexInfo:
-    def __init__(self, index_name: str, field_name: str, table_schema: Schema, stat_info: StatInfo) -> None:
+    def __init__(
+        self, index_name: str, field_name: str, table_schema: Schema, stat_info: StatInfo, index_type: str = "hash"
+    ) -> None:
         self.index_name = index_name
         self.field_name = field_name
         self.table_schema = table_schema
         self.index_layout = self._create_index_layout()
         self.stat_info = stat_info
+        self.index_type = index_type
 
     def open(self, transaction: Transaction) -> Index:
         """インデックスを開く"""
+        if self.index_type == "btree":
+            return BtreeIndex(transaction, self.index_name, self.index_layout)
         return HashIndex(transaction, self.index_name, self.index_layout)
 
     def blocks_accessed(self, transaction: Transaction) -> int:

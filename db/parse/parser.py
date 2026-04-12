@@ -278,11 +278,16 @@ class Parser:
         field_name = self.field()
         self.lexer.eat_delimiter(")")
 
+        index_type = "hash"
+        if self.lexer.match_keyword("using"):
+            self.lexer.eat_keyword("using")
+            index_type = self.lexer.eat_id()
+
         if not index_name or not table_name or not field_name:
             raise SyntaxError(
                 f"Expected index_name, table_name and field_name, but not found {self.lexer.current_token}"
             )
-        return CreateIndex(index_name, table_name, field_name)
+        return CreateIndex(index_name, table_name, field_name, index_type)
 
     def _eat_type_with_length(self, type_name: str) -> int:
         self.lexer.eat_keyword(type_name)
