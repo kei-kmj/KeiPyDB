@@ -1,6 +1,5 @@
-from abc import ABC
-
 import math
+from abc import ABC
 from typing import Optional
 
 from db.constants import FieldType, Node, Slot

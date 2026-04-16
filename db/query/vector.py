@@ -1,5 +1,7 @@
 import math
 
+type Vector = list[float]
+
 
 def cosine_distance(u: list[float], v: list[float]) -> float:
     """コサイン距離を計算する関数"""
