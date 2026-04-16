@@ -48,7 +48,6 @@ class SearchState:
             ep = [nearest_set[0][1]]
         return ep
 
-
     def search_layer(self, query: Vector, ef: int, layer: int) -> list[NodeWithDistance]:
         while self.candidates:
             current_dist, current_node = self.candidates.pop(0)
@@ -59,7 +58,6 @@ class SearchState:
             self.update(current_node, query, ef, layer)
 
         return self.nearest_set
-
 
     def update(
         self,
@@ -85,7 +83,6 @@ class SearchState:
                     self.nearest_set.pop()
 
 
-
 class HNSWIndex(VectorIndex):
     def __init__(self, max_node_conn: int = 16, ef_construction: int = 200) -> None:
 
@@ -109,9 +106,6 @@ class HNSWIndex(VectorIndex):
         挿入順序ではなく確率で決まるため、グラフ全体が均一に分散する。
         """
         return int(-1 * math.log(random.random()) * self.layer_decay)
-
-
-
 
     def insert(self, vector: Vector, record_id: RecordID) -> None:
         # ベクトルをHNSWインデックスに挿入するロジックをここに追加します
@@ -142,12 +136,7 @@ class HNSWIndex(VectorIndex):
         self.nodes.append(new_node)
         self._update_entry_point(new_node, top_level)
 
-    def _link_both_neighbors(
-            self,
-            new_node: HNSWNode,
-            neighbors: Neighbors,
-            layer: int,
-            max_conn: int) -> None:
+    def _link_both_neighbors(self, new_node: HNSWNode, neighbors: Neighbors, layer: int, max_conn: int) -> None:
         for neighbor in neighbors:
             neighbor_neighbors = neighbor.get_neighbors(layer)
             neighbor_neighbors.append(new_node)
@@ -160,18 +149,12 @@ class HNSWIndex(VectorIndex):
             else:
                 neighbor.set_neighbors(layer, neighbor_neighbors)
 
-    def _update_entry_point(
-            self,
-            new_node: HNSWNode,
-            top_level: int) -> None:
+    def _update_entry_point(self, new_node: HNSWNode, top_level: int) -> None:
         if top_level > self.max_layer:
             self.entry_point = new_node
             self.max_layer = top_level
 
-    def _insert_first_node_to_all_layers(
-            self,
-            new_node: HNSWNode,
-            top_level: int) -> None:
+    def _insert_first_node_to_all_layers(self, new_node: HNSWNode, top_level: int) -> None:
 
         for layer in range(top_level + 1):
             new_node.set_neighbors(layer, [])
@@ -206,9 +189,6 @@ class HNSWIndex(VectorIndex):
         pass
 
     @staticmethod
-    def _select_neighbors(
-            candidates: list[NodeWithDistance],
-            connections_count: int
-    ) -> Neighbors:
+    def _select_neighbors(candidates: list[NodeWithDistance], connections_count: int) -> Neighbors:
         sorted_candidates = sorted(candidates, key=lambda x: x[0])
         return [node for _, node in sorted_candidates[:connections_count]]
