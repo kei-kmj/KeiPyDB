@@ -1,4 +1,3 @@
-from collections.abc import Collection
 from typing import NamedTuple, Optional
 
 from db.query.predicate import Predicate
@@ -25,7 +24,7 @@ class QueryData:
     def __init__(
         self,
         fields: list[str],
-        tables: Collection[str],
+        tables: list[str],
         predicate: Predicate,
         order_by: Optional[list[OrderByField | VectorOrderBy]] = None,
         limit: Optional[int] = None,
@@ -39,7 +38,7 @@ class QueryData:
     def get_fields(self) -> list[str]:
         return self.fields
 
-    def get_tables(self) -> Collection[str]:
+    def get_tables(self) -> list[str]:
         return self.tables
 
     def get_predicate(self) -> Predicate:

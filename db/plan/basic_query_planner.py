@@ -44,7 +44,16 @@ class BasicQueryPlanner(QueryPlanner, ABC):
         order_by = query_data.get_order_by()
         vector_sort_fields = [f for f in order_by if isinstance(f, VectorOrderBy)]
         if vector_sort_fields:
-            plan = VectorSortPlan(transaction, plan, vector_sort_fields[0])
+            vector_order = vector_sort_fields[0]
+            vector_index = None
+            table_name = query_data.tables[0]
+            index_info_map = self.metadata_manager.get_index_info(table_name, transaction)
+            if vector_order.field_name in index_info_map:
+                index_def = index_info_map[vector_order.field_name]
+                if index_def.index_type == "hnsw":
+                    vector_index = index_def.open_vector()
+
+            plan = VectorSortPlan(transaction, plan, vector_order, vector_index)
 
         fields = query_data.get_fields()
 

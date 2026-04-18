@@ -1,7 +1,11 @@
+from typing import Optional
+
 from db.constants import FieldType
 from db.index.btree.btree_index import BtreeIndex
 from db.index.hash.hash_index import HashIndex
+from db.index.hnsw.hnsw_index import HNSWIndex
 from db.index.index import Index
+from db.index.vector_index import VectorIndex
 from db.metadata.stat_info import StatInfo
 from db.record.layout import Layout
 from db.record.schema import Schema
@@ -18,12 +22,20 @@ class IndexDef:
         self.index_layout = self._create_index_layout()
         self.stat_info = stat_info
         self.index_type = index_type
+        self._vector_index: Optional[VectorIndex] = None
 
     def open(self, transaction: Transaction) -> Index:
         """インデックスを開く"""
         if self.index_type == "btree":
             return BtreeIndex(transaction, self.index_name, self.index_layout)
         return HashIndex(transaction, self.index_name, self.index_layout)
+
+    def open_vector(self) -> VectorIndex:
+        """ベクトルインデックスを開く"""
+        if self._vector_index is None:
+            self._vector_index = HNSWIndex()
+
+        return self._vector_index
 
     def blocks_accessed(self, transaction: Transaction) -> int:
         """アクセスしたブロック数を返す"""

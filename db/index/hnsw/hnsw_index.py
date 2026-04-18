@@ -84,6 +84,7 @@ class SearchState:
 
 
 class HNSWIndex(VectorIndex):
+
     def __init__(self, max_node_conn: int = 16, ef_construction: int = 200) -> None:
 
         self.nodes: Neighbors = []

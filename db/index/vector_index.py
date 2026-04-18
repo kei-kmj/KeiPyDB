@@ -5,6 +5,7 @@ from db.record.record_id import RecordID
 
 
 class VectorIndex(ABC):
+    default_k: int = 10
 
     @abstractmethod
     def insert(self, vector: Vector, data_record_id: RecordID) -> None:

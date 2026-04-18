@@ -1,6 +1,6 @@
 import pytest
 
-from db.index.hnsw.hnsx_index import HNSWIndex, HNSWNode, SearchState
+from db.index.hnsw.hnsw_index import HNSWIndex, HNSWNode, SearchState
 from db.record.record_id import RecordID
 
 

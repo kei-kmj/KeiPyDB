@@ -1,5 +1,3 @@
-from collections.abc import Collection
-
 from db.exception import BadSyntaxException
 from db.parse.create_index import CreateIndex
 from db.parse.create_table import CreateTable
@@ -94,7 +92,7 @@ class Parser:
             field_list.append(self.field())
         return field_list
 
-    def table_list(self) -> Collection[str]:
+    def table_list(self) -> list[str]:
         table_name = self.lexer.eat_id()
 
         tables: list[str] = [table_name]
