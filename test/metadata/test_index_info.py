@@ -7,7 +7,7 @@ from db.buffer.buffer_manager import BufferManager
 from db.constants import FieldType
 from db.file.file_manager import FileManager
 from db.log.log_manager import LogManager
-from db.metadata.index_info import IndexInfo
+from db.metadata.index_def import IndexDef
 from db.metadata.stat_info import StatInfo
 from db.record.layout import Layout
 from db.record.schema import Schema
@@ -51,7 +51,7 @@ def test_index_info_initialization(real_index_info_env):
     stat_info = StatInfo(num_blocks=10, num_records=100)
 
     # IndexInfoを作成
-    index_info = IndexInfo("idx_name", "name", table_schema, stat_info)
+    index_info = IndexDef("idx_name", "name", table_schema, stat_info)
 
     # 基本的な属性を確認
     assert index_info.index_name == "idx_name"
@@ -74,7 +74,7 @@ def test_index_info_with_integer_field(real_index_info_env):
     stat_info = StatInfo(num_blocks=5, num_records=50)
 
     # Integer型のフィールドでIndexInfoを作成
-    index_info = IndexInfo("idx_id", "id", table_schema, stat_info)
+    index_info = IndexDef("idx_id", "id", table_schema, stat_info)
 
     # インデックスレイアウトのdatavalフィールドがInteger型であることを確認
     dataval_type = index_info.index_layout.schema.get_type("data_value")
@@ -93,7 +93,7 @@ def test_index_info_with_varchar_field(real_index_info_env):
     stat_info = StatInfo(num_blocks=8, num_records=80)
 
     # Varchar型のフィールドでIndexInfoを作成
-    index_info = IndexInfo("idx_name", "name", table_schema, stat_info)
+    index_info = IndexDef("idx_name", "name", table_schema, stat_info)
 
     # インデックスレイアウトのdatavalフィールドがVarchar型であることを確認
     dataval_type = index_info.index_layout.schema.get_type("data_value")
@@ -112,7 +112,7 @@ def test_index_info_blocks_accessed(real_index_info_env):
     table_schema, table_layout = create_test_schema_and_layout()
     stat_info = StatInfo(num_blocks=20, num_records=200)
 
-    index_info = IndexInfo("idx_test", "age", table_schema, stat_info)
+    index_info = IndexDef("idx_test", "age", table_schema, stat_info)
 
     # blocks_accessedの計算をテスト (transactionが必要)
     from unittest.mock import Mock
@@ -136,7 +136,7 @@ def test_index_info_records_output(real_index_info_env):
     table_schema, table_layout = create_test_schema_and_layout()
     stat_info = StatInfo(num_blocks=15, num_records=150)
 
-    index_info = IndexInfo("idx_test", "email", table_schema, stat_info)
+    index_info = IndexDef("idx_test", "email", table_schema, stat_info)
 
     # records_outputの計算をテスト
     records_output = index_info.records_output()
@@ -153,7 +153,7 @@ def test_index_info_distinct_values(real_index_info_env):
     table_schema, table_layout = create_test_schema_and_layout()
     stat_info = StatInfo(num_blocks=12, num_records=120)
 
-    index_info = IndexInfo("idx_test", "name", table_schema, stat_info)
+    index_info = IndexDef("idx_test", "name", table_schema, stat_info)
 
     # distinct_valuesは統計情報から取得される
     distinct_values = index_info.distinct_values()
@@ -171,7 +171,7 @@ def test_index_info_open_method(real_index_info_env):
     table_schema, table_layout = create_test_schema_and_layout()
     stat_info = StatInfo(num_blocks=6, num_records=60)
 
-    index_info = IndexInfo("idx_open_test", "id", table_schema, stat_info)
+    index_info = IndexDef("idx_open_test", "id", table_schema, stat_info)
 
     # インデックスを開く
     hash_index = index_info.open(tx)
@@ -211,7 +211,7 @@ def test_index_info_with_different_field_types(real_index_info_env):
     ]
 
     for index_name, field_name, expected_type in test_cases:
-        index_info = IndexInfo(index_name, field_name, schema, stat_info)
+        index_info = IndexDef(index_name, field_name, schema, stat_info)
 
         # インデックスレイアウトが正しく作成されていることを確認
         assert index_info.index_layout.schema.has_field("data_value")
@@ -236,7 +236,7 @@ def test_index_info_edge_cases(real_index_info_env):
     minimal_stat = StatInfo(num_blocks=1, num_records=1)
 
     # IndexInfoを作成
-    index_info = IndexInfo("minimal_idx", "only_field", minimal_schema, minimal_stat)
+    index_info = IndexDef("minimal_idx", "only_field", minimal_schema, minimal_stat)
 
     # 基本的な動作を確認
     from unittest.mock import Mock
@@ -249,7 +249,7 @@ def test_index_info_edge_cases(real_index_info_env):
 
     # 非常に大きな統計情報
     large_stat = StatInfo(num_blocks=1000, num_records=10000)
-    large_index_info = IndexInfo("large_idx", "only_field", minimal_schema, large_stat)
+    large_index_info = IndexDef("large_idx", "only_field", minimal_schema, large_stat)
 
     # 大きな値でも適切に動作することを確認
     assert large_index_info.blocks_accessed(mock_tx) > 0
@@ -266,7 +266,7 @@ def test_index_info_nonexistent_field(real_index_info_env):
 
     # 存在しないフィールドでIndexInfoを作成
     try:
-        IndexInfo("idx_nonexistent", "nonexistent_field", table_schema, stat_info)
+        IndexDef("idx_nonexistent", "nonexistent_field", table_schema, stat_info)
         # エラーが発生する可能性がある
         print("Nonexistent field handling: IndexInfo created with field that doesn't exist")
     except Exception as e:
@@ -281,7 +281,7 @@ def test_index_info_integration_with_transaction(real_index_info_env):
     table_schema, table_layout = create_test_schema_and_layout()
     stat_info = StatInfo(num_blocks=8, num_records=80)
 
-    index_info = IndexInfo("integration_idx", "name", table_schema, stat_info)
+    index_info = IndexDef("integration_idx", "name", table_schema, stat_info)
 
     # トランザクション内でインデックスを開いて操作
     try:
@@ -308,7 +308,7 @@ def test_index_info_open_returns_hash_index(real_index_info_env):
 
     from db.index.hash.hash_index import HashIndex
 
-    index_info = IndexInfo("idx_hash", "id", table_schema, stat_info, "hash")
+    index_info = IndexDef("idx_hash", "id", table_schema, stat_info, "hash")
     index = index_info.open(tx)
     assert isinstance(index, HashIndex)
 
@@ -325,7 +325,7 @@ def test_index_info_open_returns_btree_index(real_index_info_env):
 
     from db.index.btree.btree_index import BtreeIndex
 
-    index_info = IndexInfo("idx_btree", "id", table_schema, stat_info, "btree")
+    index_info = IndexDef("idx_btree", "id", table_schema, stat_info, "btree")
     index = index_info.open(tx)
     assert isinstance(index, BtreeIndex)
 
@@ -342,7 +342,7 @@ def test_index_info_open_default_is_hash(real_index_info_env):
 
     from db.index.hash.hash_index import HashIndex
 
-    index_info = IndexInfo("idx_default", "id", table_schema, stat_info)
+    index_info = IndexDef("idx_default", "id", table_schema, stat_info)
     index = index_info.open(tx)
     assert isinstance(index, HashIndex)
 

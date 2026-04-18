@@ -1,13 +1,15 @@
-from db.index.hnsw.hnsx_index import HNSWNode, SearchState, HNSWIndex
-from db.query.vector import cosine_distance
-from db.record.record_id import RecordID
 import pytest
+
+from db.index.hnsw.hnsx_index import HNSWIndex, HNSWNode, SearchState
+from db.record.record_id import RecordID
+
 
 @pytest.fixture
 def basic_nodes():
     apple_fruit = HNSWNode([0.1, 0.2, 0.3], RecordID(1, 2))
     apple_pc = HNSWNode([0.9, 0.1, 0.5], RecordID(3, 4))
     return apple_fruit, apple_pc
+
 
 @pytest.fixture
 def apple_and_orange_query():
@@ -22,6 +24,7 @@ def test_get_hnsw_node(apple_and_orange_query):
     assert node.vector == apple_and_orange_query
     assert node.record_id == record_id
     assert node.get_neighbors(0) == []
+
 
 def test_set_hnsw_node(apple_and_orange_query):
     record_id = RecordID(1, 2)
@@ -44,6 +47,7 @@ def test_search_state_initialization(apple_and_orange_query):
     assert len(state.candidates) == 1
     assert len(state.nearest_set) == 1
 
+
 def test_search_state_sorted(apple_and_orange_query, basic_nodes):
     apple_fruit, apple_pc = basic_nodes
 
@@ -52,6 +56,7 @@ def test_search_state_sorted(apple_and_orange_query, basic_nodes):
     assert state.candidates[0][1] == apple_fruit
     assert state.candidates[1][1] == apple_pc
     assert state.nearest_set[0][1] == apple_fruit
+
 
 def test_search_layer_no_candidates(apple_and_orange_query):
     apple_fruit = HNSWNode([0.1, 0.2, 0.3], RecordID(1, 2))
@@ -78,7 +83,6 @@ def test_search_layer_explores_neighbors(basic_nodes, apple_and_orange_query):
 
 def test_update_with_visited_neighbors(basic_nodes, apple_and_orange_query):
     apple_fruit, apple_pc = basic_nodes
-
 
     state = SearchState([apple_fruit], apple_and_orange_query)
     apple_fruit.set_neighbors(0, [apple_pc])

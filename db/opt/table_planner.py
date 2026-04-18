@@ -2,7 +2,7 @@ from typing import Optional
 
 from db.index.planner.index_join_plan import IndexJoinPlan
 from db.index.planner.index_select_plan import IndexSelectPlan
-from db.metadata.index_info import IndexInfo
+from db.metadata.index_def import IndexDef
 from db.metadata.metadata_manager import MetadataManager
 from db.multi_buffer.multi_buffer_product_plan import MultiBufferProductPlan
 from db.plan.plan import Plan
@@ -22,7 +22,7 @@ class TablePlanner:
         self.transaction = transaction
         self.my_plan = TablePlan(transaction, table_name, metadata_manager)
         self.my_schema = self.my_plan.schema()
-        self.indexes: dict[str, IndexInfo] = metadata_manager.get_index_info(table_name, transaction)
+        self.indexes: dict[str, IndexDef] = metadata_manager.get_index_info(table_name, transaction)
 
     def make_select_plan(self) -> Plan:
         plan = self._make_index_select()

@@ -1,7 +1,7 @@
 from abc import ABC
 
 from db.index.query.index_join_scan import IndexJoinScan
-from db.metadata.index_info import IndexInfo
+from db.metadata.index_def import IndexDef
 from db.plan.plan import Plan
 from db.query.scan import Scan
 from db.record.schema import Schema
@@ -11,7 +11,7 @@ from db.transaction.transaction import Transaction
 class IndexJoinPlan(Plan, ABC):
 
     def __init__(
-        self, left_plan: Plan, right_plan: Plan, index_info: IndexInfo, join_filed: str, transaction: Transaction
+        self, left_plan: Plan, right_plan: Plan, index_info: IndexDef, join_filed: str, transaction: Transaction
     ) -> None:
         """インデックス結合計画を作成"""
         super().__init__()

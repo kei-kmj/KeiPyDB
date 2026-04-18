@@ -8,7 +8,7 @@ from db.record.schema import Schema
 from db.transaction.transaction import Transaction
 
 
-class IndexInfo:
+class IndexDef:
     def __init__(
         self, index_name: str, field_name: str, table_schema: Schema, stat_info: StatInfo, index_type: str = "hash"
     ) -> None:

@@ -2,7 +2,7 @@ from abc import ABC
 from typing import cast
 
 from db.index.query.index_select_scan import IndexSelectScan
-from db.metadata.index_info import IndexInfo
+from db.metadata.index_def import IndexDef
 from db.plan.plan import Plan
 from db.query.constant import Constant
 from db.query.scan import Scan
@@ -13,7 +13,7 @@ from db.transaction.transaction import Transaction
 
 class IndexSelectPlan(Plan, ABC):
 
-    def __init__(self, plan: Plan, index_info: IndexInfo, val: Constant, transaction: Transaction) -> None:
+    def __init__(self, plan: Plan, index_info: IndexDef, val: Constant, transaction: Transaction) -> None:
         """インデックス選択計画を作成"""
         super().__init__()
         self.plan = plan

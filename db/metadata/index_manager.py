@@ -1,4 +1,4 @@
-from db.metadata.index_info import IndexInfo
+from db.metadata.index_def import IndexDef
 from db.metadata.stat_manager import StatManager
 from db.metadata.table_manager import TableManager
 from db.record.schema import Schema
@@ -43,7 +43,7 @@ class IndexManager:
         # 2. 実際のインデックス構造を作成
         table_layout = self.table_manager.get_layout(table_name, transaction)
         stat_info = self.stat_manager.get_stat_info(table_name, transaction)
-        index_info = IndexInfo(index_name, field_name, table_layout.schema, stat_info, index_type)
+        index_info = IndexDef(index_name, field_name, table_layout.schema, stat_info, index_type)
         hash_index = index_info.open(transaction)
 
         # 3. 既存のデータでインデックスを埋める
@@ -55,9 +55,9 @@ class IndexManager:
         data_scan.close()
         hash_index.close()
 
-    def get_index_info(self, table_name: str, transaction: Transaction) -> dict[str, IndexInfo]:
+    def get_index_info(self, table_name: str, transaction: Transaction) -> dict[str, IndexDef]:
 
-        result: dict[str, IndexInfo] = {}
+        result: dict[str, IndexDef] = {}
         table_scan = TableScan(transaction, "index_catalog", self.layout)
 
         while table_scan.next():
@@ -67,7 +67,7 @@ class IndexManager:
                 table_layout = self.table_manager.get_layout(table_name, transaction)
                 stat_info = self.stat_manager.get_stat_info(table_name, transaction)
                 indextype = table_scan.get_string("index_type")
-                index_info = IndexInfo(index_name, field_name, table_layout.get_schema(), stat_info, indextype)
+                index_info = IndexDef(index_name, field_name, table_layout.get_schema(), stat_info, indextype)
                 result[field_name] = index_info
 
         table_scan.close()
