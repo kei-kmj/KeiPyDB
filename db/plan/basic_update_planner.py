@@ -1,6 +1,7 @@
 from abc import ABC
 
 from db.constants import FieldType
+from db.metadata.index_def import IndexDef
 from db.metadata.metadata_manager import MetadataManager
 from db.parse.create_index import CreateIndex
 from db.parse.create_table import CreateTable
@@ -14,7 +15,8 @@ from db.plan.table_plan import TablePlan
 from db.plan.update_planner import UpdatePlanner
 from db.query.scan import Scan
 from db.query.update_scan import UpdateScan
-from db.query.vector import parse_vector_literal
+from db.query.vector import Vector, parse_vector_literal
+from db.record.record_id import RecordID
 from db.transaction.transaction import Transaction
 
 
@@ -76,12 +78,15 @@ class BasicUpdatePlanner(UpdatePlanner, ABC):
         fields = data.get_fields()
         values = iter(data.get_values())
         schema = plan.schema()
+        indexes = self.metadata_manager.get_index_info(data.table_name, transaction)
 
         for field_name in fields:
             value = next(values)
             if schema.get_type(field_name) == FieldType.Vector:
                 vector = parse_vector_literal(str(value))
                 scan.set_vector(field_name, vector)
+                self._update_vector_index(field_name, vector, scan.get_rid(), indexes)
+
             else:
                 scan.set_value(field_name, value)
 
@@ -104,3 +109,15 @@ class BasicUpdatePlanner(UpdatePlanner, ABC):
             data.index_name, data.table_name, data.field_name, data.index_type, transaction
         )
         return 0
+
+    @staticmethod
+    def _update_vector_index(
+        field_name: str, vector: Vector, record_id: RecordID, indexes: dict[str, IndexDef]
+    ) -> None:
+        if field_name not in indexes:
+            return
+        index_def = indexes[field_name]
+        if index_def.index_type != "hnsw":
+            return
+        vector_index = index_def.open_vector()
+        vector_index.insert(vector, record_id)
